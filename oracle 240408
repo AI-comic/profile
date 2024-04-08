@@ -1,0 +1,157 @@
+select ename, hiredate, sal, lag(sal,1,0)over (order by hiredate) "LAG"
+from emp;
+
+select * from(select deptno, job, empno from emp)
+pivot(count(empno) for job in ('CLERK' as "CLERK", 'MANAGER' AS "MANAGER", 'PRESIDENT' AS "PRESIDENT", 'ANALYST' AS "ANSLYST", 'SALESMAN' AS "SALESMAN"))
+order by deptno;
+
+select max(sal)as"MAX", min(sal)AS"MIN"
+from emp;
+
+select* from emp;
+
+SELECT max(SAL+NVL(COMM,0))AS "MAX" , MIN(SAL+NVL(COMM,0))AS"MIN", ROUND(AVG(SAL+NVL(COMM,0)),1)AS"AVG"
+FROM EMP;
+
+SELECT BIRTHDAY
+FROM STUDENT;
+
+SELECT COUNT(*) ||'EA' AS "TOTAL",
+        COUNT(DECODE(TO_CHAR(BIRTHDAY,'MM'), '01', 0))||'EA' AS "JAN",
+        COUNT(DECODE(TO_CHAR(BIRTHDAY,'MM'), '02', 0))||'EA' AS "FEB",
+        COUNT(DECODE(TO_CHAR(BIRTHDAY,'MM'), '03', 0))||'EA' AS "MAR",
+        COUNT(DECODE(TO_CHAR(BIRTHDAY,'MM'), '04', 0))||'EA' AS "APR",
+        COUNT(DECODE(TO_CHAR(BIRTHDAY,'MM'), '05',0))||'EA' AS "MAY",
+        COUNT(DECODE(TO_CHAR(BIRTHDAY,'MM'), '06', 0))||'EA' AS "JUN",
+        COUNT(DECODE(TO_CHAR(BIRTHDAY,'MM'), '07', 0))||'EA' AS "JUL",
+        COUNT(DECODE(TO_CHAR(BIRTHDAY,'MM'), '08', 0))||'EA' AS "AUG",
+        COUNT(DECODE(TO_CHAR(BIRTHDAY,'MM'), '09', 0))||'EA' AS "SEP",
+        COUNT(DECODE(TO_CHAR(BIRTHDAY,'MM'), '10', 0))||'EA' AS "OCT",
+        COUNT(DECODE(TO_CHAR(BIRTHDAY,'MM'), '11', 0))||'EA' AS "NOV",
+        COUNT(DECODE(TO_CHAR(BIRTHDAY,'MM'), '12', 0))||'EA' AS "DEC"
+FROM STUDENT;
+
+SELECT TEL
+FROM STUDENT;
+
+SELECT COUNT(*) AS "TOTAL"
+FROM STUDENT;
+
+SELECT COUNT(*) AS "TOTAL", 
+        COUNT(DECODE(SUBSTR(TEL,1,INSTR(TEL,')')-1),'02',0)) AS "SEOUL",
+        COUNT(DECODE(SUBSTR(TEL,1,INSTR(TEL,')')-1),'031',0)) AS "GYEONGGI",
+        COUNT(DECODE(SUBSTR(TEL,1,INSTR(TEL,')')-1),'051',0)) AS "BUSAN",
+        COUNT(DECODE(SUBSTR(TEL,1,INSTR(TEL,')')-1),'052',0)) AS "ULSAN",
+        COUNT(DECODE(SUBSTR(TEL,1,INSTR(TEL,')')-1),'053',0)) AS "DAEGU",
+        COUNT(DECODE(SUBSTR(TEL,1,INSTR(TEL,')')-1),'055',0)) AS "GYEONGNAM"
+FROM STUDENT;
+
+INSERT INTO EMP(EMPNO,DEPTNO,ENAME,SAL)
+2 VALUES(1000,10,'TIGER',3600);
+INSERT INTO EMP(EMPNO,DEPTNO,ENAME,SAL)
+2 VALUES(2000,30,'CAT',3000);
+COMMIT;
+
+SET PAGESIZE 50
+SELECT EMPNO,ENAME,JOB,SAL 
+FROM EMP;
+INSERT INTO EMP(EMPNO,DEPTNO,ENAME,SAL)
+VALUES(1000,10,'TIGER',3600);
+INSERT INTO EMP(EMPNO,DEPTNO,ENAME,SAL)
+VALUES(2000,30,'CAT',3000);
+
+SELECT EMPNO, ENAME, JOB, SAL, DEPTNO
+FROM EMP 
+ORDER BY EMPNO;
+
+SELECT DEPTNO,
+    SUM(DECODE(JOB,'CLERK',SAL,0))AS"CLERK",
+    SUM(DECODE(JOB,'MANAGER',SAL,0))AS"MANAGER",
+    SUM(DECODE(JOB,'PRESIDENT',SAL,0))AS"PRESIDENT",
+    SUM(DECODE(JOB,'ANALYST',SAL,0))AS"ANALYST",
+    SUM(DECODE(JOB,'SALESMAN',SAL,0))AS"SALESMAN",
+    SUM(NVL2(JOB,SAL,0))AS"TOTAL"
+FROM EMP
+GROUP BY ROLLUP(DEPTNO);
+
+SELECT DEPTNO,ENAME,SAL,
+    SUM(SAL) OVER(ORDER BY SAL) AS "TOTAL"
+FROM EMP;
+
+SELECT DEPTNO, NULL JOB, ROUND(AVG(SAL),1) AVG_SAL, COUNT(*) CNT_EMP
+FROM EMP
+GROUP BY DEPTNO
+ORDER BY DEPTNO, JOB;
+
+SELECT * FROM FRUIT;
+
+select max(decode(name, 'apple', price)) as apple,
+    max(decode(name, 'grape', price)) as grape,
+    max(decode(name, 'orange', price)) as orange
+from fruit;
+
+SELECT COUNT(*)||'EA '||'('||ROUND(COUNT(*)/COUNT(*)*100, 0)||'%)' AS TOTAL,
+    COUNT(DECODE(SUBSTR(TEL,1,INSTR(TEL,')')-1),'02',0))||'EA '||'('||ROUND(COUNT(DECODE(SUBSTR(TEL,1,INSTR(TEL,')')-1),'02',0))/COUNT(*)*100, 0)||'%)'AS SEOUL,
+    COUNT(DECODE(SUBSTR(TEL,1,INSTR(TEL,')')-1),'031',0))||'EA '||'('||ROUND(COUNT(DECODE(SUBSTR(TEL,1,INSTR(TEL,')')-1),'031',0))/COUNT(*)*100, 0)||'%)'AS GYEONGGI,
+    COUNT(DECODE(SUBSTR(TEL,1,INSTR(TEL,')')-1),'051',0))||'EA '||'('||ROUND(COUNT(DECODE(SUBSTR(TEL,1,INSTR(TEL,')')-1),'051',0))/COUNT(*)*100, 0)||'%)'AS BUSAN,
+    COUNT(DECODE(SUBSTR(TEL,1,INSTR(TEL,')')-1),'052',0))||'EA '||'('||ROUND(COUNT(DECODE(SUBSTR(TEL,1,INSTR(TEL,')')-1),'052',0))/COUNT(*)*100, 0)||'%)'AS ULSAN,
+    COUNT(DECODE(SUBSTR(TEL,1,INSTR(TEL,')')-1),'053',0))||'EA '||'('||ROUND(COUNT(DECODE(SUBSTR(TEL,1,INSTR(TEL,')')-1),'053',0))/COUNT(*)*100, 0)||'%)'AS DAEGU,
+    COUNT(DECODE(SUBSTR(TEL,1,INSTR(TEL,')')-1),'055',0))||'EA '||'('||ROUND(COUNT(DECODE(SUBSTR(TEL,1,INSTR(TEL,')')-1),'055',0))/COUNT(*)*100, 0)||'%)'AS GYEONGNAM
+FROM STUDENT;
+
+select deptno, ename, sal, sum(sal) over(partition by deptno order by sal) as total
+from emp;
+
+--3장.9번 문제.
+select deptno, ename, sal,
+    sum(sal) over() as total_sal,
+    round(sal / sum(sal) over()* 100, 2) "%"
+from emp
+order by 5 desc;
+
+--3장.10번 문제.
+select deptno, ename, sal, sum(sal) over(partition by deptno) as sum_dept,
+    round(sal/sum(sal) over(partition by deptno)*100, 2) as "%"
+from emp
+group by deptno, ename, sal
+order by 1;
+
+--3장.11번 문제.
+select L_DATE as "대출일자",
+    L_CODE as "대출종목코드",
+    L_QTY as "대출건수",
+    L_TOTAL as "대출총액",
+    SUM(L_TOTAL) over(order by L_DATE) as "누적대출금액"
+from loan where L_STORE=1000;
+
+--3장.12번 문제.
+select L_CODE as "대출종목코드",
+    L_STORE as "대출지점",
+    L_DATE as "대출일자",
+    L_QTY as "대출건수",
+    L_TOTAL as "대출액",
+    sum(L_TOTAL) over(partition by l_code, l_store order by l_date) as "누적대출금액"
+from loan;
+
+--3장.13번 문제.
+select L_DATE as "대출일자",
+    L_CODE as "대출종목코드",
+    L_QTY as "대출건수",
+    L_TOTAL as "대출총액",
+    sum(L_TOTAL) over(partition by l_code order by l_total) as "누적대출금액"
+from loan where l_store = 1000;
+
+--3장.14번 문제.
+select deptno, name, pay, sum(pay) over() as "TOTAL PAY",
+    round(sum(pay) / sum(pay) over()*100, 2) as "RATIO %"
+from professor
+group by deptno, name, pay
+order by 5 desc;
+
+--3장.15번 문제.
+select deptno, name, pay, sum(pay) over(partition by deptno) as "TOTAL PAY",
+    round(sum(pay) / sum(pay) over(partition by deptno)*100, 2) as "RATIO %"
+from professor
+group by deptno, name, pay
+order by 1;
+
