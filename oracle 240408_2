@@ -1,0 +1,110 @@
+--4장
+select * from emp;
+select * from dept;
+--Oracle Join 문법
+select e.empno, e.ename, d.dname
+from emp e, dept d
+where e.deptno = d.deptno;
+
+--ANSI Join 문법
+select e.empno, e.ename, d.dname
+from emp e join dept d
+on e.deptno = d.deptno;
+
+select empno, ename, dname
+from emp, dept
+where emp.deptno = dept.deptno;
+
+--예 2) oracle
+select s.name "STU_NAME", p.name "PROF_NAME"
+from student s, professor p
+where s.profno = p.profno;
+--예 2) ansi
+select s.name "STU_NAME", p.name "PROF_NAME"
+from student s join professor p
+on s.profno = p.profno;
+
+--예 3)
+select s.name "STU_NAME", d.dname "DEPT_NAME", p.name "PROF_NAME"
+from student s, department d, professor p
+where s.deptno1 = d.deptno
+and s.profno = p.profno;
+
+--예 4)
+select s.name "STU_NAME", p.name "PROF_NAME"
+from student s, professor p
+where s.profno = p.profno
+and s.deptno1 = 101;
+
+select * from customer;
+select * from gift;
+
+select c.gname "cust_name", to_char(c.point, '999,999') "point", g.gname "gift_name"
+from  customer c, gift g
+where c.point between g.g_start and g.g_end;
+
+select s.name "stu_name", o.total "score", h.grade "credit"
+from student s, score o, hakjum h
+where s.studno = o.studno
+and o.total >= h.min_point
+and o.total <= h.max_point;
+
+--왼쪽 조인(왼쪽 항이 더 많다, 오른쪽에 빈칸 추가)
+select s.name "stu_name", p.name "prof_name"
+from student s, professor p
+where s.profno = p.profno(+);
+
+--오른쪽 조인(오른쪽 항이 더 많다, 왼쪽에 빈칸 추가)
+select s.name "stu_name", p.name "prof_name"
+from student s, professor p
+where s.profno(+) = p.profno;
+
+--양쪽 조인
+select s.name "stu_name", p.name "prof_name"
+from student s, professor p
+where s.profno = p.profno(+)
+union
+select s.name "stu_name", p.name "prof_name"
+from student s, professor p
+where s.profno(+) = p.profno;
+
+SELECT e1.ename "ename", e2.ename "mgr_ename"
+from emp e1, emp e2
+where e1.mgr = e2.empno;
+
+--연습 문제 1. 
+select s.name "stu_name", s.deptno1 "deptno1", d.dname "dept_name"
+from student s, department d
+where s.deptno1 = d.deptno;
+
+--연습 문제 2.
+select e.name "name", p.position "position", to_char(e.pay, '999,999,999') "pay",
+    to_char(p.s_pay, '999,999,999') "low pay", to_char(p.e_pay, '999,999,999') "high pay"
+from emp2 e, p_grade p
+where e.position = p.position;
+
+--연습 문제 3.
+select e.name "name", trunc((sysdate - e.birthday) / 365.0) "age",
+    e.position "curr_position", p.position "be_position"
+from emp2 e, p_grade p
+where trunc((sysdate - e.birthday) / 365.0) between p.s_age and p.e_age;
+
+--연습 문제 4.
+select c.gname "cust_name", c.point "point", g.gname "gift_name"
+from customer c, gift g
+where g.g_start <= c.point
+and g.gname = 'Notebook';
+
+--연습 문제 5. self join
+select p1.profno, p1.name, to_char(p1.hiredate, 'yyyy/mm/dd') "hiredate", count(p2.hiredate) "count"
+from professor p1, professor p2
+where p2.hiredate(+) < p1.hiredate
+group by p1.profno, p1.name, p1.hiredate
+order by 4;
+
+--연습 문제 6.
+select e1.empno, e1.ename, to_char(e1.hiredate, 'yy/mm/dd') "hiredate", count(e2.hiredate) "count"
+from emp e1, emp e2
+where e2.hiredate(+) < e1.hiredate
+group by e1.empno, e1.ename, e1.hiredate
+order by 4;
