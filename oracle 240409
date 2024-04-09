@@ -1,0 +1,152 @@
+create table new_table(
+    no number(3),
+    name varchar2(10),
+    birth date);
+
+desc new_table;
+
+create table tt02
+    (no     number(3,1) default 0,
+    name    varchar2(10) default 'NO Name',
+    hiredate    date    default sysdate);
+    
+insert into tt02 (no) values(1);
+
+create table 한글테이블
+    (컬럼1    number,
+     컬럼2    varchar2(10),
+     컬럼3    date);
+
+create global temporary table temp01
+    (no     number,
+     name   varchar2(10));
+insert into temp01 values(1, 'AAAAA');
+
+select * from temp01;
+
+commit;
+
+select temporary, duration
+from user_tables
+where table_name='TEMP01';
+
+create table dept3
+as
+select * from dept2;
+
+create table dept5
+as select * from dept2
+where 1=2;
+
+create table dept6
+as
+select dcode, dname
+from dept2
+where dcode in(1000,1001,1002);
+
+alter table dept6
+add (location varchar2(10));
+
+alter table dept6
+add (location2 varchar2(10) default 'seoul');
+
+alter table dept6 rename column location2 to loc;
+
+rename dept6 to dept7;
+
+desc dept7;
+
+alter table dept7
+modify(loc varchar2(20));
+
+desc dept7;
+
+alter table dept7 drop column loc;
+
+alter table dept7 drop column location cascade constraints;
+
+truncate table dept7;
+
+create table t_readonly(no number, name varchar2(10));
+
+insert into t_readonly values (1,'AAA');
+commit;
+
+alter table t_readonly read only;
+
+insert into t_readonly values (2,'BBB'); --읽기 전용이라 안 써짐
+
+alter table t_readonly add(tel number default 111);
+
+alter table t_readonly read write;
+
+drop table t_readonly;
+
+create table vt1(
+col1 number, col2 number, col3 number generated always as (col1 + col2));
+
+insert into vt1 (col1,col2) values (3,4);
+
+update vt1 set col1=5; --튜플이 하나라서 이렇게 쓰지만 아닐 경우 where 절이 들어가야 함.
+
+alter table vt1 add(col4 generated always as ((col1*12)+col2));
+
+select column_name, data_type, data_default
+from user_tab_columns
+where table_name = 'VT1'
+order by column_id ;
+
+create table sales10(
+no number, pcode char(4), pdate char(8), pqty number, pbungi number(1)
+generated always as(
+    case
+        when substr(pdate,5,2) in ('01','02','03') then 1   --pdate의 5번째 오는 2자리 수가 01,02,03이면 1출력
+        when substr(pdate,5,2) in ('04','05','06') then 2   --pdate의 5번째 오는 2자리 수가 04,05,06이면 2출력
+        when substr(pdate,5,2) in ('07','08','09') then 3   --pdate의 5번째 오는 2자리 수가 07,08,09이면 3출력
+    else 4                                                  --pdate의 5번째 오는 2자리 수가 10,11,12이면 4출력
+    end)
+virtual);
+
+insert into sales10(no, pcode, pdate, pqty)
+values(1,'100','20110112',10);
+insert into sales10(no, pcode, pdate, pqty)
+values(2,'200','20110505',20);
+insert into sales10(no, pcode, pdate, pqty)
+values(3,'300','20120812',30);
+insert into sales10(no, pcode, pdate, pqty)
+values(4,'400','20121124',40);
+
+--연습 문제 01.
+create table new_emp(
+no number(5), name varchar2(20), hiredate date, bonus number(6,2));
+
+--연습 문제 02. new_emp 테이블에서 NO , NAME , HIREDATE 컬럼만 가져와서 아래 그림과 같이 new_emp2 테이블을 생성
+create table new_emp2
+as select no, name, hiredate
+from new_emp;
+
+--연습 문제 03. new_emp2 테이블과 동일한 구조의 테이블을 new_emp3 이름으로 생성하되 테이블 구조만 가져오고 데이터는 가져오지 않도록
+create table new_emp3
+as select * from new_emp2
+where 1 = 2;
+
+--연습 문제 04. new_emp2 테이블에 DATE 타입을 가진 BIRTHDAY 컬럼을 추가 현재날짜( SYSDATE ) 가 자동으로 입력되도록
+alter table new_emp2
+add (birthday date default sysdate);
+
+--연습 문제 05. new_emp2 테이블의 BIRTHDAY 컬럼 이름을 BIRTH 로 변경
+alter table new_emp2 rename column birthday to birth;
+
+--연습 문제 06. new_emp2 테이블의 NO 컬럼의 길이를 NUMBER(7) 로 변경
+alter table new_emp2
+modify(no number(7));
+
+--연습 문제 07. new_emp2 테이블의 컬럼 중에서 BIRTH 컬럼을 삭제
+alter table new_emp2 drop column birth;
+
+--연습 문제 08. new_emp2 테이블의 컬럼은 남겨 놓고 데이터만 지우는 쿼리
+--truncate table new_emp2;  --제목 행만 두고 표를 삭제
+delete from new_emp2;       --표는 그대로 두고 내용만 삭제
+
+--new_emp2 테이블을 완전히 삭제
+drop table new_emp2;
