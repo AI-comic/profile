@@ -10,7 +10,6 @@ values(9001,'tempt_2',1006,'temp area');
 insert into dept2(dcode, dname, pdept)
 values(9002, 'temp_3', 1006);
 
-
 insert into professor(profno, name, id, position, pay, hiredate)
 values(5001,'james bond','love_me','a full professor',500,'2014-10-23');
 
