@@ -3,8 +3,6 @@ create table new_table(
     name varchar2(10),
     birth date);
 
-desc new_table;
-
 create table tt02
     (no     number(3,1) default 0,
     name    varchar2(10) default 'NO Name',
