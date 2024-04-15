@@ -1,0 +1,87 @@
+--240415-- 8장
+create unique index idx_dept2_dname
+on dept2(dname);
+
+insert into dept2 values(9100,'temp01',1006,'Seoul Branch');
+insert into dept2 values(9101,'temp01',1006,'Busan Branch');
+
+create index idx_dept2_area
+on dept2(area);
+
+insert into dept2 values(9102,'temp02',1006,'Seoul Branch');
+
+create index idx_prof_pay_fbi
+on professor(pay+1000);
+
+select * from professor where pay + 1000 = 1500;
+
+create index idx_prof_pay
+on professor(pay desc);
+
+create index idx_emp_comp
+on emp(ename, sex);
+
+create bitmap index idx_emp_sex_bit
+on emp(sex);
+
+select table_name, column_name, index_name
+from user_ind_columns
+where table_name = 'DEPT2';
+
+alter index idx_dept2_dname monitoring usage;
+alter index idx_dept2_dname nomonitoring usage;
+
+select index_name, used
+from v$object_usage
+where index_name = 'IDX_DEPT2_DNAME';
+
+--step 1 테스트용 테이블 i_test 생성하고 인덱스 생성
+create table i_test
+(no number);
+
+begin
+    for i in 1..10000 loop
+        insert into i_test values(i);
+    end loop;
+commit;
+end;
+
+create index idx_itest_no on i_test(no);
+
+--step 2 인덱스 상태 조회
+analyze index idx_itest_no validate structure;
+
+select (del_lf_rows_len / lf_rows_len) * 100 balance
+from index_stats
+where name='IDX_ITEST_NO';
+
+--step 3 4000건 삭제 후 인덱스 상태 조회
+delete from i_test
+where no between 1 and 4000;
+
+select count(*) from i_test;
+
+analyze index idx_itest_no validate structure;
+
+select (del_lf_rows_len / lf_rows_len) * 100 balance
+from index_stats
+where name='IDX_ITEST_NO';
+
+--step 4 rebuild 작업으로 수정
+alter index idx_itest_no rebuild;
+
+analyze index idx_itest_no validate structure;
+
+select (del_lf_rows_len / lf_rows_len) * 100 balance
+from index_stats
+where name='IDX_ITEST_NO';
+
+--
+create index idx_emp_sal on emp(sal);
+
+select table_name, index_name, visibility
+from user_indexes
+where table_name = 'EMP';
+
+alter index idx_emp_sal invisible;
+alter index idx_emp_sal visible;
