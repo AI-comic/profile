@@ -10,6 +10,7 @@ values(9001,'tempt_2',1006,'temp area');
 insert into dept2(dcode, dname, pdept)
 values(9002, 'temp_3', 1006);
 
+
 insert into professor(profno, name, id, position, pay, hiredate)
 values(5001,'james bond','love_me','a full professor',500,'2014-10-23');
 
@@ -140,6 +141,7 @@ update professor
 set bonus = 200
 where name = 'Sharon Stone';
 
+
 --------------------------------7장---------------------------------------
 create table new_emp1(
     no      number(4)    constraint emp1_no_pk primary key,
@@ -177,3 +179,41 @@ add constraint emp2_name_uk unique(name);
 alter table new_emp2
 add constraint emp2_name_fk foreign key(name)
 references emp2(name);
+
+--연습 문제 01.
+create table tcons(
+    no      number(5)       constraint tcons_no_pk primary key,
+    name    varchar2(20)    constraint tcons_name_nn not null,
+    jumin   varchar2(13)    constraint tcons_jumin_nn not null
+                            constraint tcons_jumin_uk unique,
+    area    number(1)       constraint tcons_area_ck check(area < 5),
+    deptno  varchar2(6)     constraint tcons_deptno_fk references dept2(dcode)
+);
+
+--연습 문제 02. tcons 테이블의 name 컬럼이 emp2 테이블의 ename 컬럼의 값을 참조하도록 참조키 제약조건을 추가
+alter table emp2
+add constraint emp_name_uk unique(name);    --이 과정이 먼저 수행되어야 함
+
+alter table tcons
+add constraint tcons_name_fk foreign key(name)
+    references emp2(name);
+
+--연습 문제 03. emp2 테이블의 name 컬럼에 만들어져 있는 unique 제약조건을 "사용안함"으로 변경하되
+--             해당 테이블의 데이터에 DML 까지 안되도록 변경하는 쿼리를 쓰세요.(제약조건 이름은 emp2_name_uk 입니다)
+alter table emp2
+disable unique(name) cascade;   --emp2 테이블의 name 제약조건을 제한에서 연쇄로 먼저 바꾸는 과정
+
+alter table emp2
+disable validate constraint emp2_name_uk;
+
+--연습 문제 05. emp 테이블에 설정되어 있는 제약조건 중 자신이 생성한 제약 조건들을
+--             테이블명, 컬럼명, 제약조건명으로 검색(Foreign key 는 제외)
+select owner, table_name, column_name, constraint_name
+from user_cons_columns
+where table_name = 'EMP';
+
+
+--제약조건 확인
+select owner, constraint_name, constraint_type, status
+from user_constraints
+where table_name = 'EMP2';
