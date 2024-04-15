@@ -85,3 +85,47 @@ where table_name = 'EMP';
 
 alter index idx_emp_sal invisible;
 alter index idx_emp_sal visible;
+
+
+-- 다양한 인덱스 활용 예제
+-- step 1: 예제 사원 테이블 생성 후 값 입력
+create table new_emp7(
+    no      number,
+    name    varchar2(10),
+    sal     number);
+
+insert into new_emp7 values(1000,'SMITH',300);
+insert into new_emp7 values(1001,'ALLEN',250);
+insert into new_emp7 values(1002,'KING',430);
+insert into new_emp7 values(1003,'BLAKE',220);
+insert into new_emp7 values(1004,'JAMES',620);
+insert into new_emp7 values(1005,'MILLER',810);
+
+COMMIT; --데이터를 입력한 후에는 COMMIT을 해 준다.
+
+select * from new_emp7;
+
+-- step 2: name 컬럼에 인덱스 생성
+create index idx_newemp7_name
+on new_emp(name) ;
+
+-- step 3: 인덱스를 사용하지 않는 일반적인 sql 작성
+select name from new_emp7;
+
+-- step 4: 인덱스를 사용하도록 sql 작성, 정렬이 된다
+select name from new_emp7
+where name > '0';
+
+-- step 5: 인덱스를 활용한 최솟값/최댓값 구하기
+select min(name)
+from new_emp7;
+
+select name from new_emp7
+where name > '0' and rownum = 1;
+
+select max(name)
+from new_emp7;
+
+select /** INDEX_DESC(e IDX_NEWEMP7_NAME) **/max(name)
+from new_emp7 e
+where name > '0';
