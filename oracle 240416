@@ -39,12 +39,8 @@ as
     select profno, name, pay
     from professor;
     
-select* from m_prof;
-
 create index idx_m_prof_pay
 on m_prof(pay);
-
-select * from professor;
 
 --수동으로 원본 테이블과 구체화된 뷰의 데이터 동기화 방법
 delete from professor
