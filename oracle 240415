@@ -86,7 +86,6 @@ where table_name = 'EMP';
 alter index idx_emp_sal invisible;
 alter index idx_emp_sal visible;
 
-
 -- 다양한 인덱스 활용 예제
 -- step 1: 예제 사원 테이블 생성 후 값 입력
 create table new_emp7(
