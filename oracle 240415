@@ -128,3 +128,4 @@ from new_emp7;
 select /** INDEX_DESC(e IDX_NEWEMP7_NAME) **/max(name)
 from new_emp7 e
 where name > '0';
+
