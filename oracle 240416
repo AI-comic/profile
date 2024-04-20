@@ -120,3 +120,4 @@ from(select profno, name, pay, rownum num
     from professor)
 group by ceil(num/3), rollup((profno, name, pay, num))
 ORDER BY ceil(num/3);
+
