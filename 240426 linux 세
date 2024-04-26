@@ -1,0 +1,16 @@
+//최신 패키지 업데이트
+sudo apt update
+//최신 패키지 적용
+sudo apt upgrade
+//드라이버 설치
+sudo apt install -y ubuntu-drivers-common
+//x window 설치
+sudo apt install lightdm -y
+
+cat /tec/X11/default-display-manager
+
+sudo apt install ubuntu-desktop -y
+sudo reboot
+
+//한글 키보드 설정(ahnbk.dev/?p=368)
+sudo apt install fcitx5 fcitx5-hangul
