@@ -12,5 +12,5 @@ cat /tec/X11/default-display-manager
 sudo apt install ubuntu-desktop -y
 sudo reboot
 
-//한글 키보드 설정(ahnbk.dev/?p=368)
+//한글 키보드 설정
 sudo apt install fcitx5 fcitx5-hangul
