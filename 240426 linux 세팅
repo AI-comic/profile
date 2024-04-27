@@ -7,7 +7,9 @@ sudo apt install -y ubuntu-drivers-common
 //x window 설치
 sudo apt install lightdm -y
 
+//default-display-manager 확인
 cat /tec/X11/default-display-manager
+
 //우분투 데스크톱 설치
 sudo apt install ubuntu-desktop -y
 //시스템 재부팅
