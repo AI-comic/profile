@@ -15,3 +15,6 @@ sudo reboot
 
 //한글 키보드 설정
 sudo apt install fcitx5 fcitx5-hangul
+
+//Tweaks 패키지 설치
+sudo apt install gnome-tweaks
