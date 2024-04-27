@@ -8,8 +8,9 @@ sudo apt install -y ubuntu-drivers-common
 sudo apt install lightdm -y
 
 cat /tec/X11/default-display-manager
-
+//우분투 데스크톱 설치
 sudo apt install ubuntu-desktop -y
+//시스템 재부팅
 sudo reboot
 
 //한글 키보드 설정
