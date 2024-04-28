@@ -49,7 +49,6 @@ where profno=5001;
 commit;
 
 select count(*) from professor;
-select count(*) from m_prof;
 
 --dbms_mview 패키지로 동기화 수행 방법
 --BEGIN
