@@ -51,9 +51,9 @@ commit;
 select count(*) from professor;
 
 --dbms_mview 패키지로 동기화 수행 방법
---BEGIN
---    DBMS_MVIEW.REFRESH('M_PROF');
---END;
+BEGIN
+    DBMS_MVIEW.REFRESH('M_PROF');
+END;
 
 exec dbms_mview.refresh_all_mviews;
 
