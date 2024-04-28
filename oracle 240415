@@ -76,7 +76,6 @@ select (del_lf_rows_len / lf_rows_len) * 100 balance
 from index_stats
 where name='IDX_ITEST_NO';
 
---
 create index idx_emp_sal on emp(sal);
 
 select table_name, index_name, visibility
