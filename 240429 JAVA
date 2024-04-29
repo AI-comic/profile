@@ -1,5 +1,4 @@
 package mypack;
-
 public class Test {
 	public static void main(String[] args) {
 		System.out.println("가장 처음 실행하는 예제");
@@ -12,7 +11,6 @@ public class Test {
  * 소스 파일: Hello.java
  */
 package Hello;
-
 public class Hello {
 	public static int sum(int n, int m) {
 		return n+m;
@@ -34,7 +32,6 @@ public class Hello {
 --------------------------------------------------------------
 
 package CircleArea;
-
 public class CircleArea {
 	public static void main(String[] args) {
 		final double PI = 3.14; //원주율을 상수로 선언
@@ -49,7 +46,6 @@ public class CircleArea {
 --------------------------------------------------------------
 
 package CH2;
-
 public class ex3 {
 	public static void main(String[] args) {
 		byte b = 127;
@@ -69,9 +65,7 @@ public class ex3 {
 --------------------------------------------------------------
 
 package CH2;
-
 import java.util.Scanner;
-
 public class ex4 {
 	public static void main(String args[]) {
 		System.out.println("이름, 도시, 나이, 체중, 독신 여부를 빈칸으로 분리하여 입력하세요");
@@ -97,3 +91,372 @@ public class ex4 {
 }
 
 --------------------------------------------------------------
+
+package CH2;
+import java.util.Scanner;
+public class ex5 {
+	public static void main(String[] args) {
+		Scanner scanner = new Scanner(System.in);
+		
+		System.out.print("정수를 입력하세요: ");
+		int time = scanner.nextInt();
+		int second = time % 60;		// 60으로 나눈 나머지는 초
+		int minute = (time / 60) % 60;	// 60으로 나눈 몫을 다시 60으로 나눈 나머지는 분
+		int hour = (time / 60) / 60;	// 60으로 나눈 몫을 다시 60으로 나눈 몫은 시간
+		
+		System.out.print(time + "초는 ");
+		System.out.print(hour + "시간, ");
+		System.out.print(minute + "분, ");
+		System.out.println(second + "초입니다. ");
+		
+		scanner.close();
+	}
+}
+
+
+--------------------------------------------------------------
+
+package CH2;
+public class ex6 {
+	public static void main(String[] args) {
+		int a=3, b=3, c=3;
+		//대입 연산자 사례
+		a += 3;	//a=a+3
+		b *= 3;	//b=b*3
+		c %= 2;	//c=c%2
+		System.out.println("a="+a+",b="+b+",c="+c);
+		//증감 연산자 사례
+		int d=3;
+		a = d++;	//a=3,d=4
+		System.out.println("a="+a+",d="+d);
+		a = ++d;	//d=5,a=5
+		System.out.println("a="+a+",d="+d);
+		a = d--;	//a=5,d=4
+		System.out.println("a="+a+",d="+d);
+		a = --d;	//d=3,a=3
+		System.out.println("a="+a+",d="+d);
+	}
+}
+
+--------------------------------------------------------------
+
+package CH2;
+public class ex8 {
+	public static void main (String[] args) {
+		int a = 3, b = 5;
+		
+		System.out.println("두 수의 차는 " + ((a>b)?(a-b):(b-a)));
+	}
+}
+
+--------------------------------------------------------------
+
+package CH2;
+public class ex9 {
+	public static void main(String[] args) {
+		short a = (short)0x55ff;
+		short b = (short)0x00ff;
+		
+		//비트 논리 연산
+		System.out.println("[비트 연산 결과]");
+		System.out.printf("%04x\n",(short)(a&b)); //비트 AND
+		System.out.printf("%04x\n",(short)(a|b)); //비트 OR
+		System.out.printf("%04x\n",(short)(a^b)); //비트 XOR
+		System.out.printf("%04x\n",(short)(~a)); //비트 NOT
+		
+		byte c = 20; //0x14
+		byte d = -8; //0xf8
+		
+		//비트 시프트 연산
+		System.out.println("[시프트 연산 결과]");
+		System.out.println(c<<2); //c를 2비트 왼쪽 시프트
+		System.out.println(c>>2); //c를 2비트 오른쪽 시프트, 0삽입
+		System.out.println(d>>2); //d를 2비트 오른쪽 시프트, 1삽입
+		System.out.printf("%x\n",(d>>>2)); //d를 2비트 오른쪽 시프트, 0삽입
+	}
+}
+
+--------------------------------------------------------------
+
+package CH2;
+import java.util.Scanner;
+public class ex10 {
+	public static void main (String[] args) {
+		Scanner scanner = new Scanner(System.in);
+		
+		System.out.print("점수를 입력하시오: ");
+		int score = scanner.nextInt();
+		if(score >= 80)
+			System.out.println("축하합니다! 합격입니다.");
+		
+		scanner.close();
+	}
+}
+
+--------------------------------------------------------------
+
+package CH2;
+import java.util.Scanner;
+public class ex11 {
+	public static void main (String[] args) {
+		Scanner scanner = new Scanner(System.in);
+		
+		System.out.print("수를 입력하시오: ");
+		int number = scanner.nextInt();
+		
+		if(number % 3 == 0)
+			System.out.println("3의 배수입니다.");
+		else
+			System.out.println("3의 배수가 아닙니다.");
+		
+		scanner.close();
+	}
+}
+
+--------------------------------------------------------------
+
+package CH2;
+import java.util.Scanner;
+public class ex12 {
+	public static void main(String[] args) {
+		char grade;
+		Scanner scanner = new Scanner(System.in);
+		
+		System.out.print("점수를 입력하세요(0~100): ");
+		int score = scanner.nextInt(); //점수 읽기
+		if(score >= 90)
+			grade = 'A';
+		else if(score >= 80)
+			grade = 'B';
+		else if(score >= 70)
+			grade = 'C';
+		else if(score >= 60)
+			grade = 'D';
+		else
+			grade = 'F';
+		System.out.println("학점은 " + grade + "입니다.");
+		
+		scanner.close();
+	}
+}
+
+--------------------------------------------------------------
+
+package CH2;
+import java.util.Scanner;
+public class ex13 {
+	public static void main(String[] args) {
+		Scanner scanner = new Scanner(System.in);
+		
+		System.out.print("점수를 입력하세요(0~100): ");
+		int score = scanner.nextInt();
+		
+		System.out.print("학년을 입력하세요(1~4): ");
+		int year = scanner.nextInt();
+		
+		if ((score >= 60 && year != 4) || score >= 70)
+			System.out.println("합격!");
+		else
+			System.out.println("불합격!");
+//		if(score >= 60) {	//60점 이상일 때
+//			if(year != 4)
+//				System.out.println("합격!");	//4학년 아니면 합격
+//			else if(score >= 70)
+//				System.out.println("합격!");	//4학년이 70점 이상이면 합격
+//			else
+//				System.out.println("불합격!");	//4학년이 70점 미만이면 불합격
+//		}
+//		else		//60점 미만이면 불합격
+//			System.out.println("불합격!");
+		scanner.close();
+	}
+}
+
+
+--------------------------------------------------------------
+
+package CH2;
+import java.util.Scanner;
+public class ex14 {		//ex12의 switch 버전
+	public static void main(String[] args) {
+		char grade;
+		Scanner scanner = new Scanner(System.in);
+		
+		System.out.print("점수를 입력하세요(0~100): ");
+		int score = scanner.nextInt(); //점수 읽기
+		switch(score/10) {
+			case 10:
+			case 9:
+				grade = 'A';
+				break;
+			case 8:
+				grade = 'B';
+				break;
+			case 7:
+				grade = 'C';
+				break;
+			case 6:
+				grade = 'D';
+				break;
+			default:
+				grade = 'F';
+		}
+		System.out.println("학점은 " + grade + "입니다.");
+		scanner.close();
+	}
+}
+
+--------------------------------------------------------------
+
+package CH2;
+import java.util.Scanner;
+public class ex15 {
+	public static void main(String[] args) {
+		Scanner scanner = new Scanner(System.in);
+		
+		System.out.print("무슨 커피 드릴까요? ");
+		String order = scanner.next();
+		int price = 0;
+		switch(order) {
+		case "에스프레소":
+		case "카푸치노":
+		case "카페라떼":
+			price = 3500;
+			break;
+		case "아메리카노":
+			price = 2000;
+			break;
+		default:
+			System.out.println("메뉴에 없습니다!");
+		}
+	if(price != 0)
+		System.out.print(order + "는 " + price + "원입니다.");
+	scanner.close();
+	}
+}
+
+--------------------------------------------------------------
+연습문제1
+package CH2;
+import java.util.Scanner;
+public class ex16_1 {
+	public static void main(String[] args) {
+		Scanner scanner = new Scanner(System.in);	
+		System.out.print("원화를 입력하세요(단위 원): ");
+		int won = scanner.nextInt();
+		System.out.println(won+"원은 $"+(won/1200.0)+"입니다.");
+		scanner.close();
+	}
+}
+
+연습문제2
+package CH2;
+import java.util.Scanner;
+public class ex16_2 {
+	public static void main(String[] args) {
+		Scanner scanner = new Scanner(System.in);
+		System.out.print("금액을 입력하시오.(단위 원) ");
+		int won = scanner.nextInt();
+		System.out.println("오만 원권 "+(won/50000)+"매");
+		System.out.println("만 원권 "+((won%50000)/10000)+"매");
+		System.out.println("천 원권 "+((won%10000)/1000)+"매");
+		System.out.println("오백 원 "+((won%1000)/500)+"개");
+		System.out.println("백 원 "+((won%500)/100)+"개");
+		System.out.println("오십 원 "+((won%100)/50)+"개");
+		System.out.println("십 원 "+((won%50)/10)+"개");
+		System.out.println("일 원 "+(won%10)+"개");
+		scanner.close();
+	}
+}
+
+연습문제3
+package CH2;
+import java.util.Scanner;
+public class ex16_3 {
+	public static void main(String[] args) {
+		Scanner scanner = new Scanner(System.in);
+		System.out.print("정수 3개를 입력하시오.");
+		int a = scanner.nextInt();
+		int b = scanner.nextInt();
+		int c = scanner.nextInt();
+		if(a>0 && b>0 && c>0 && a+b>c && b+c>a && c+a>b)
+			System.out.print("삼각형이 됩니다.");
+		else
+			System.out.print("삼각형이 안 됩니다.");
+		scanner.close();
+	}	
+}
+
+연습문제4
+package CH2;
+import java.util.Scanner;
+public class ex16_4 {
+	public static void main(String[] args) {
+		Scanner scanner = new Scanner(System.in);
+		System.out.print("점 (x, y)의 좌표를 입력하시오.");
+		
+		int x = scanner.nextInt();
+		int y = scanner.nextInt();
+		
+		if(100<=x&&x<=200&&100<=y&&y<=200)
+			System.out.print("("+x+","+y+")"+"는 사각형 안에 있습니다.");
+		else
+			System.out.print("("+x+","+y+")"+"는 사각형 안에 없습니다.");
+		scanner.close();
+	}
+}
+
+연습문제5
+package CH2;
+import java.util.Scanner;
+public class ex16_5 {
+	public static void main(String[] args) {
+		Scanner scanner = new Scanner(System.in);
+		System.out.print("원의 중심과 반지름을 입력하시오.");
+		double a = scanner.nextDouble();
+		double b = scanner.nextDouble();
+		double r = scanner.nextDouble();
+		System.out.print("점을 입력하시오.");
+		double x = scanner.nextDouble();
+		double y = scanner.nextDouble();
+		if(((x-a)*(x-a))+((y-b)*(y-b))<=r*r)
+			System.out.print("점("+x+","+y+")"+"는 원 안에 있습니다.");
+		else
+			System.out.print("점("+x+","+y+")"+"는 원 안에 없습니다.");
+		scanner.close();
+	}
+}
+
+연습문제6
+package CH2;
+import java.util.Scanner;
+public class ex16_6 {
+	public static void main(String[] args) {
+		String season;
+		Scanner scanner = new Scanner(System.in);
+		System.out.print("달을 입력하세요(1~12)");
+		int month = scanner.nextInt();
+		switch(month) {
+			case 3:
+			case 4:
+			case 5:
+				season = "봄";
+				break;
+			case 6:
+			case 7:
+			case 8:
+				season = "여름";
+				break;
+			case 9:
+			case 10:
+			case 11:
+				season = "가을";
+				break;
+			default:
+				season = "겨울";
+				break;
+		}
+		System.out.println(season);
+		scanner.close();
+	}
+}
