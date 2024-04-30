@@ -1,0 +1,100 @@
+package CH3;
+public class ex01 {
+	public static void main(String[] args) {
+		int sum =0;
+		for(int i=1;i<=10;i++) {	//1~10까지 반복
+			sum += i;
+			System.out.print(i);	//더하는 수 출력
+			if(i<=9)	//1~9까지는 '+'출력
+				System.out.print("+");
+			else {		//i가 10인 경우
+				System.out.print("=");	//'=' 출력하고
+				System.out.print(sum);	//덧셈 결과 출력
+			}
+		}
+	}
+}
+-----------------------------------------------------------------
+package CH3;
+import java.util.Scanner;
+public class ex02 {
+	public static void main(String[] args) {
+		int count=0;	//count는 입력된 정수의 개수
+		int sum=0;		//sum은 합
+		Scanner scanner = new Scanner(System.in);
+		System.out.println("정수를 입력하고 마지막에 -1을 입력하세요.");
+		int n = scanner.nextInt();	//정수 입력
+		while(n != -1) {	//-1이 입력되면 while 문 벗어남
+			sum += n;
+			count++;
+			n=scanner.nextInt();	//정수 입력
+		}
+		if(count==0) System.out.println("입력된 수가 없습니다.");
+		else {
+			System.out.print("정수의 개수는 "+count+"개이며 ");
+			System.out.println("평균은 "+(double)sum/count+"입니다.");
+		}
+		scanner.close();
+	}
+}
+-----------------------------------------------------------------
+package CH3;  //알파벳 출력
+public class ex03 {
+	public static void main(String[] args) {
+		char c = 'a';
+		do {
+			System.out.print(c);
+			c=(char)(c+1);
+		}while(c<='z');
+	}
+}
+-----------------------------------------------------------------
+package CH3;  //구구단 출력
+public class ex04 {
+	public static void main(String[] args) {
+		for(int i=1; i<10; i++) {
+			for(int j=1; j<10; j++) {
+				System.out.print(i+"*"+j+"="+i*j);
+				System.out.print('\t');
+			}
+			System.out.println();
+		}
+	}
+}
+-----------------------------------------------------------------
+package CH3;
+import java.util.Scanner;
+public class ex05 {
+	public static void main(String[] args) {
+		Scanner scanner = new Scanner(System.in);
+		System.out.println("정수를 5개 입력하세요.");
+		int sum = 0;
+		for(int i=0;i<5;i++) {
+			int n = scanner.nextInt();	//키보드에서 정수 입력
+			if(n<=0)
+				continue;	//양수가 아닌 경우 다음 반복으로 진행
+			else
+				sum += n;	//양수인 경우 덧셈
+		}
+		System.out.println("양수의 합은 "+sum);
+		scanner.close();
+	}
+}
+-----------------------------------------------------------------
+package CH3;
+import java.util.Scanner;
+public class ex06 {
+	public static void main(String[] args) {
+		Scanner scanner = new Scanner(System.in);
+		System.out.println("exit를 입력하면 종료합니다.");
+		while(true) {
+			System.out.print(">>");
+			String text = scanner.nextLine();
+			if(text.equals("exit"))	//equals: 문자열 비교, "exit"가 입력되면 반복 종료
+				break;	//while 문을 벗어남
+		}
+		System.out.println("종료합니다...");
+		scanner.close();
+	}
+}
+-----------------------------------------------------------------
