@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    <title>Linux Server Page Making</title>
+    <style>
+        body {font-family: Arial, sans-serif;
+                margin: 0;
+                padding: 0;}
+
+        header {background-color: darkslategrey;
+                color: white;
+                padding: 10px;}
+
+        header h1 {margin: 0;}
+
+        nav ul {list-style-type: none;
+                padding: 0;}
+
+        nav ul li {display: inline;
+                    margin-right: 10px;}
+
+        nav ul li a {color: white;
+                    text-decoration: none;}
+
+        .container {max-width: 800px;
+                    margin: 0 auto;
+                    padding: 10px;}
+
+        section {padding: 30px 0;}
+
+        section h2 {margin-bottom: 5px;}
+
+        footer {background-color: darkslategrey;
+                color: white;
+                text-align: center;
+                padding: 10px 0;}
+    </style>
+</head>
+<body>
+    <header>
+        <h1>인공 지능(Artificial Intelligence) 개발 환경 구축</h1>
+        <nav>
+            <ul>
+                <li><a href="#purpose">구축 목적</a></li>
+                <li><a href="#skills">필요 기술</a></li>
+                <li><a href="#plans">작업 순서</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section id="purpose">
+        <div class="container">
+            <h2>구축 목적</h2>
+            <p>인공 지능 개발 환경을 구축하는 목적은 다양한 인공 지능 모델 및 알고리즘을 개발하고 효율적으로 관리하기 위함입니다.</p>
+        </div>
+    </section>
+
+    <section id="skills">
+        <div class="container">
+            <h2>필요 기술</h2>
+            <p>아파치</p>
+        </div>
+    </section>
+
+    <section id="plans">
+        <div class="container">
+            <h2>작업 순서</h2>
+            <ul>
+                <li>MariaDB 설치 및 사용</li><br>
+                <li>웹 서버 설치 및 사용</li><br>
+                <li>Web Hosting</li><br>
+                <li>Web Hosting</li><br>
+                <li>Web Hosting</li><br>
+                <li>Web Hosting</li><br>
+                <li>Web Hosting</li><br>
+            </ul>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2024 Linux Server. All rights reserved.</p>
+    </footer>
+</body>
+</html>
