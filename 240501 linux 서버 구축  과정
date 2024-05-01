@@ -1,30 +1,27 @@
+//아파치 웹 서버 설치
+sudo apt-get install apache2
+//아파치 웹 서버 상태 확인
+sudo systemctl status apache2
+
 ssh root@서버주소
 //    비번 입력
 
 //yum 패키지 데이터베이스 업데이트
 sudo yum update
-
 //아파치 웹 서버 설치
 sudo yum install httpd
-
 //아파치 서비스 시작
 sudo systemctl start httpd
-
 //아파치 서비스가 부팅 시 자동으로 시작되도록 설정
 sudo systemctl enable httpd
-
 //방화벽 시작
 sudo systemctl start firewalld
-
 //html 폴더로 이동
 cd /var/www/html
-
 //리스트 정보 확인
 ls -i
-
 //index.html 수정
 vi index.html
-
 
 
 
