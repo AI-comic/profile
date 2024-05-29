@@ -1,0 +1,232 @@
+import sys
+from PySide6 import QtCore, QtWidgets, QtGui
+
+class DrawingArea(QtWidgets.QWidget):
+    def __init__(self):
+        super().__init__()
+        self.setFixedSize(800, 600)
+        self.image = QtGui.QImage(self.size(), QtGui.QImage.Format_RGB32)
+        self.image.fill(QtCore.Qt.white)
+        self.drawing = False
+        self.last_point = QtCore.QPoint()
+        self.pen_color = QtCore.Qt.black
+        self.pen_width = 3
+        self.eraser_width = 20
+        self.tool = 'pen'  # pen, line, rectangle, circle, eraser
+        self.current_point = QtCore.QPoint()
+    
+    def paintEvent(self, event):
+        canvas = QtGui.QPainter(self)
+        canvas.drawImage(self.rect(), self.image, self.image.rect())
+        if self.drawing and self.tool in {'line', 'rectangle', 'circle'}:
+            canvas.setPen(QtGui.QPen(self.pen_color, self.pen_width, QtCore.Qt.SolidLine))
+            self.draw_temp_shape(canvas)
+
+    def draw_temp_shape(self, painter):
+        if self.tool == 'line':
+            painter.drawLine(self.last_point, self.current_point)
+        elif self.tool == 'rectangle':
+            painter.drawRect(QtCore.QRect(self.last_point, self.current_point))
+        elif self.tool == 'circle':
+            radius = (self.last_point - self.current_point).manhattanLength()
+            painter.drawEllipse(self.last_point, radius, radius)
+
+    def mousePressEvent(self, event):
+        if event.button() == QtCore.Qt.LeftButton:
+            self.drawing = True
+            self.last_point = event.position().toPoint()
+            self.current_point = self.last_point
+
+    def mouseMoveEvent(self, event):
+        if event.buttons() & QtCore.Qt.LeftButton and self.drawing:
+            self.current_point = event.position().toPoint()
+            painter = QtGui.QPainter(self.image)
+            
+            if self.tool == 'pen':
+                painter.setPen(QtGui.QPen(self.pen_color, self.pen_width, QtCore.Qt.SolidLine))
+                painter.drawLine(self.last_point, self.current_point)
+                self.last_point = self.current_point
+            elif self.tool == 'eraser':
+                painter.setPen(QtGui.QPen(QtCore.Qt.white, self.eraser_width, QtCore.Qt.SolidLine))
+                painter.drawLine(self.last_point, self.current_point)
+                self.last_point = self.current_point
+            self.update()
+
+    def mouseReleaseEvent(self, event):
+        if event.button() == QtCore.Qt.LeftButton:
+            self.drawing = False
+            self.current_point = event.position().toPoint()
+            painter = QtGui.QPainter(self.image)
+            painter.setPen(QtGui.QPen(self.pen_color, self.pen_width, QtCore.Qt.SolidLine))
+
+            if self.tool == 'line':
+                painter.drawLine(self.last_point, self.current_point)
+            elif self.tool == 'rectangle':
+                painter.drawRect(QtCore.QRect(self.last_point, self.current_point))
+            elif self.tool == 'circle':
+                radius = (self.last_point - self.current_point).manhattanLength()
+                painter.drawEllipse(self.last_point, radius, radius)
+
+            self.update()
+
+class MainWindow(QtWidgets.QMainWindow):
+    def __init__(self):
+        super().__init__()
+        self.setWindowTitle("Simple Drawing Program")
+        self.setFixedSize(800, 600)
+        
+        self.drawing_area = DrawingArea()
+        self.setCentralWidget(self.drawing_area)
+        
+        self.create_toolbar()
+        self.create_color_palette()
+        self.create_pen_width_slider()
+        self.create_eraser_width_slider()
+    
+    def create_toolbar(self):
+        toolbar = QtWidgets.QToolBar("Drawing Tools")
+        toolbar.setStyleSheet("""
+            QToolBar {
+                background: #f0f0f0;
+                border: 1px solid #d0d0d0;
+            }
+            QToolButton {
+                background: #e0e0e0;
+                border: 1px solid #c0c0c0;
+                padding: 5px;
+                margin: 5px;
+                border-radius: 5px;
+            }
+            QToolButton:hover {
+                background: #d0d0d0;
+                border: 1px solid #b0b0b0;
+            }
+            QToolButton:checked {
+                background: #c0c0c0;
+                border: 1px solid #a0a0a0;
+            }
+        """)
+        
+        pen_action = QtGui.QAction("Pen", self)
+        pen_action.setCheckable(True)
+        pen_action.triggered.connect(lambda: self.set_tool('pen'))
+        toolbar.addAction(pen_action)
+        
+        line_action = QtGui.QAction("Line", self)
+        line_action.setCheckable(True)
+        line_action.triggered.connect(lambda: self.set_tool('line'))
+        toolbar.addAction(line_action)
+        
+        rectangle_action = QtGui.QAction("Rectangle", self)
+        rectangle_action.setCheckable(True)
+        rectangle_action.triggered.connect(lambda: self.set_tool('rectangle'))
+        toolbar.addAction(rectangle_action)
+        
+        circle_action = QtGui.QAction("Circle", self)
+        circle_action.setCheckable(True)
+        circle_action.triggered.connect(lambda: self.set_tool('circle'))
+        toolbar.addAction(circle_action)
+        
+        eraser_action = QtGui.QAction("Eraser", self)
+        eraser_action.setCheckable(True)
+        eraser_action.triggered.connect(lambda: self.set_tool('eraser'))
+        toolbar.addAction(eraser_action)
+        
+        self.toolbar_group = QtGui.QActionGroup(self)
+        self.toolbar_group.addAction(pen_action)
+        self.toolbar_group.addAction(line_action)
+        self.toolbar_group.addAction(rectangle_action)
+        self.toolbar_group.addAction(circle_action)
+        self.toolbar_group.addAction(eraser_action)
+        
+        self.addToolBar(toolbar)
+
+    def create_color_palette(self):
+        color_palette = QtWidgets.QToolBar("Color Palette")
+        color_palette.setStyleSheet("""
+            QToolBar {
+                background: #f0f0f0;
+                border: 1px solid #d0d0d0;
+            }
+            QPushButton {
+                width: 20px;
+                height: 20px;
+                margin: 5px;
+                border: 1px solid #c0c0c0;
+            }
+        """)
+        
+        color_names = QtGui.QColor.colorNames()
+        
+        for color_name in color_names:
+            color = QtGui.QColor(color_name)
+            button = QtWidgets.QPushButton()
+            button.setStyleSheet(f"background-color: {color.name()}")
+            button.clicked.connect(lambda _, col=color: self.set_pen_color(col))
+            color_palette.addWidget(button)
+        
+        self.addToolBar(color_palette)
+    
+    def create_pen_width_slider(self):
+        pen_width_slider = QtWidgets.QToolBar("Pen Width")
+        pen_width_slider.setStyleSheet("""
+            QToolBar {
+                background: #f0f0f0;
+                border: 1px solid #d0d0d0;
+                padding: 5px;
+            }
+        """)
+        
+        slider_label = QtWidgets.QLabel("Pen Width: ")
+        slider = QtWidgets.QSlider(QtCore.Qt.Horizontal)
+        slider.setRange(1, 20)
+        slider.setValue(3)
+        slider.valueChanged.connect(self.set_pen_width)
+        
+        pen_width_slider.addWidget(slider_label)
+        pen_width_slider.addWidget(slider)
+        
+        self.addToolBar(pen_width_slider)
+    
+    def create_eraser_width_slider(self):
+        eraser_width_slider = QtWidgets.QToolBar("Eraser Width")
+        eraser_width_slider.setStyleSheet("""
+            QToolBar {
+                background: #f0f0f0;
+                border: 1px solid #d0d0d0;
+                padding: 5px;
+            }
+        """)
+        
+        slider_label = QtWidgets.QLabel("Eraser Width: ")
+        slider = QtWidgets.QSlider(QtCore.Qt.Horizontal)
+        slider.setRange(10, 50)
+        slider.setValue(20)
+        slider.valueChanged.connect(self.set_eraser_width)
+        
+        eraser_width_slider.addWidget(slider_label)
+        eraser_width_slider.addWidget(slider)
+        
+        self.addToolBar(eraser_width_slider)
+        
+    def set_tool(self, tool):
+        self.drawing_area.tool = tool
+        self.toolbar_group.setExclusive(False)
+        for action in self.toolbar_group.actions():
+            action.setChecked(action.text().lower() == tool)
+        self.toolbar_group.setExclusive(True)
+
+    def set_pen_color(self, color):
+        self.drawing_area.pen_color = color
+    
+    def set_pen_width(self, width):
+        self.drawing_area.pen_width = width
+    
+    def set_eraser_width(self, width):
+        self.drawing_area.eraser_width = width
+
+if __name__ == "__main__":
+    app = QtWidgets.QApplication(sys.argv)
+    window = MainWindow()
+    window.show()
+    sys.exit(app.exec())
