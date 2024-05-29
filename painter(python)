@@ -1,0 +1,135 @@
+import sys
+from PySide6 import QtCore, QtWidgets, QtGui
+
+class DrawingArea(QtWidgets.QWidget):
+    def __init__(self):
+        super().__init__()
+        self.setFixedSize(800, 600)
+        self.image = QtGui.QImage(self.size(), QtGui.QImage.Format_RGB32)
+        self.image.fill(QtCore.Qt.white)
+        self.drawing = False
+        self.last_point = QtCore.QPoint()
+        self.pen_color = QtCore.Qt.black
+        self.pen_width = 3
+        self.shape = 'pen'  # pen, line, rectangle, circle, eraser
+        self.current_point = QtCore.QPoint()
+    
+    def paintEvent(self, event):
+        canvas = QtGui.QPainter(self)
+        canvas.drawImage(self.rect(), self.image, self.image.rect())
+        if self.drawing and self.shape in {'line', 'rectangle', 'circle'}:
+            canvas.setPen(QtGui.QPen(self.pen_color, self.pen_width, QtCore.Qt.SolidLine))
+            self.draw_temp_shape(canvas)
+
+    def draw_temp_shape(self, painter):
+        if self.shape == 'line':
+            painter.drawLine(self.last_point, self.current_point)
+        elif self.shape == 'rectangle':
+            painter.drawRect(QtCore.QRect(self.last_point, self.current_point))
+        elif self.shape == 'circle':
+            radius = (self.last_point - self.current_point).manhattanLength()
+            painter.drawEllipse(self.last_point, radius, radius)
+
+    def mousePressEvent(self, event):
+        if event.button() == QtCore.Qt.LeftButton:
+            self.drawing = True
+            self.last_point = event.position().toPoint()
+            self.current_point = self.last_point
+
+    def mouseMoveEvent(self, event):
+        if event.buttons() & QtCore.Qt.LeftButton and self.drawing:
+            self.current_point = event.position().toPoint()
+            painter = QtGui.QPainter(self.image)
+            
+            if self.shape == 'pen':
+                painter.setPen(QtGui.QPen(self.pen_color, self.pen_width, QtCore.Qt.SolidLine))
+                painter.drawLine(self.last_point, self.current_point)
+                self.last_point = self.current_point
+            elif self.shape == 'eraser':
+                painter.setPen(QtGui.QPen(QtCore.Qt.white, self.pen_width, QtCore.Qt.SolidLine))
+                painter.drawLine(self.last_point, self.current_point)
+                self.last_point = self.current_point
+            self.update()
+
+    def mouseReleaseEvent(self, event):
+        if event.button() == QtCore.Qt.LeftButton:
+            self.drawing = False
+            self.current_point = event.position().toPoint()
+            painter = QtGui.QPainter(self.image)
+            painter.setPen(QtGui.QPen(self.pen_color, self.pen_width, QtCore.Qt.SolidLine))
+
+            if self.shape == 'line':
+                painter.drawLine(self.last_point, self.current_point)
+            elif self.shape == 'rectangle':
+                painter.drawRect(QtCore.QRect(self.last_point, self.current_point))
+            elif self.shape == 'circle':
+                radius = (self.last_point - self.current_point).manhattanLength()
+                painter.drawEllipse(self.last_point, radius, radius)
+
+            self.update()
+
+class MainWindow(QtWidgets.QMainWindow):
+    def __init__(self):
+        super().__init__()
+        self.setWindowTitle("Simple Drawing Program")
+        self.setFixedSize(800, 600)
+        
+        self.drawing_area = DrawingArea()
+        self.setCentralWidget(self.drawing_area)
+        
+        self.create_toolbar()
+    
+    def create_toolbar(self):
+        toolbar = QtWidgets.QToolBar("Drawing Tools")
+        toolbar.setStyleSheet("""
+            QToolBar {
+                background: #f0f0f0;
+                border: 1px solid #d0d0d0;
+            }
+            QToolButton {
+                background: #e0e0e0;
+                border: 1px solid #c0c0c0;
+                padding: 5px;
+                margin: 5px;
+                border-radius: 5px;
+            }
+            QToolButton:hover {
+                background: #d0d0d0;
+                border: 1px solid #b0b0b0;
+            }
+            QToolButton:checked {
+                background: #c0c0c0;
+                border: 1px solid #a0a0a0;
+            }
+        """)
+        
+        pen_action = QtGui.QAction("Pen", self)
+        pen_action.triggered.connect(lambda: self.set_shape('pen'))
+        toolbar.addAction(pen_action)
+        
+        line_action = QtGui.QAction("Line", self)
+        line_action.triggered.connect(lambda: self.set_shape('line'))
+        toolbar.addAction(line_action)
+        
+        rectangle_action = QtGui.QAction("Rectangle", self)
+        rectangle_action.triggered.connect(lambda: self.set_shape('rectangle'))
+        toolbar.addAction(rectangle_action)
+        
+        circle_action = QtGui.QAction("Circle", self)
+        circle_action.triggered.connect(lambda: self.set_shape('circle'))
+        toolbar.addAction(circle_action)
+        
+        eraser_action = QtGui.QAction("Eraser", self)
+        eraser_action.triggered.connect(lambda: self.set_shape('eraser'))
+        toolbar.addAction(eraser_action)
+        
+        self.addToolBar(toolbar)
+        
+    def set_shape(self, shape):
+        self.drawing_area.shape = shape
+
+if __name__ == "__main__":
+    app = QtWidgets.QApplication(sys.argv)
+    window = MainWindow()
+    window.show()
+    sys.exit(app.exec())
