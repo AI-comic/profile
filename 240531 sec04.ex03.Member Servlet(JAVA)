@@ -1,0 +1,300 @@
+package sec04.ex03;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.List;
+
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+@WebServlet("/member")
+public class MemberServlet extends HttpServlet {
+	
+	public void init(ServletConfig config) throws ServletException {
+		// TODO Auto-generated method stub
+		System.out.println("init() 메서드 호출");
+	}
+
+	public void destroy() {
+		// TODO Auto-generated method stub
+		System.out.println("destroy() 메서드 호출");
+	}
+
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		doHandle(request, response);
+	}
+
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		doHandle(request, response);
+	}
+	
+	private void doHandle(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+		// TODO Auto-generated method stub
+		request.setCharacterEncoding("utf-8");
+		response.setContentType("text/html;charset=utf-8");
+		PrintWriter out = response.getWriter();
+		MemberDAO dao = new MemberDAO();
+		List membersList=dao.listMembers();
+		request.setAttribute("membersList", membersList);
+		RequestDispatcher dispatch = request.getRequestDispatcher("viewMembers");
+		dispatch.forward(request, response);
+	}
+}
+
+---------------------------------------------------------------------------------------------------------------------------------
+ViewServlet.java
+
+
+
+package sec04.ex03;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.sql.Date;
+import java.util.List;
+
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+@WebServlet("/viewMembers")
+public class ViewServlet extends HttpServlet {
+	
+	public void init(ServletConfig config) throws ServletException {
+		// TODO Auto-generated method stub
+		System.out.println("init() 메서드 호출");
+	}
+
+	public void destroy() {
+		// TODO Auto-generated method stub
+		System.out.println("destroy() 메서드 호출");
+	}
+
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		request.setCharacterEncoding("utf-8");
+		response.setContentType("text/html;charset=utf-8");
+		PrintWriter out = response.getWriter();
+		MemberDAO dao = new MemberDAO();
+		List membersList=(List)request.getAttribute("membersList");
+		out.print("<table border=1><tr align='center' bgcolor='lightgreen'>");
+		out.print("<td>아이디</td><td>비밀번호</td><td>이름</td><td>이메일</td><td>가입일</td><td>삭제</td></tr>");
+		for (int i = 0; i < membersList.size(); i++) {
+			MemberVO memberVO = (MemberVO) membersList.get(i);
+			String id = memberVO.getId();
+			String pwd = memberVO.getPwd();
+			String name = memberVO.getName();
+			String email = memberVO.getEmail();
+			Date joinDate = memberVO.getJoinDate();
+			out.print("<tr><td>" + id + "</td><td>" + pwd + "</td><td>" + name + "</td><td>"
+			+ email + "</td><td>" + joinDate + "</td><td>"
+			+ "<a href='/pro08/member?command=delMember&id=" + id + "'> 삭제 </a></td></tr>");
+		}
+		out.print("</table></body></html>");
+		out.print("<a href='/pro08/memberForm.html'>새 회원 등록하기 </a>");
+	}
+}
+
+
+---------------------------------------------------------------------------------------------------------------------------------
+MemberDAO.java
+
+
+
+
+
+package sec04.ex03;
+
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.sql.DataSource;
+
+public class MemberDAO {
+	/*
+	private static final String driver = "oracle.jdbc.driver.OracleDriver";
+	private static final String url = "jdbc:oracle:thin:@localhost:1521:testdb";
+	private static final String user = "scott";
+	private static final String pwd = "tiger";
+	*/
+	private Connection con;
+	private PreparedStatement pstmt;
+	private DataSource dataFactory;
+	
+	public MemberDAO() {
+		try {
+			Context ctx = new InitialContext();
+			Context envContext = (Context) ctx.lookup("java:/comp/env");
+			dataFactory = (DataSource) envContext.lookup("jdbc/oracle");
+		}catch (Exception e){
+			e.printStackTrace();
+		}
+	}
+	
+	public List<MemberVO> listMembers() {
+		List<MemberVO> list = new ArrayList<MemberVO>();
+		try {
+			//connDB();
+			con = dataFactory.getConnection();
+			String query = "select * from t_member ";
+			System.out.println("prepareStateMent: " + query);
+			pstmt = con.prepareStatement(query);
+			ResultSet rs = pstmt.executeQuery();
+			while (rs.next()){
+				String id = rs.getString("id");
+				String pwd = rs.getString("pwd");
+				String name = rs.getString("name");
+				String email = rs.getString("email");
+				Date joinDate = rs.getDate("joinDate");
+				MemberVO vo = new MemberVO();
+				vo.setId(id);
+				vo.setPwd(pwd);
+				vo.setName(name);
+				vo.setEmail(email);
+				vo.setJoinDate(joinDate);
+				list.add(vo);
+			}
+			rs.close();
+			pstmt.close();
+			con.close();
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		return list;
+	}
+	
+	void addMember(MemberVO memberVO) {
+		try {
+			con = dataFactory.getConnection();
+			String id = memberVO.getId();
+			String pwd = memberVO.getPwd();
+			String name = memberVO.getName();
+			String email = memberVO.getEmail();
+			
+			String query = "insert into t_member";
+			query += " (id,pwd,name,email)";
+			query += " values(?,?,?,?)";
+			System.out.println("prepareStatement: " + query);
+			pstmt = con.prepareStatement(query);
+			pstmt.setString(1, id);
+			pstmt.setString(2, pwd);
+			pstmt.setString(3, name);
+			pstmt.setString(4, email);
+			pstmt.executeUpdate();
+			pstmt.close();
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void delMember(String id) {
+		// TODO Auto-generated method stub
+		try {
+			con = dataFactory.getConnection();
+			
+			String query = "delete from t_member" + " where id=?";
+			System.out.println("prepareStatement: " + query);
+			pstmt = con.prepareStatement(query);
+			pstmt.setString(1, id);
+			pstmt.executeUpdate();
+			pstmt.close();
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+	}
+}
+
+
+
+
+---------------------------------------------------------------------------------------------------------------------------------
+memberForm.html(webapp 폴더에 생)
+
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>회원 가입 창</title>
+	<script type = "text/javascript">
+	function fn_sendMember(){
+		var frmMember = document.frmMember;
+		var id = frmMember.id.value;
+		var pwd = frmMember.pwd.value;
+		var name = frmMember.name.value;
+		var email = frmMember.email.value;
+		if (id.length == 0 || id == ""){alert ("아이디는 필수입니다.");}
+		else if (pwd.length == 0 || pwd == ""){alert ("비밀번호는 필수입니다.")}
+		else if (name.length == 0 || name ==""){alert ("이름은 필수입니다.")}
+		else if (email.length == 0 || email ==""){alert ("이메일은 필수입니다.")}
+		else {
+			frmMember.method = "post";
+			frmMember.action = "member";
+			frmMember.submit();
+		}
+	}
+	</script>
+</head>
+<body>
+	<form name="frmMember">
+		<table>
+			<th>회원 가입창</th>
+			<tr>
+				<td>아이디</td>
+				<td><input type = "text" name="id"></td>
+			</tr>
+			<tr>
+				<td>비밀번호</td>
+				<td><input type = "password" name="pwd"></td>
+			</tr>
+			<tr>
+				<td>이름</td>
+				<td><input type = "text" name="name"></td>
+			</tr>
+			<tr>
+				<td>이메일</td>
+				<td><input type = "text" name="email"></td>
+			</tr>
+		</table>
+		<input type="button" value="가입하기" onclick="fn_sendMember()">
+		<input type="reset" value="다시 입력">
+		<input type="hidden" name="command" value="addMember" />
+	</form>
+</body>
+</html>
+
+
+
+---------------------------------------------------------------------------------------------------------------------------------
+context.xml
+
+
+    <Resource
+    name = "jdbc/oracle"
+    auth = "Container"
+    type = "javax.sql.DataSource"
+    driverClassName = "oracle.jdbc.driver.OracleDriver"
+    url = "jdbc:oracle:thin:@localhost:1521:???"  ///???에 오라클 SID 입
+    username = "???"  //???에 오라클 아이디 입력
+    password = "???"  ///??에 오라클 비밀번호 입력
+    maxActive = "50"
+    maxWait = "-1" />
