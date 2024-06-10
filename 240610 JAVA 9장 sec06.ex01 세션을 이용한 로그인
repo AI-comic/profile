@@ -1,0 +1,279 @@
+//login3.html
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>로그인창</title>
+</head>
+<body>
+	<form name="frmLogin" method="post" action="login5" encType="UTF-8">
+	아이디: <input type="text" name="user_id"><br>
+	비밀번호: <input type="password" name="user_pwd"><br>
+	<input type="submit" value="로그인">
+	<input type="reset" value="초기화">
+	</form>
+</body>
+</html>
+-----------------------------------------------------------------------------------------------------------------------
+//LoginServlet2.java
+package sec05.ex01;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+@WebServlet("/login5")
+public class LoginServlet2 extends HttpServlet {
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		doHandle(request, response);
+	}
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		doHandle(request, response);
+	}
+	private void doHandle(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		request.setCharacterEncoding("utf-8");
+		response.setContentType("text/html;charset=utf-8");
+		PrintWriter out = response.getWriter();
+		
+		String user_id = request.getParameter("user_id");
+		String user_pwd = request.getParameter("user_pwd");
+		MemberVO memberVO = new MemberVO();
+		memberVO.setId(user_id);
+		memberVO.setPwd(user_pwd);
+		MemberDAO dao = new MemberDAO();
+		boolean result = dao.isExisted(memberVO);
+		
+		if (result) {
+			HttpSession session = request.getSession();
+			session.setAttribute("isLogon", true);
+			session.setAttribute("login.id", user_id);
+			session.setAttribute("login.pwd", user_pwd);
+			out.print("<html><body>안녕하세요"+user_id +"님!!!<br>");
+			out.print("<a href='show'>회원정보 보기</a>");
+			out.print("</body></html>");
+		}else {
+			out.print("<html><body><center>회원 아이디가 틀립니다.");
+			out.print("<a href='login3.html'>다시 로그인하기</a>");
+			out.print("</body></html>");
+		}
+	}
+}
+-----------------------------------------------------------------------------------------------------------------------
+//MemberDAO.java
+package sec05.ex01;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.sql.DataSource;
+
+public class MemberDAO {
+	private Connection con;
+	private PreparedStatement pstmt;
+	private DataSource dataFactory;
+	public MemberDAO() {
+		try {
+			Context ctx = new InitialContext();
+			Context envContext = (Context) ctx.lookup("java:/comp/env");
+			dataFactory = (DataSource) envContext.lookup("jdbc/oracle");
+		}catch (Exception e){
+			e.printStackTrace();
+		}		
+	}
+	
+	public boolean isExisted(MemberVO memberVO) {
+		boolean result = false;
+		String id = memberVO.getId();
+		String pwd = memberVO.getPwd();
+		try {
+			con = dataFactory.getConnection();
+			String query = "select decode(count(*),1,'true','false') as result from t_member";
+					query += " where id=? and pwd=?";
+			pstmt = con.prepareStatement(query);
+			pstmt.setString(1, id);
+			pstmt.setString(2, pwd);
+			ResultSet rs = pstmt.executeQuery();
+			rs.next();
+			result = Boolean.parseBoolean(rs.getString("result"));
+			System.out.println("result=" + result);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
+		
+	public List<MemberVO> listMembers() {
+		List<MemberVO> list = new ArrayList<MemberVO>();
+		try {
+			//connDB();
+			con = dataFactory.getConnection();
+			String query = "select * from t_member ";
+			System.out.println("prepareStateMent: " + query);
+			pstmt = con.prepareStatement(query);
+			ResultSet rs = pstmt.executeQuery();
+			while (rs.next()){
+				String id = rs.getString("id");
+				String pwd = rs.getString("pwd");
+				String name = rs.getString("name");
+				String email = rs.getString("email");
+				Date joinDate = rs.getDate("joinDate");
+				MemberVO vo = new MemberVO();
+				vo.setId(id);
+				vo.setPwd(pwd);
+				vo.setName(name);
+				vo.setEmail(email);
+				vo.setJoinDate(joinDate);
+				list.add(vo);
+			}
+			rs.close();
+			pstmt.close();
+			con.close();
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		return list;
+	}
+	
+	void addMember(MemberVO memberVO) {
+		try {
+			con = dataFactory.getConnection();
+			String id = memberVO.getId();
+			String pwd = memberVO.getPwd();
+			String name = memberVO.getName();
+			String email = memberVO.getEmail();
+			
+			String query = "insert into t_member";
+			query += " (id,pwd,name,email)";
+			query += " values(?,?,?,?)";
+			System.out.println("prepareStatement: " + query);
+			pstmt = con.prepareStatement(query);
+			pstmt.setString(1, id);
+			pstmt.setString(2, pwd);
+			pstmt.setString(3, name);
+			pstmt.setString(4, email);
+			pstmt.executeUpdate();
+			pstmt.close();
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void delMember(String id) {
+		// TODO Auto-generated method stub
+		try {
+			con = dataFactory.getConnection();
+			
+			String query = "delete from t_member" + " where id=?";
+			System.out.println("prepareStatement: " + query);
+			pstmt = con.prepareStatement(query);
+			pstmt.setString(1, id);
+			pstmt.executeUpdate();
+			pstmt.close();
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+	}
+}
+-----------------------------------------------------------------------------------------------------------------------
+//MemberVO.java
+package sec05.ex01;
+
+import java.sql.Date;
+
+public class MemberVO {
+	private String id;
+	private String pwd;
+	private String name;
+	private String email;
+	private Date joinDate;
+	
+	public MemberVO() {
+		System.out.println("MemberVO 생성자 호출");
+	}
+	public String getId() {
+		return id;
+	}
+	public void setId(String id) {
+		this.id = id;
+	}
+	public String getPwd() {
+		return pwd;
+	}
+	public void setPwd(String pwd) {
+		this.pwd = pwd;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public String getEmail() {
+		return email;
+	}
+	public void setEmail(String email) {
+		this.email = email;
+	}
+	public Date getJoinDate() {
+		return joinDate;
+	}
+	public void setJoinDate(Date joinDate) {
+		this.joinDate = joinDate;
+	}
+	public void setJoinDate(java.util.Date joinDate2) {
+	}
+}
+-----------------------------------------------------------------------------------------------------------------------
+//ShowMember.java
+package sec05.ex01;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+@WebServlet("/show")
+public class ShowMember extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		response.setContentType("text/html;charset=utf-8");
+		PrintWriter out = response.getWriter();
+		String id = "", pwd="" ;
+		Boolean isLogon=false;
+		HttpSession session = request.getSession(false);
+		if(session != null) {
+			isLogon=(Boolean)session.getAttribute("isLogon");
+			if(isLogon==true) {
+				id = (String)session.getAttribute("login.id");
+				pwd = (String)session.getAttribute("login.pwd");
+				out.print("<html><body>");
+				out.print("아이디: "+id+"<br>");
+				out.print("비밀번호: "+pwd+"<br>");
+				out.print("</body></html>");
+			}else {
+				response.sendRedirect("login3.html");
+			}
+		}else {
+			response.sendRedirect("login3.html");
+		}
+	}
+}
