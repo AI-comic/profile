@@ -1,0 +1,491 @@
+//elTest1.jsp
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" isELIgnored="false" %>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>표현 언어에서 사용되는 데이터들</title>
+</head>
+<body>
+    <h1>표현 언어로 여러 가지 데이터 출력하기</h1>
+    <h1>
+    	\${100}: ${100}<br>
+    	\${"안녕하세요"}: ${"안녕하세요"}<br>
+    	\${10+1}: ${10+1}<br>
+    	\${"10"+1} : ${"10"+1 }<br>
+    	<%-- ${null+10 }: ${null+10 }<br> null과 10을 더하면 10이다 --%>
+    	<%-- ${"안녕"+11 }: ${"안녕"+11 }<br> 문자열과 숫자는 더할 수 없다 --%>
+    	<%-- ${"hello"+"world"} : ${"hello"+"world"}<br> 문자열끼리는 더할 수 없다 --%>
+    </h1>
+</body>
+</html>
+----------------------------------------------------------------------------------------------------------------------
+//elTest2.jsp
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" isELIgnored="false" %>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>표현 언어에서 사용되는 데이터들</title>
+</head>
+<body>
+	<h2>여러 가지 산술 연산자</h2>
+    <h1>
+    	\${10+10} : ${10+10} <br>
+		\${20-10} : ${20-10} <br>
+		\${10*10} : ${10*10} <br>
+		\${100/9} : ${100/9} <br>
+		\${100 div 9} : ${100 div 9} <br>
+		\${100%9} : ${100%9} <br>
+		\${100 mod 9} : ${100 mod 9} <br>
+    </h1>
+</body>
+</html>
+----------------------------------------------------------------------------------------------------------------------
+//elTest3.jsp
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" isELIgnored="false" %>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>표현 언어에서 사용되는 데이터들</title>
+</head>
+<body>    
+    <h2>여러 가지 비교 연산자</h2>
+    <h3>
+    	\${10==10}: ${10==10} <br>
+    	\${10 eq 10}: ${10 eq 10} <br><br>
+		\${"hello"=="hello"}: ${"hello"=="hello"} <br>
+		\${"hello" eq "hello"}: ${"hello" eq "hello"} <br><br>
+		\${20!=10}: ${20!=10} <br>
+		\${20 ne 10}: ${20 ne 10} <br><br>
+		\${"hello"!="apple"}: ${"hello"!="apple"} <br>
+		\${"hello" ne "apple"}: ${"hello" ne "apple"} <br><br>
+		\${10 < 10}: ${10 < 10} <br>
+		\${10 lt 10}: ${10 lt 10} <br><br>
+		\${100 > 10}: ${100 > 10} <br>
+		\${10 gt 10}: ${10 gt 10} <br><br>
+		\${100 <= 10}: ${100 <= 10} <br>
+		\${10 le 10}: ${10 le 10} <br><br>
+		\${100 >= 10}: ${100 >= 10} <br>
+		\${10 ge 10}: ${10 ge 10} <br><br>
+    </h3>
+</body>
+</html>
+----------------------------------------------------------------------------------------------------------------------
+//elTest4.jsp
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" isELIgnored="false" %>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>표현 언어에서 사용되는 데이터들</title>
+</head>
+<body>    
+    <h2>여러 가지 논리 연산자</h2>
+    <h2>
+    	\${(10==10)&&(20==20)}: ${(10==10)&&(20==20)}<br>
+    	\${(10==10)and(20!=20)}: ${(10==10)and(20!=20)}<br><br>
+    	\${(10==10)||(20==20)}: ${(10==10)||(20==20)}<br>
+    	\${(10==10)or(20!=20)}: ${(10==10)or(20!=20)}<br><br>
+		\${!(20==10)}: ${!(20==10)}<br>
+    	\${not(20==10)}: ${not(20==10)}<br><br>
+    	\${!(20!=10)}: ${!(20!=10)}<br>
+    	\${not(20!=10)}: ${not(20!=10)}<br><br>
+    </h2>
+</body>
+</html>
+----------------------------------------------------------------------------------------------------------------------
+//elTest5.jsp
+<%@ page language="java" contentType="text/html; charset=UTF-8" import="java.util.*"
+    pageEncoding="UTF-8" isELIgnored="false" %>
+<jsp:useBean id="m1" class="sec01.ex01.MemberBean" scope="page"/>
+<jsp:setProperty name="m1" property="name" value="이순신" />
+<jsp:useBean id="m2" class="java.util.ArrayList" scope="page"/>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>표현 언어의 여러 가지 연산자들</title>
+</head>
+<body>
+    empty 연산자
+    <h2>
+    \${empty m1 } : ${empty m1 } <br>
+    \${not empty m1 } : ${not empty m1 } <br><br>
+    \${empty m2 } : ${empty m2 } <br>
+    \${not empty m2} : ${not empty m2 } <br><br>
+    \${empty "hello"} : ${empty "hello" } <br>
+    \${empty null} : ${empty null } <br>
+    \${empty ""} : ${empty "" } <br>
+    </h2>
+</body>
+</html>
+----------------------------------------------------------------------------------------------------------------------
+//MemberBean.java
+package sec01.ex01;
+import java.util.Date;
+public class MemberBean {
+    private String id;
+    private String pwd;
+    private String name;
+    private String email;
+    private Date joinDate;
+
+    public MemberBean() {
+    }
+
+	  public String getName() {
+		  return name;
+	  }
+
+	  public void setName(String name) {
+		  this.name = name;
+	  }
+}
+----------------------------------------------------------------------------------------------------------------------
+//memberForm.jsp
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<! DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>회원 가입 창</title>
+</head>
+<body>
+    <form method="post" action="member1.jsp">
+        <h1 style="text-align: center">회원 가입 창</h1>
+        <table align="center">
+        	<tr>
+        		<td width="200">
+        			<p align="right">아이디
+        		</td>
+        		<td width="400"><input type="text" name="id"></td>
+        	</tr>        	
+        	<tr>
+        		<td width="200">
+        			<p align="right">비밀번호
+        		</td>
+        		<td width="400"><input type="password" name="pwd"></td>
+        	</tr>        	
+        	<tr>
+        		<td width="200">
+        			<p align="right">이름
+        		</td>
+        		<td width="400"><input type="text" name="name"></td>
+        	</tr>        	
+        	<tr>
+        		<td width="200">
+        			<p align="right">이메일
+        		</td>
+        		<td width="400"><input type="text" name="email"></td>
+        	</tr>        	
+        	<tr>
+        		<td width="200">
+        			<p>&nbsp;</p>
+        		</td>
+        		<td width="400">
+        			<input type="submit" value="가입하기">
+        			<input type="reset" value="다시 입력">
+        		</td>
+        	</tr>        	
+        </table>
+    </form>
+</body>
+</html>
+----------------------------------------------------------------------------------------------------------------------
+//member1.jsp
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%
+    request.setCharacterEncoding("UTF-8");
+    String id=request.getParameter("id");
+    String pwd=request.getParameter("pwd");
+    String name=request.getParameter("name");
+    String email=request.getParameter("email");
+%>
+
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>회원 정보 출력 창</title>
+</head>
+<body>
+	<table border="1" align="center">
+		<tr align="center" bgcolor="#99ccff">
+			<td width="20%"><b>아이디</b></td>
+			<td width="20%"><b>비밀번호</b></td>
+			<td width="20%"><b>이름</b></td>
+			<td width="20%"><b>이메일</b></td>
+		</tr>
+		<tr align=center>
+    		<td><%=id %> </td>
+		    <td><%=pwd%> </td>
+    		<td><%=name %> </td>
+	    	<td><%=email %> </td>
+		</tr>
+		<tr align=center>
+    		<td>${param.id } </td>
+    		<td>${param.pwd } </td>
+    		<td>${param.name } </td>
+    		<td>${param.email }</td>
+		</tr>
+	</table>
+</body>
+</html>	
+----------------------------------------------------------------------------------------------------------------------
+//member2.jsp
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>회원 정보 출력 창</title>
+</head>
+<body>
+	<table border="1" align="center">
+		<tr align="center" bgcolor="#99ccff">
+			<td width="20%"><b>아이디</b></td>
+			<td width="20%"><b>비밀번호</b></td>
+			<td width="20%"><b>이름</b></td>
+			<td width="20%"><b>이메일</b></td>
+			<td width="20%"><b>주소</b></td>
+		</tr>
+		<tr align=center>
+    		<td>${param.id } </td>
+    		<td>${param.pwd } </td>
+    		<td>${param.name } </td>
+    		<td>${param.email }</td>
+    		<td>${requestScope.address }</td>
+		</tr>
+	</table>
+</body>
+</html>	
+----------------------------------------------------------------------------------------------------------------------
+//forward.jsp
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%
+	request.setCharacterEncoding("utf-8");
+	request.setAttribute("address","서울시 강남구");
+%>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>forward</title>
+</head>
+<body>
+	<jsp:forward page="member2.jsp"></jsp:forward>
+</body>
+</html>
+----------------------------------------------------------------------------------------------------------------------
+//member3.jsp
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" isELIgnored="false" %>
+<%
+    request.setCharacterEncoding("UTF-8");
+%>
+
+<jsp:useBean id="m" class="sec01.ex01.MemberBean" />
+<jsp:setProperty name="m" property="*" />
+
+<meta charset = "UTF-8">
+<html>
+    <head>
+        <title>회원 정보 출력 창</title>
+    </head>
+    <body>
+	<table align="center" border="1">
+		<tr align="center" bgcolor="#99ccff">
+			<td width="20%"><b>아이디</b></td>
+			<td width="20%"><b>비밀번호</b></td>
+			<td width="20%"><b>이름</b></td>
+			<td width="20%"><b>이메일</b></td>
+		</tr>
+		<tr align=center>
+    		<td><%=m.getId() %> </td>
+		    <td><%=m.getPwd() %> </td>
+    		<td><%=m.getName() %> </td>
+	    	<td><%=m.getEmail() %> </td>
+		</tr>
+		<tr align=center>
+    		<td>${m.id } </td>
+    		<td>${m.pwd } </td>
+    		<td>${m.name } </td>
+    		<td>${m.email }</td>
+		</tr>
+	</table>
+</body>
+</html>
+----------------------------------------------------------------------------------------------------------------------
+//member4.jsp
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	import="java.util.*, sec01.ex01.*" pageEncoding="UTF-8" isELIgnored="false" %>
+<%
+    request.setCharacterEncoding("UTF-8");
+%>
+
+<jsp:useBean id="m1" class="sec01.ex01.MemberBean" />
+<jsp:setProperty name="m1" property="*" />
+<jsp:useBean id="membersList" class="java.util.ArrayList" />
+<%
+	MemberBean m2 = new MemberBean("son", "1234", "손흥민", "son@test.com");
+	membersList.add(m1);
+	membersList.add(m2);
+%>
+<meta charset = "UTF-8">
+<html>
+    <head>
+        <title>회원 정보 출력 창</title>
+    </head>
+    <body>
+	<table align="center" border="1">
+		<tr align="center" bgcolor="#99ccff">
+			<td width="20%"><b>아이디</b></td>
+			<td width="20%"><b>비밀번호</b></td>
+			<td width="20%"><b>이름</b></td>
+			<td width="20%"><b>이메일</b></td>
+		</tr>
+		<tr align=center>
+    		<td>${membersList[0].id} </td>
+		    <td>${membersList[0].pwd} </td>
+    		<td>${membersList[0].name} </td>
+	    	<td>${membersList[0].email} </td>
+		</tr>
+		<tr align=center>
+    		<td>${membersList[1].id } </td>
+    		<td>${membersList[1].pwd } </td>
+    		<td>${membersList[1].name } </td>
+    		<td>${membersList[1].email }</td>
+		</tr>
+	</table>
+</body>
+</html>
+----------------------------------------------------------------------------------------------------------------------
+//member5.jsp
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	import="java.util.*, sec01.ex01.*" pageEncoding="UTF-8" isELIgnored="false" %>
+<%
+    request.setCharacterEncoding("UTF-8");
+%>
+
+<jsp:useBean id="m1" class="sec01.ex01.MemberBean" />
+<jsp:setProperty name="m1" property="*" />
+<jsp:useBean id="membersList" class="java.util.ArrayList" />
+<jsp:useBean id="membersMap" class="java.util.HashMap" />
+<%
+	membersMap.put("id", "park2");
+	membersMap.put("pwd", "4321");
+	membersMap.put("name", "박지성");
+	membersMap.put("email", "park2@test.com");
+
+	MemberBean m2 = new MemberBean("son", "1234", "손흥민", "son@test.com");
+	membersList.add(m1);
+	membersList.add(m2);
+	membersMap.put("membersList", membersList);
+%>
+<meta charset = "UTF-8">
+<html>
+    <head>
+        <title>회원 정보 출력 창</title>
+    </head>
+    <body>
+	<table border="1" align="center">
+		<tr align="center" bgcolor="#99ccff">
+			<td width="20%"><b>아이디</b></td>
+			<td width="20%"><b>비밀번호</b></td>
+			<td width="20%"><b>이름</b></td>
+			<td width="20%"><b>이메일</b></td>
+		</tr>
+		<tr align=center>
+    		<td>${membersMap.id} </td>
+		    <td>${membersMap.pwd} </td>
+    		<td>${membersMap.name} </td>
+	    	<td>${membersMap.email} </td>
+		</tr>
+		<tr align=center>
+    		<td>${membersMap.membersList[0].id} </td>
+		    <td>${membersMap.membersList[0].pwd} </td>
+    		<td>${membersMap.membersList[0].name} </td>
+	    	<td>${membersMap.membersList[0].email} </td>
+		</tr>
+		<tr align=center>
+    		<td>${membersMap.membersList[1].id } </td>
+    		<td>${membersMap.membersList[1].pwd } </td>
+    		<td>${membersMap.membersList[1].name } </td>
+    		<td>${membersMap.membersList[1].email }</td>
+		</tr>
+	</table>
+</body>
+</html>
+----------------------------------------------------------------------------------------------------------------------
+//member6.jsp
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	import="java.util.*, sec01.ex01.*" pageEncoding="UTF-8" isELIgnored="false" %>
+<%
+    request.setCharacterEncoding("UTF-8");
+%>
+
+<jsp:useBean id="m" class="sec01.ex02.MemberBean" />
+<jsp:setProperty name="m" property="*" />
+<jsp:useBean id="addr" class="sec01.ex02.Address" />
+<jsp:setProperty name="addr" property="city" value="서울"/>
+<jsp:setProperty name="addr" property="zipcode" value="07654"/>
+<%
+	m.setAddr(addr);
+%>
+
+<html>
+	<meta charset = "UTF-8">
+    <head>
+        <title>회원 정보 출력 창</title>
+    </head>
+    <body>
+	<table border="1" align="center">
+		<tr align="center" bgcolor="#99ccff">
+			<td width="7%"><b>아이디</b></td>
+			<td width="7%"><b>비밀번호</b></td>
+			<td width="5%"><b>이름</b></td>
+			<td width="5%"><b>이메일</b></td>
+			<td width="5%"><b>도시</b></td>
+			<td width="5%"><b>우편번호</b></td>
+		</tr>
+		<tr align=center>
+    		<td>${m.id} </td>
+		    <td>${m.pwd} </td>
+    		<td>${m.name} </td>
+	    	<td>${m.email} </td>
+	    	<td><%=m.getAddr().getCity()%> </td>
+	    	<td><%=m.getAddr().getZipcode()%> </td>
+		</tr>
+		<tr align=center>
+    		<td>${m.id } </td>
+    		<td>${m.pwd } </td>
+    		<td>${m.name } </td>
+    		<td>${m.email }</td>
+    		<td>${m.addr.city }</td>
+    		<td>${m.addr.zipcode }</td>
+		</tr>
+	</table>
+</body>
+</html>
+----------------------------------------------------------------------------------------------------------------------
+//login.jsp
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8" isELIgnored="false" %>
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>로그인 창</title>
+</head>
+<body>
+	<form action="result.jsp">
+    	아이디 : <input type="text" size=20 /><br/>
+    	비밀번호 : <input type="password" size=20 /><br/>
+    	<input type="submit" value="로그인"/>
+    	<input type="reset" value="다시 입력"/>
+    </form>
+    <br><br>
+    <a href="http://localhost:8090/pro14/test01/memberForm.jsp">회원 가입하기(직접 입력 방식)</a><br>
+    <a href="<%=request.getContextPath()%>/test01/memberForm.jsp">회원 가입하기(servlet 방식)</a><br>
+    <a href="${pageContext.request.contextPath}/test01/memberForm.jsp">회원 가입하기(jsp 방식)</a><br>
+</body>
+</html>
