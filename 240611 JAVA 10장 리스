@@ -1,0 +1,226 @@
+//login2.html
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>로그인창</title>
+</head>
+<body>
+	<form name="frmLogin" method="post" action="login2" encType="UTF-8">
+	아이디: <input type="text" name="user_id"><br>
+	비밀번호: <input type="password" name="user_pw"><br>
+	<input type="submit" value="로그인">
+	<input type="reset" value="다시 입력">
+	</form>
+</body>
+</html>
+------------------------------------------------------------------------------------------------------------------------
+//LoginTest2.java
+package sec04.ex01;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+@WebServlet("/login2")
+public class LoginTest2 extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		request.setCharacterEncoding("utf-8");
+		response.setContentType("text/html;charset=utf-8");
+        PrintWriter out = response.getWriter();
+        HttpSession session = request.getSession();
+        String id = request.getParameter("user_id");
+        String pw = request.getParameter("user_pw");
+        LoginImpl loginUser = new LoginImpl(id,pw);
+        if(session.isNew()) {
+            session.setAttribute("loginUser", loginUser);
+        }
+        out.println("<head>");
+        out.println("<script type='text/javascript'>");
+        out.println("setTimeout('history.go(0);', 5000)");
+        out.println("</script>");
+        out.println("</head>");
+        out.println("<html><body>");
+        out.println("아이디는 " + loginUser.user_id + "<br>");
+        out.println("총 접속자 수는 " + LoginImpl.total_user + "<br>");
+        out.println("</body></html>");
+	}
+}
+------------------------------------------------------------------------------------------------------------------------
+//LoginImpl.java
+package sec04.ex01;
+
+import javax.servlet.http.HttpSessionBindingEvent;
+import javax.servlet.http.HttpSessionBindingListener;
+
+public class LoginImpl implements HttpSessionBindingListener {
+    String user_id;
+    String user_pw;
+    static int total_user = 0;
+    public LoginImpl() {
+    }
+    public LoginImpl(String user_id, String user_pw) {
+        this.user_id = user_id;
+        this.user_pw = user_pw;
+    }
+    @Override
+    public void valueBound(HttpSessionBindingEvent arg0) {
+        System.out.println("사용자 접속");
+        ++total_user;
+    }
+    @Override
+    public void valueUnbound(HttpSessionBindingEvent arg0) {
+        System.out.println("사용자 접속 해제");
+        total_user--;
+    }
+}
+------------------------------------------------------------------------------------------------------------------------
+//login2.html
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>로그인창</title>
+</head>
+<body>
+	<form name="frmLogin" method="post" action="login3" encType="UTF-8">
+	아이디: <input type="text" name="user_id"><br>
+	비밀번호: <input type="password" name="user_pw"><br>
+	<input type="submit" value="로그인">
+	<input type="reset" value="다시 입력">
+	</form>
+</body>
+</html>
+------------------------------------------------------------------------------------------------------------------------
+//LoginTest3.java
+package sec04.ex02;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+@WebServlet("/login3")
+public class LoginTest3 extends HttpServlet {
+
+	private static final long serialVersionUID = 1L;
+	ServletContext context=null;
+	List user_list=new ArrayList();
+
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		request.setCharacterEncoding("utf-8");
+		response.setContentType("text/html;charset=utf-8");
+        context=getServletContext();
+        PrintWriter out = response.getWriter();
+        HttpSession session = request.getSession();
+        String user_id = request.getParameter("user_id");
+        String user_pw = request.getParameter("user_pw");
+        LoginImpl2 loginUser = new LoginImpl2(user_id,user_pw);
+        if(session.isNew()) {
+            session.setAttribute("loginUser", loginUser);
+            user_list.add(user_id);
+            context.setAttribute("user_list",user_list);
+        }
+        out.println("<html><body>");
+        out.println("아이디는 " + loginUser.user_id + "<br>");
+        out.println("총 접속자 수는 " + LoginImpl2.total_user + "<br><br>");
+        out.println("접속 아이디:<br>");
+        List list = (ArrayList)context.getAttribute("user_list");
+        for (int i = 0; i < list.size(); i++) {
+            out.println(list.get(i) + "<br>");
+        }
+        out.println("<a href='logout?user_id=" + user_id + "'>로그아웃</a>");
+        out.println("</body></html>");
+	}
+}
+-----------------------------------------------------------------------------------------------------------------------
+//LogoutTest.java
+package sec04.ex02;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+@WebServlet("/logout")
+public class LogoutTest extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+	ServletContext context;
+
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		doHandle(request, response);
+	}
+
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		doHandle(request, response);
+	}
+
+	public void doHandle(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		request.setCharacterEncoding("utf-8");
+		response.setContentType("text/html; charset=utf-8");
+		context = getServletContext();
+		PrintWriter out = response.getWriter();
+		HttpSession session = request.getSession();
+		String user_id = request.getParameter("user_id");
+		session.invalidate();
+		List user_list = (ArrayList) context.getAttribute("user_list");
+		user_list.remove(user_id);
+		context.removeAttribute("user_list");
+		context.setAttribute("user_list", user_list);
+		out.println("<br>로그아웃했습니다.");
+    }
+}
+-----------------------------------------------------------------------------------------------------------------------
+//LoginImpl2.java [Listener 생성으로 만들기, Lifecycle 체크]
+package sec04.ex02;
+
+import javax.servlet.annotation.WebListener;
+import javax.servlet.http.HttpSessionEvent;
+import javax.servlet.http.HttpSessionListener;
+
+@WebListener
+public class LoginImpl2 implements HttpSessionListener {
+	String user_id;
+    String user_pw;
+    static int total_user=0;
+
+    public LoginImpl2() {
+    }
+    
+    public LoginImpl2(String user_id, String user_pw) {
+        this.user_id = user_id;
+        this.user_pw = user_pw;
+    }
+    @Override
+    public void sessionCreated(HttpSessionEvent arg0)  { 
+         System.out.println("세션 생성");
+         ++total_user;
+    }
+    @Override
+    public void sessionDestroyed(HttpSessionEvent arg0)  { 
+    	System.out.println("세션 소멸");
+        --total_user;
+    }
+}
