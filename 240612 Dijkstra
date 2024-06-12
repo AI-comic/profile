@@ -1,0 +1,51 @@
+INF = 9999
+def choose_vertex(dist, found) :
+    min = INF
+    minpos = -1
+    for i in range(len(dist)) :
+        if dist[i]<min and found[i]==False:
+            min = dist[i]
+            minpos = i
+    return minpos;
+
+def shortest_path_dijkstra(vtx, adj, start) :
+    vsize = len(vtx)        # 정점의 개수
+    dist = list(adj[start]) # 시작 정점과의 거리를 담은 리스트 초기화
+    path = [start] * vsize  # 경로를 나타내는 리스트 초기화
+    found= [False] * vsize  # 최단 거리가 결정된 정점인지 여부를 나타내는 리스트를 초기화
+    found[start] = True     # 시작 정점은 이미 최단 거리가 결정되었으므로 True로 표시
+    dist[start] = 0         # 시작 정점까지의 거리는 0으로 설정
+    
+    for i in range(vsize) :
+        print("Step%2d: "%(i+1), dist)  # 각 스텝에서의 최단 거리를 출력
+        u = choose_vertex(dist, found)  # 최단 거리가 결정되지 않은 정점 중에서 최소 거리를 가진 정점을 선택
+        found[u] = True                 # 선택한 정점은 최단 거리가 결정되었으니 True
+
+        for w in range(vsize) :
+            if not found[w] :                       # 최단 거리가 결정되지 않은 정점에 대해서
+                if dist[u] + adj[u][w] < dist[w] :  # 선택된 정점을 거쳐서 정점 w까지의 거리가 기존의 최단 거리보다 짧으면
+                    dist[w] = dist[u] + adj[u][w]   # 새로운 최단 거리를 업데이트
+                    path[w] = u                     # 정점 w까지의 최단 경로에 대한 정보 갱신
+
+    return path
+
+vertex = ['A', 'B', 'C', 'D', 'E', 'F', 'G' ]
+weight = [ [0, 7, INF, INF, 3, 10, INF ],
+            [7, 0, 4, 10, 2, 6, INF ],
+            [INF, 4, 0, 2, INF, INF, INF ],
+            [INF, 10, 2, 0, 11, 9, 4 ],
+            [3, 2, INF, 11, 0, 13, 5 ],
+            [10, 6, INF, 9, 13, 0, INF ],
+            [INF, INF, INF, 4, 5, INF, 0 ] ]
+print("Shortest Path By Dijkstra Algorithm")
+start = 0
+path = shortest_path_dijkstra(vertex, weight, start)
+
+for end in range(len(vertex)) :
+    if end != start :
+        print("[최단경로: %s->%s] %s" %
+            (vertex[start], vertex[end], vertex[end]), end='')
+        while (path[end] != start) :
+            print(" <- %s" % vertex[path[end]], end='')
+            end = path[end]
+        print(" <- %s" % vertex[path[end]])
