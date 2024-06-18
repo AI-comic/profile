@@ -1,0 +1,261 @@
+//member1.jsp
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" isELIgnored="false" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<% request.setCharacterEncoding("UTF-8"); %>
+<c:set var="id" value="hong" scope="page" />
+<c:set var="pwd" value="1234" scope="page" />
+<c:set var="name" value="${'홍길동'}" scope="page" />
+<c:set var="age" value="${22}" scope="page" />
+<c:set var="height" value="${177}" scope="page" />
+<head>
+	<meta charset="UTF-8">
+	<title>회원 정보 출력 창</title>
+</head>
+<html>
+<body>
+	<table align="center" border="1" >
+		<tr align="center" bgcolor="lightgreen">
+			<td width="7%"><b>아이디</b></td>
+			<td width="7%"><b>비밀번호</b></td>
+			<td width="7%"><b>이름</b></td>
+			<td width="7%"><b>나이</b></td>
+			<td width="7%"><b>키</b></td>
+		</tr>
+		<tr align=center>
+    		<td>${id} </td>
+		    <td>${pwd} </td>
+    		<td>${name} </td>
+	    	<td>${age} </td>
+	    	<td>${height} </td>
+		</tr>
+	</table>
+</body>
+</html>
+-----------------------------------------------------------------------------------------------------------------------
+//login.jsp
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" isELIgnored="false" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<c:set var="contextPath" value="${pageContext.request.contextPath}" />
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>로그인 창</title>
+</head>
+<body>
+	<form action="result.jsp">
+    	아이디 : <input type="text" size=20 /><br/>
+    	비밀번호 : <input type="password" size=20 /><br/>
+    	<input type="submit" value="로그인"/>
+    	<input type="reset" value="다시 입력"/>
+    </form>
+    <br><br>
+    <a href="${contextPath}/test03/memberForm.jsp">회원 가입하기</a><br>
+</body>
+</html>
+-----------------------------------------------------------------------------------------------------------------------
+//member2.jsp
+<%@ page language="java" contentType="text/html; charset=UTF-8" import="java.util.*, sec01.ex01.*"
+pageEncoding="UTF-8" isELIgnored="false" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<% request.setCharacterEncoding("UTF-8"); %>
+<jsp:useBean id="membersList" class="java.util.ArrayList" />
+<jsp:useBean id="membersMap" class="java.util.HashMap" />
+<%
+	membersMap.put("id", "park2");
+	membersMap.put("pwd", "4321");
+	membersMap.put("name", "박지성");
+	membersMap.put("email", "park2@test.com");
+	MemberBean m1 = new MemberBean("son", "1234", "손흥민", "son@test.com");
+	MemberBean m2 = new MemberBean("ki", "4321", "기성용", "ki@test.com");
+	membersList.add(m1);
+	membersList.add(m2);
+	membersMap.put("membersList", membersList);
+%>
+<c:set var="membersList" value="${membersMap.membersList}" />
+
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>회원 정보 출력 창</title>
+</head>
+<body>
+	<table border="1" align="center">
+		<tr align="center" bgcolor="#99ccff">
+			<td width="20%"><b>아이디</b></td>
+			<td width="20%"><b>비밀번호</b></td>
+			<td width="20%"><b>이름</b></td>
+			<td width="20%"><b>이메일</b></td>
+		</tr>
+		<tr align=center>
+    		<td>${membersMap.id}</td>
+			<td>${membersMap.pwd}</td>
+			<td>${membersMap.name}</td>
+			<td>${membersMap.email }</td>
+		</tr>
+		<tr align=center>
+    		<td>${membersList[0].id}</td>
+			<td>${membersList[0].pwd}</td>
+			<td>${membersList[0].name}</td>
+			<td>${membersList[0].email}</td>
+		</tr>
+		<tr align=center>
+    		<td>${membersList[1].id}</td>
+			<td>${membersList[1].pwd}</td>
+			<td>${membersList[1].name}</td>
+			<td>${membersList[1].email}</td>
+		</tr>
+	</table>
+</body>
+</html>
+-----------------------------------------------------------------------------------------------------------------------
+//member3.jsp
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" isELIgnored="false" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<% request.setCharacterEncoding("UTF-8"); %>
+<c:set var="id" value="hong" scope="page" />
+<c:set var="pwd" value="1234" scope="page" />
+<c:set var="name" value="${'홍길동'}" scope="page" />
+<c:set var="age" value="${22}" scope="page" />
+<c:set var="height" value="${177}" scope="page" />
+<c:remove var="age" />
+<c:remove var="height" />
+<html>
+    <head>
+    	<meta charset = "UTF-8">
+        <title>회원 정보 출력 창</title>
+    </head>
+    <body>
+	<table align="center" border="1">
+		<tr align="center" bgcolor="#99ccff">
+			<td width="7%"><b>아이디</b></td>
+			<td width="7%"><b>비밀번호</b></td>
+			<td width="7%"><b>이름</b></td>
+			<td width="7%"><b>나이</b></td>
+			<td width="7%"><b>키</b></td>
+		</tr>
+		<tr align=center>
+    		<td>${id} </td>
+		    <td>${pwd} </td>
+    		<td>${name} </td>
+	    	<td>${age} </td>
+	    	<td>${height} </td>
+		</tr>
+	</table>
+</body>
+</html>
+-----------------------------------------------------------------------------------------------------------------------
+//member4.jsp
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" isELIgnored="false" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<% request.setCharacterEncoding("UTF-8"); %>
+<c:set var="id" value="hong" scope="page" />
+<c:set var="pwd" value="1234" scope="page" />
+<c:set var="name" value="${'홍길동'}" scope="page" />
+<c:set var="age" value="${22}" scope="page" />
+<c:set var="height" value="${177}" scope="page" />
+<html>
+    <head>
+    	<meta charset = "UTF-8">
+        <title>조건문 실습</title>
+    </head>
+    <body>
+		<c:if test="${true}">
+			<h1>항상 참입니다.</h1>
+		</c:if>
+		<c:if test="${11 == 11}">
+			<h1>두 값은 같습니다.</h1>
+		</c:if>
+		<c:if test="${11 != 31}">
+			<h1>두 값은 같지 않습니다.</h1>
+		</c:if>
+		<c:if test="${(id == 'hong') && (name == '홍길동')}">
+			<h1>아이디는 ${id}이고, 이름은 ${name}입니다.</h1>
+		</c:if>
+		<c:if test="${age == 22}">
+			<h1>${name}의 나이는 ${age}살입니다.</h1>
+		</c:if>
+		<c:if test="${height>160}">
+			<h1>${name}의 키는 160보다 큽니다.</h1>
+		</c:if>
+	</body>
+</html>
+-----------------------------------------------------------------------------------------------------------------------
+//member5.jsp
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" isELIgnored="false" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<% request.setCharacterEncoding("UTF-8"); %>
+<c:set var="id" value="hong" scope="page" />
+<c:set var="pwd" value="1234" scope="page" />
+<c:set var="name" value="${'홍길동'}" scope="page" />
+<c:set var="age" value="${22}" scope="page" />
+<c:set var="height" value="${177}" scope="page" />
+<html>
+    <head>
+    	<meta charset = "UTF-8">
+        <title>회원 정보 출력 창</title>
+    </head>
+    <body>
+	<table align="center" border="1">
+		<tr align="center" bgcolor="#99ccff">
+			<td width="7%"><b>아이디</b></td>
+			<td width="7%"><b>비밀번호</b></td>
+			<td width="7%"><b>이름</b></td>
+			<td width="7%"><b>나이</b></td>
+			<td width="7%"><b>키</b></td>
+		</tr>
+	<c:choose>
+		<c:when test="${empty name}">
+			<tr align="center">
+				<td colspan=5> 이름을 입력하세요!!</td>
+			</tr>
+		</c:when>
+		<c:otherwise>
+		<tr align=center>
+    		<td>${id} </td>
+		    <td>${pwd} </td>
+    		<td>${name} </td>
+	    	<td>${age} </td>
+	    	<td>${height} </td>
+		</tr>
+		</c:otherwise>
+	</c:choose>
+	</table>
+</body>
+</html>
+-----------------------------------------------------------------------------------------------------------------------
+//member6.jsp
+<%@ page language="java" contentType="text/html; charset=UTF-8" import="java.util.*"
+    pageEncoding="UTF-8" isELIgnored="false" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%
+  List dataList=new ArrayList();
+  dataList.add("hello");
+  dataList.add("world");
+  dataList.add("안녕하세요!!");
+%>
+<c:set  var="list"  value="<%=dataList  %>" />
+<html>
+<head>
+<meta charset=”UTF-8">
+<title>반복문 실습</title>
+</head>
+<body>
+   <c:forEach  var="i" begin="1" end="10" step="1"  varStatus="loop">
+    i=  ${i}   &nbsp;&nbsp;&nbsp;  반복횟수: ${loop.count} <br>
+   </c:forEach>
+ <br>
+   <c:forEach  var="i" begin="1" end="10" step="2" >
+        5 * ${i} = ${5*i}<br>
+   </c:forEach>
+<br>
+   <c:forEach  var="data" items="${list}" >
+       ${data } <br> 
+   </c:forEach>
+<br>
+<c:set var="fruits" value="사과, 파인애플, 바나나, 망고, 귤"  />
+<c:forTokens  var="token" items="${fruits}" delims="," >
+    ${token} <br> 
+</c:forTokens>
+</body>
+</html>
