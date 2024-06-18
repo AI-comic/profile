@@ -1,0 +1,275 @@
+//login.jsp
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<% request.setCharacterEncoding("utf-8"); %> 
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+  <title>로그인 창</title>
+</head>
+<body>
+  <form action="result.jsp" method="post">
+    아이디: <input type="text" name="userID"><br>
+    비밀번호: <input type="password" name="userPw"><br>
+    <input type="submit"  value="로그인">
+    <input type="reset"  value="다시입력">
+  </form>
+</body>
+</html>
+-----------------------------------------------------------------------------------------------------------------------
+//result.jsp
+<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" isELIgnored="false" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>    
+<% request.setCharacterEncoding("utf-8"); %>    
+<html>
+<head>
+	<meta charset="UTF-8">
+  <title>결과 창</title>
+</head>
+<body>
+<c:if test="${empty param.userID }">
+  아이디를 입력하세요.<br>
+  <a href="login.jsp">로그인 창 </a>
+</c:if>
+<c:if test="${not empty param.userID  }">  
+  <h1> 환영합니다. <c:out value="${param.userID }" />님!!!</h1>
+</c:if>
+</body>
+</html>
+-----------------------------------------------------------------------------------------------------------------------
+//result2.jsp
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" isELIgnored="false" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<% request.setCharacterEncoding("UTF-8"); %>
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset=”UTF-8">
+	<title>결과창</title>
+</head>
+<body>
+<c:if test="${empty param.userID}">
+  	아이디를 입력하세요.<br>
+  	<a href="login.jsp">로그인 창 </a>
+</c:if>
+<c:if test="${not empty param.userID  }">
+  	<c:if test="${param.userID =='admin' }">
+  		<h1>관리자로 로그인 했습니다.</h1>
+  		<form>
+	    	<input type=button value="회원정보 삭제하기"  />
+	    	<input type=button value="회원정보 수정하기"  />
+  		</form>  
+  	</c:if>
+  	<c:if test="${param.userID !='admin' }">  
+    	<h1> 환영합니다. <c:out value="${param.userID}" /> 님!!!</h1>
+ </c:if>
+</c:if>
+</body>
+</html>
+-----------------------------------------------------------------------------------------------------------------------
+//scoreTest.jsp
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>시험 점수 입력 페이지</title>
+</head>
+<body>
+<h1>시험 점수를 입력해 주세요</h1>
+   <form method=get action="scoreResult1.jsp">
+    시험점수  :	<input type=text  name="score" /> <br>
+		<input type ="submit" value="학점변환">	 
+   </form>
+</body>
+</html>
+-----------------------------------------------------------------------------------------------------------------------
+//scoreResult1.jsp
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" isELIgnored="false" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<% request.setCharacterEncoding("UTF-8"); %>   
+<html>
+<head>
+<meta charset=”UTF-8">
+   <title>학점 변환 결과</title>
+</head>
+<body>
+   <c:set var="score" value="${param.score }" />
+   <h1>시험점수  <c:out  value="${score}" /></h1><br>
+   <c:choose>
+      <c:when test="${score>=90 && score<=100 }">
+          <h1>A학점입니다.</h1>
+      </c:when>    
+      <c:when test="${score>=80 && score<90 }">
+          <h1>B학점입니다.</h1>
+      </c:when> 
+      <c:when test="${score>=70 && score<80 }">
+          <h1>C학점입니다.</h1>
+      </c:when>
+      <c:when test="${score>=60 && score<70 }">
+          <h1>D학점입니다.</h1>
+      </c:when>    
+      <c:otherwise>	
+          <h1>F학점입니다.</h1>
+      </c:otherwise>    
+   </c:choose>    
+</body>
+</html>
+-----------------------------------------------------------------------------------------------------------------------
+//scoreResult2.jsp
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" isELIgnored="false" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<% request.setCharacterEncoding("UTF-8"); %>   
+<html>
+<head>
+<meta charset=”UTF-8">
+	<title>학점 변환 결과</title>
+</head>
+<body>
+	<c:set var="score" value="${param.score }" />
+	<h1>시험점수  <c:out  value="${score }" /></h1><br>
+	<c:choose>
+   		<c:when test="${score>=0 && score<=100 }">
+      		<c:choose>
+				<c:when test="${score>=90 && score<=100 }">
+             		<h1>A학점입니다.</h1>
+	         	</c:when>    
+	         	<c:when test="${score>=80 && score<90 }">
+	            	<h1>B학점입니다.</h1>
+	         	</c:when> 
+	         	<c:when test="${score>=70 && score<80 }">
+	             	<h1>C학점입니다.</h1>
+	         	</c:when>
+	         	<c:when test="${score>=60 && score<70 }">
+	             	<h1>D학점입니다.</h1>
+	         	</c:when>    
+	         	<c:otherwise>	
+	             	<h1>F학점입니다.</h1>
+	         	</c:otherwise>    
+      		</c:choose>
+   		</c:when>
+	   	<c:otherwise>
+	     	<h1>점수를 잘못 입력했습니다. 다시입력하세요</h1>
+	      	<a href="scoreTest.jsp">점수 입력 창으로 이동</a>
+	   	</c:otherwise>		
+	</c:choose>	    
+</body>
+</html>
+-----------------------------------------------------------------------------------------------------------------------
+//gugu.jsp
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>구구단 입력창</title>
+</head>
+<body>
+   <h1>출력할 구구단의 수를 지정해 주세요.</h1>
+   <form method=get action="guguResult1.jsp">
+       출력할 구구단  :	<input type=text  name="dan" /> <br>
+      <input type ="submit" value="구구단 출력">	 		 
+   </form>
+</body>
+</html>
+-----------------------------------------------------------------------------------------------------------------------
+//guguResult1.jsp
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" isELIgnored="false" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<% request.setCharacterEncoding("UTF-8"); %>    
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>구구단 출력창</title>
+</head>
+<body>
+	<c:set var="dan" value="${param.dan }" />
+ 	<table border="1" width="800" align="center">
+  		<tr align="center" bgcolor="lightgreen"> 
+    		<td colspan="2"><c:out value="${dan}" />단 출력  </td>
+		</tr>
+		<c:forEach var="i"  begin="1" end="9" step="1"  >  
+			<tr align=”center”> 
+				<td width="400"> 
+			    	<c:out value="${dan}" /> * <c:out value="${i}" />    
+			  	</td>
+			  	<td width="400">
+			  		<c:out value="${i*dan }" />
+			  	</td>
+			</tr>
+		</c:forEach>
+	</table>
+</body>
+</html>
+-----------------------------------------------------------------------------------------------------------------------
+//guguResult2.jsp
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" isELIgnored="false" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<% request.setCharacterEncoding("UTF-8"); %>    
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>구구단 출력창</title>
+</head>
+<body>
+ 	<c:set var="dan" value="${param.dan }" />
+ 	<table border="1" width="800" align="center">
+  		<tr align="center" bgcolor="lightgreen"> 
+    		<td colspan="2"><c:out value="${dan}" />단 출력 </td>
+		</tr>
+		<c:forEach var="i" begin="1" end="9" step="1" >
+   			<c:if test="${i%2==0 }">    
+     			<tr align="center" bgcolor="#CCFF66">
+   			</c:if>
+   			<c:if test="${i%2==1 }">    
+     			<tr align="center" bgcolor="#CCCCFF">
+   			</c:if>
+        	<td width="400"> 
+          		<c:out value="${dan}" /> * <c:out value="${i}" />    
+  			</td>
+  			<td width="400">
+  	   			<c:out value="${i*dan }" />
+  			</td>
+  			</tr>
+		</c:forEach>
+	</table>
+</body>
+</html>
+-----------------------------------------------------------------------------------------------------------------------
+//imageList.jsp
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" isELIgnored="false" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<% request.setCharacterEncoding("UTF-8"); %> 
+<!DOCTYPE html>
+<html>
+<head>
+	<style>
+	.lst_type{overflow:hidden;width:80%;padding:0 10px 10px; margin:0 auto}
+	.lst_type li{overflow:hidden;clear:both;margin:10px 0 0;color:#2d2c2d;
+	font-family:'돋움',Dotum;font-size:12px;line-height:100px;
+	list-style:none ; border-bottom: 2px solid lightgray;position:relative; }
+	.lst_type li img{display:inline;float:left;position:absolute; }
+	.lst_type li a{color:#2d2c2d;text-decoration:none; margin-left:340px}
+	.lst_type li a:hover{text-decoration:underline}
+	.lst_type li span{color:blue; margin-left:330px;font-family:'돋움',Dotum;font-size:14px;  }
+	</style>
+	<meta charset="UTF-8">
+	<title>이미지리스트창</title>
+</head>
+<body>
+<ul class="lst_type">
+    <li>
+	      <span style='margin-left:50px' >이미지 </span>
+	      <span >이미지 이름</span>
+	      <span >선택하기</span>
+    </li>
+	<c:forEach var="i" begin="1" end="9" step="1" >
+		<li>
+		   	<a href='#' style='margin-left:50px' ><img src='https://i.namu.wiki/i/AUZPLB7AYoi6HK_a-IOi0zUh6O8WSUztxOZmugeMBR5q5Veb9ogBFlLHmSAJmnYw2taVzCrL0RR_7DEoQUFN6Zv4iE-DJwvKVhj7fdTjU-2_rspc4EPHAEB43OnIDY8AiOAkMlOmMISWyfSCncFn6A.webp' width='90' height='90' alt='' /></a>
+		   	<a href='#'><strong>이미지 이름: 연우${i} </strong></a>
+		    <a href='#'><input name='chk${i}' type='checkbox' /></a>
+		</li>
+	</c:forEach>
+</ul>
+</body>
+</html>
