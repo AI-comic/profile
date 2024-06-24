@@ -1,0 +1,357 @@
+------------------------------------------------------------------------------------------------
+//MemberController.java
+package sec02.ex02;
+
+import java.io.IOException;
+import java.util.List;
+
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+@WebServlet("/member/*")
+public class MemberController extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+	MemberDAO memberDAO;
+
+	public void init() throws ServletException {
+		memberDAO = new MemberDAO();
+	}
+
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		doHandle(request, response);
+	}
+
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)	throws ServletException, IOException {
+		doHandle(request, response);
+	}
+
+	private void doHandle(HttpServletRequest request, HttpServletResponse response)	throws ServletException, IOException {
+		String nextPage = null;
+		request.setCharacterEncoding("utf-8");
+		response.setContentType("text/html;charset=utf-8");
+		String action = request.getPathInfo();
+		System.out.println("action:" + action);
+		if (action == null || action.equals("/listMembers.do")) {
+			List<MemberVO> membersList = memberDAO.listMembers();
+			request.setAttribute("membersList", membersList);
+			nextPage = "/test03/listMembers.jsp";
+		} else if (action.equals("/addMember.do")) {
+			String id = request.getParameter("id");
+			String pwd = request.getParameter("pwd");
+			String name = request.getParameter("name");
+			String email = request.getParameter("email");
+			MemberVO memberVO = new MemberVO(id, pwd, name, email);
+			memberDAO.addMember(memberVO);
+			request.setAttribute("msg", "addMember");
+			nextPage = "/member/listMembers.do";
+		} else if (action.equals("/memberForm.do")) {
+			nextPage = "/test03/memberForm.jsp";
+		}else if(action.equals("/modMemberForm.do")){
+		     String id=request.getParameter("id");
+		     MemberVO memInfo = memberDAO.findMember(id);
+		     request.setAttribute("memInfo", memInfo);
+		     nextPage="/test03/modMemberForm.jsp";
+		}else if(action.equals("/modMember.do")){
+		     String id=request.getParameter("id");
+		     String pwd=request.getParameter("pwd");
+		     String name= request.getParameter("name");
+	         String email= request.getParameter("email");
+		     MemberVO memberVO = new MemberVO(id, pwd, name, email);
+		     memberDAO.modMember(memberVO);
+		     request.setAttribute("msg", "modified");
+		     nextPage="/member/listMembers.do";
+		}else if(action.equals("/delMember.do")){
+		     String id=request.getParameter("id");
+		     memberDAO.delMember(id);
+		     request.setAttribute("msg", "deleted");
+		     nextPage="/member/listMembers.do";
+		}else {
+			List<MemberVO> membersList = memberDAO.listMembers();
+			request.setAttribute("membersList", membersList);
+			nextPage = "/test03/listMembers.jsp";
+		}
+		RequestDispatcher dispatch = request.getRequestDispatcher(nextPage);
+		dispatch.forward(request, response);
+	}
+}
+------------------------------------------------------------------------------------------------
+//MemberDAO.java
+package sec02.ex02;
+
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.sql.DataSource;
+
+public class MemberDAO {
+	private DataSource dataFactory;
+	private Connection conn;
+	private PreparedStatement pstmt;
+
+	public MemberDAO() {
+		try {
+			Context ctx = new InitialContext();
+			Context envContext = (Context) ctx.lookup("java:/comp/env");
+			dataFactory = (DataSource) envContext.lookup("jdbc/oracle");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public List<MemberVO> listMembers() {
+		List<MemberVO> membersList = new ArrayList();
+		try {
+			conn = dataFactory.getConnection();
+			String query = "select * from  t_member order by joinDate desc";
+			System.out.println(query);
+			pstmt = conn.prepareStatement(query);
+			ResultSet rs = pstmt.executeQuery();
+			while (rs.next()) {
+				String id = rs.getString("id");
+				String pwd = rs.getString("pwd");
+				String name = rs.getString("name");
+				String email = rs.getString("email");
+				Date joinDate = rs.getDate("joinDate");
+				MemberVO memberVO = new MemberVO(id, pwd, name, email, joinDate);
+				membersList.add(memberVO);
+			}
+			rs.close();
+			pstmt.close();
+			conn.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return membersList;
+	}
+
+	public void addMember(MemberVO m) {
+		try {
+			conn = dataFactory.getConnection();
+			String id = m.getId();
+			String pwd = m.getPwd();
+			String name = m.getName();
+			String email = m.getEmail();
+			String query = "INSERT INTO t_member(id, pwd, name, email)" + " VALUES(?, ? ,? ,?)";
+			System.out.println(query);
+			pstmt = conn.prepareStatement(query);
+			pstmt.setString(1, id);
+			pstmt.setString(2, pwd);
+			pstmt.setString(3, name);
+			pstmt.setString(4, email);
+			pstmt.executeUpdate();
+			pstmt.close();
+			conn.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public MemberVO findMember(String _id) {
+		MemberVO memInfo = null;
+		try {
+			conn = dataFactory.getConnection();
+			String query = "select * from  t_member where id=?";
+			pstmt = conn.prepareStatement(query);
+			pstmt.setString(1, _id);
+			System.out.println(query);
+			ResultSet rs = pstmt.executeQuery();
+			rs.next();
+			String id = rs.getString("id");
+			String pwd = rs.getString("pwd");
+			String name = rs.getString("name");
+			String email = rs.getString("email");
+			Date joinDate = rs.getDate("joinDate");
+			memInfo = new MemberVO(id, pwd, name, email, joinDate);
+			pstmt.close();
+			conn.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return memInfo;
+	}
+
+	public void modMember(MemberVO memberVO) {
+		String id = memberVO.getId();
+		String pwd = memberVO.getPwd();
+		String name = memberVO.getName();
+		String email = memberVO.getEmail();
+		try {
+			conn = dataFactory.getConnection();
+			String query = "update t_member set pwd=?,name=?,email=?  where id=?";
+			System.out.println(query);
+			pstmt = conn.prepareStatement(query);
+			pstmt.setString(1, pwd);
+			pstmt.setString(2, name);
+			pstmt.setString(3, email);
+			pstmt.setString(4, id);
+			pstmt.executeUpdate();
+			pstmt.close();
+			conn.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void delMember(String id) {
+		try {
+			conn = dataFactory.getConnection();
+			String query = "delete from t_member where id=?";
+			System.out.println(query);
+			pstmt = conn.prepareStatement(query);
+			pstmt.setString(1,id);
+			pstmt.executeUpdate();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+}
+------------------------------------------------------------------------------------------------
+//listMembers.jsp
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" isELIgnored="false" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>    
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<c:set var="contextPath" value="${pageContext.request.contextPath}"  />  
+<% request.setCharacterEncoding("UTF-8"); %>    
+<html>
+<head>
+<c:choose>
+   <c:when test='${msg=="addMember" }'>
+      <script>
+         window.onload=function(){
+            alert("회원을 등록했습니다.");
+         }
+      </script>
+   </c:when>
+   <c:when test='${msg=="modified" }'>
+      <script>
+        window.onload=function(){
+          alert("회원 정보를 수정했습니다.");
+        }
+      </script>
+   </c:when>
+   <c:when test= '${msg=="deleted" }'>
+      <script>
+         window.onload=function(){
+            alert("회원 정보를 삭제했습니다.");
+        } 
+      </script>
+</c:when>
+</c:choose>
+
+   <meta  charset="UTF-8">
+   <title>회원 정보 출력창</title>
+<style>
+     .cls1 {
+       font-size:40px;
+       text-align:center;
+     }
+    
+     .cls2 {
+       font-size:20px;
+       text-align:center;
+     }
+  </style>
+  
+</head>
+<body>
+ <p class="cls1">회원정보</p>
+   <table align="center" border="1" >
+      <tr align="center" bgcolor="lightgreen">
+         <td width="7%" ><b>아이디</b></td>
+         <td width="7%" ><b>비밀번호</b></td>
+         <td width="7%" ><b>이름</b></td>
+         <td width="7%"><b>이메일</b></td>
+         <td width="7%" ><b>가입일</b></td>
+         <td width="7%" ><b>수정</b></td>
+		 <td width="7%" ><b>삭제</b></td>
+         
+   </tr>
+
+<c:choose>
+    <c:when test="${empty  membersList}" >
+      <tr>
+        <td colspan=5>
+          <b>등록된 회원이 없습니다.</b>
+       </td>  
+      </tr>
+   </c:when>  
+   <c:when test="${!empty membersList}" >
+      <c:forEach  var="mem" items="${membersList }" >
+        <tr align="center">
+          <td>${mem.id }</td>
+          <td>${mem.pwd }</td>
+          <td>${mem.name}</td>     
+          <td>${mem.email }</td>     
+          <td>${mem.joinDate}</td>
+          <td><a href="${contextPath}/member/modMemberForm.do?id=${mem.id }">수정</a></td>
+		   <td><a href="${contextPath}/member/delMember.do?id=${mem.id }">삭제</a></td>
+               
+       </tr>
+     </c:forEach>
+</c:when>
+</c:choose>
+   </table>  
+ <a href="${contextPath}/member/memberForm.do"><p class="cls2">회원 가입하기</p></a>
+</body>
+</html>
+------------------------------------------------------------------------------------------------
+//modMemberForm.jsp
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" isELIgnored="false" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>    
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<c:set var="contextPath" value="${pageContext.request.contextPath}"  />
+<% request.setCharacterEncoding("UTF-8"); %> 
+<head>
+<meta charset="UTF-8">
+<title>회원 정보 수정창</title>
+<style>
+  .cls1 {
+     font-size:40px;
+     text-align:center;
+   }
+</style>
+</head>
+<body>
+ <h1 class="cls1">회원 정보 수정창</h1>
+<form  method="post" action="${contextPath}/member/modMember.do?id=${memInfo.id}">
+ <table align="center" >
+   <tr>
+     <td width="200"><p align="right" >아이디</td>
+     <td width="400"><input   type="text" name="id" value="${memInfo.id}" disabled ></td>
+     
+   </tr>
+ <tr>
+     <td width="200"><p align="right" >비밀번호</td>
+     <td width="400"><input   type="password" name="pwd" value="${memInfo.pwd}" >
+     </td>
+   </tr>
+   <tr>
+     <td width="200"><p align="right" >이름</td>
+     <td width="400"><input   type="text" name="name" value="${memInfo.name}" ></td>
+   </tr>
+   <tr>
+     <td width="200"><p align="right" >이메일</td>
+     <td width="400"><input   type="text" name="email"  value="${memInfo.email}" ></td>
+   </tr>
+   <tr>
+     <td width="200"><p align="right" >가입일</td>
+     <td width="400"><input   type="text"  name="joinDate" value="${memInfo.joinDate }" disabled  ></td>
+   </tr>
+   <tr align="center" >
+    <td colspan="2" width="400"><input type="submit" value="수정하기" >
+       <input type="reset" value="다시입력" > </td>
+   </tr>
+ </table>
+</form>
+</html>
