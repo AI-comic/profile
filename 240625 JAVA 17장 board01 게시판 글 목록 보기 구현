@@ -1,0 +1,320 @@
+//BoardController.java
+package sec03.brd01;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+@WebServlet("/board/*")
+public class BoardController extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+	BoardService boardService;
+	ArticleVO articleVO;
+
+	public void init(ServletConfig config) throws ServletException {
+		boardService = new BoardService();
+	}
+
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)	throws ServletException, IOException {
+		doHandle(request, response);
+	}
+
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)	throws ServletException, IOException {
+		doHandle(request, response);
+	}
+
+	private void doHandle(HttpServletRequest request, HttpServletResponse response)	throws ServletException, IOException {
+		String nextPage = "";
+		request.setCharacterEncoding("utf-8");
+		response.setContentType("text/html; charset=utf-8");
+		String action = request.getPathInfo();
+		System.out.println("action:" + action);
+		try {
+			List<ArticleVO> articlesList = new ArrayList<ArticleVO>();
+			if (action == null) {
+				articlesList = boardService.listArticles();
+				request.setAttribute("articlesList", articlesList);
+				nextPage = "/board01/listArticles.jsp";
+			} else if (action.equals("/listArticles.do")) {
+				articlesList = boardService.listArticles();
+				request.setAttribute("articlesList", articlesList);
+				nextPage = "/board01/listArticles.jsp";
+			}else {
+				nextPage = "/board01/listArticles.jsp";
+			}
+			RequestDispatcher dispatch = request.getRequestDispatcher(nextPage);
+			dispatch.forward(request, response);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+}
+----------------------------------------------------------------------------------------------------------------------------------------------
+//BoardService.java
+package sec03.brd01;
+
+import java.util.List;
+
+public class BoardService {
+	BoardDAO boardDAO;
+	public BoardService() {
+		boardDAO = new BoardDAO();
+	}
+	public List<ArticleVO> listArticles() {
+		List<ArticleVO> articlesList = boardDAO.selectAllArticles();
+		return articlesList;
+	}
+}
+----------------------------------------------------------------------------------------------------------------------------------------------
+//BoardDAO.java
+package sec03.brd01;
+
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.sql.DataSource;
+
+public class BoardDAO {
+	private DataSource dataFactory;
+	Connection conn;
+	PreparedStatement pstmt;
+
+	public BoardDAO() {
+		try {
+			Context ctx = new InitialContext();
+			Context envContext = (Context) ctx.lookup("java:/comp/env");
+			dataFactory = (DataSource) envContext.lookup("jdbc/oracle");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public List selectAllArticles() {
+		List articlesList = new ArrayList();
+		try {
+			conn = dataFactory.getConnection();
+			String query = "SELECT LEVEL,articleNO,parentNO,title,content,id,writeDate" 
+			             + " from t_board"
+					     + " START WITH  parentNO=0" + " CONNECT BY PRIOR articleNO=parentNO"
+					     + " ORDER SIBLINGS BY articleNO DESC";
+			System.out.println(query);
+			pstmt = conn.prepareStatement(query);
+			ResultSet rs = pstmt.executeQuery();
+			while (rs.next()) {
+				int level = rs.getInt("level");
+				int articleNO = rs.getInt("articleNO");
+				int parentNO = rs.getInt("parentNO");
+				String title = rs.getString("title");
+				String content = rs.getString("content");
+				String id = rs.getString("id");
+				Date writeDate = rs.getDate("writeDate");
+				ArticleVO article = new ArticleVO();
+				article.setLevel(level);
+				article.setArticleNO(articleNO);
+				article.setParentNO(parentNO);
+				article.setTitle(title);
+				article.setContent(content);
+				article.setId(id);
+				article.setWriteDate(writeDate);
+				articlesList.add(article);
+			}
+			rs.close();
+			pstmt.close();
+			conn.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return articlesList;
+	}
+}
+----------------------------------------------------------------------------------------------------------------------------------------------
+//ArticleVO.java
+package sec03.brd01;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
+import java.sql.Date;
+
+public class ArticleVO {
+	private int level;
+	private int articleNO;
+	private int parentNO;
+	private String title;
+	private String content;
+	private String imageFileName;
+	private String id;
+	private Date writeDate;
+	
+	public ArticleVO() {	
+	}
+
+	public ArticleVO(int level, int articleNO, int parentNO, String title, String content, String imageFileName,
+			String id) {
+		super();
+		this.level = level;
+		this.articleNO = articleNO;
+		this.parentNO = parentNO;
+		this.title = title;
+		this.content = content;
+		this.imageFileName = imageFileName;
+		this.id = id;
+	}
+
+	public int getLevel() {
+		return level;
+	}
+
+	public void setLevel(int level) {
+		this.level = level;
+	}
+
+	public int getArticleNO() {
+		return articleNO;
+	}
+
+	public void setArticleNO(int articleNO) {
+		this.articleNO = articleNO;
+	}
+
+	public int getParentNO() {
+		return parentNO;
+	}
+
+	public void setParentNO(int parentNO) {
+		this.parentNO = parentNO;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public String getContent() {
+		return content;
+	}
+
+	public void setContent(String content) {
+		this.content = content;
+	}
+	
+	public String getImageFileName() {
+		try {
+			if (imageFileName != null && imageFileName.length() != 0) {
+				imageFileName = URLDecoder.decode(imageFileName, "UTF-8");
+			}
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		return imageFileName;
+	}
+
+	public void setImageFileName(String imageFileName) {
+		try {
+			if (imageFileName != null && imageFileName.length() != 0) {
+				this.imageFileName = URLEncoder.encode(imageFileName, "UTF-8");//파일이름에 특수문자가 있을 경우 인코딩합니다.
+			}else {
+				this.imageFileName = imageFileName;
+			}
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public Date getWriteDate() {
+		return writeDate;
+	}
+
+	public void setWriteDate(Date writeDate) {
+		this.writeDate = writeDate;
+	}
+}
+----------------------------------------------------------------------------------------------------------------------------------------------
+//listArticles.jsp
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" isELIgnored="false" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>    
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<c:set var="contextPath"  value="${pageContext.request.contextPath}"  />
+<% request.setCharacterEncoding("UTF-8"); %>  
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+   .cls1 {text-decoration:none;}
+   .cls2{text-align:center; font-size:30px;}
+  </style>
+  <meta charset="UTF-8">
+  <title>글목록창</title>
+</head>
+<body>
+<table align="center" border="1"  width="80%"  >
+  <tr height="10" align="center"  bgcolor="lightgreen">
+     <td >글번호</td>
+     <td >작성자</td>              
+     <td >제목</td>
+     <td >작성일</td>
+  </tr>
+<c:choose>
+  <c:when test="${empty articlesList }" >
+    <tr  height="10">
+      <td colspan="4">
+         <p align="center">
+            <b><span style="font-size:9pt;">등록된 글이 없습니다.</span></b>
+        </p>
+      </td>  
+    </tr>
+  </c:when>
+  <c:when test="${!empty articlesList}" >
+    <c:forEach  var="article" items="${articlesList }" varStatus="articleNum" >
+     <tr align="center">
+	<td width="5%">${articleNum.count}</td>
+	<td width="10%">${article.id }</td>
+	<td align='left'  width="35%">
+	  <span style="padding-right:30px"></span>
+	   <c:choose>
+	      <c:when test='${article.level > 1 }'>  
+	         <c:forEach begin="1" end="${article.level }" step="1">
+	              <span style="padding-left:20px"></span>    
+	         </c:forEach>
+	         <span style="font-size:12px;">[답변]</span>
+                   <a class='cls1' href="${contextPath}/board/viewArticle.do?articleNO=${article.articleNO}">${article.title}</a>
+	          </c:when>
+	          <c:otherwise>
+	            <a class='cls1' href="${contextPath}/board/viewArticle.do?articleNO=${article.articleNO}">${article.title }</a>
+	          </c:otherwise>
+	        </c:choose>
+	  </td>
+	  <td  width="10%"><fmt:formatDate value="${article.writeDate}" /></td> 
+	</tr>
+    </c:forEach>
+     </c:when>
+    </c:choose>
+</table>
+<a  class="cls1"  href="#"><p class="cls2">글쓰기</p></a>
+</body>
+</html>
