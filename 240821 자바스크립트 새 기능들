@@ -1,0 +1,186 @@
+//domtest1.html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1 id="hpop"></h1>
+    <div id="pop"></div>
+    <p>외부 스크립트 연결한 예제</p>
+    <script src="script.js"></script>
+</body>
+</html>
+----------------------------------------------------------------------------------------
+//script.js
+document.addEventListener("DOMContentLoaded", function(){
+    var pEle = document.createElement("p"); //<p>요소 생성
+        pEle.textContent = "Hello, React!!!"; //<p>요소에 텍스트 내용을 추가
+            var divId = document.getElementById('pop'); //id가 'pop'인 div 요소 가져오기
+            divId.appendChild(pEle); //div 요소에 p 요소를 붙이기
+//<h1><p>Welcome, React World!!</p></h1> 추가하기
+    var iEle = document.createElement("i");
+        iEle.textContent = "Welcome, React World!!";
+            var divId = document.getElementById('hpop');
+            divId.appendChild(iEle);
+})
+----------------------------------------------------------------------------------------
+//mj1.html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        //자바스크립트의 변수 선언 키워드: var
+        //var -1. 변수 덮어쓰기 가능 2. 변수 재설정
+        var value1 = "var 변수 선언";
+        console.log(value1);
+        value1 = "var 변수 덮어쓰기 가능";
+        console.log(value1);
+        value1 = "var 변수 재선언 가능";
+        console.log(value1);
+        //자바스크립트의 변수 선언 키워드: let
+        //1. 덮어쓰기 가능 2. 재선언 불가능
+        let value2 = "let 변수 선언";
+        console.log(value2);
+        value2 = "let 변수 덮어쓰기 가능";
+        console.log(value2);
+        let value3 = "let 변수 재선언 불가능";
+        console.log(value3);
+        //자바스크립트의 변수 선언 키워드: const
+        //1. 덮어쓰기 불가능 2. 재선언 불가능
+        const value4 = "const 변수 선언";
+        console.log(value4);
+        //value4 = "const 변수 덮어쓰기";
+        //console.log(value4);
+        //const value4 = "const 재선언";
+        //console.log(value4);
+
+        //const 정의 변수: 기본형 데이터 저장하는 변수, 객체형 데이터 저장하는 변수
+        //기본형 데이터를 저장할 경우, 값 변경 불가능
+        //객체형 데이터를 저장할 경우, 값 변경 가능
+
+        //딕셔너리 객체 정의
+        const obj1 = {
+            name: "pop",
+            age: 24
+        };
+        console.log(obj1);
+        console.log(obj1.name);
+        console.log(obj1.age);
+
+        //const 선언된 객체의 속성은 변경 가능하다.
+        obj1.name = "popcorn";
+        obj1.age = 28;
+        console.log(obj1.name);
+        console.log(obj1.age);
+        
+        //const 선언된 객체의 속성은 추가 가능하다.
+        obj1.addr = "seoul";
+        console.log(obj1.addr);
+        //배열 객체의 경우 예시
+        //배열은 동일한 자료형을 모아놓은 자료구조, 데이터 접근은 인덱스로 한다. 순차접근, for 반복문
+        const arr1 = ["cat", "dog"];
+        console.log(arr1);
+        //배열 데이터 접근 -> 인덱스 이용, 인덱스 시작 0
+        console.log(arr1[0]);
+        //배열 데이터 수정이 가능하다.
+        arr1[0] = "bird";
+        console.log(arr1[0]);
+        //배열데 데이터 추가가 가능하다.
+        arr1[2] = "monkey"
+        console.log(arr1[2]);
+        console.log(arr1);
+    </script>
+</body>
+</html>
+----------------------------------------------------------------------------------------
+//mj2.html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        //ES6 추가된 규정: 템플릿 문자열-문자열 안에서 변수를 전개하기 위한 새로운 표기법
+        //기존 문자열과 변수를 결합: + 연산자 이용
+        //템플릿 문자열 이용할 경우, 문자열을 ``(역따옴표)로 문자열 감싸고, ${} 안에 자바스크립트를 입력하는 형식을 취함
+        const name = "팝콘";
+        const age = 24;
+        //내 이름은 팝콘입니다. 나이는 24세입니다. 출력할 경우
+        //기존 방법
+        const message = "내 이름은 "+name+"입니다. 나이는 "+age+"세입니다.";
+        console.log(message);
+
+        //ES6 방법 -> '${}' 템플릿 문자열 이용
+        const message2 = `내 이름은 ${name}입니다. 나이는 ${age}세입니다.`;
+        console.log(message2);
+
+        //함수 정의, 함수 호출 결과와 템플릿 문자열 이용
+        function sayHello(){
+            return "안녕하세요";
+        }
+        const month = 1;    //1월
+        const message3 = `여러분, ${sayHello()}! 지금은 ${month*8}월입니다.`
+        console.log(message3);
+    </script>
+</body>
+</html>
+----------------------------------------------------------------------------------------
+//domlab1.html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div id="root"></div>
+    <script>
+    document.addEventListener("DOMContentLoaded", function(){
+        var h1Ele = document.createElement("h1");
+            h1Ele.textContent = "첫 실습-DOM 제어 프로그램";
+                var divId = document.getElementById('root');
+                divId.appendChild(h1Ele);
+        var pEle = document.createElement("p");
+            pEle.textContent = "자바 스크립트로 DOM 제어는 재미있습니다.";
+                var divId = document.getElementById('root');
+                divId.appendChild(pEle);        
+    })
+    </script>    
+</body>
+</html>
+----------------------------------------------------------------------------------------
+//mjLab1.html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        const num1 = 5;
+        const num2 = 7;
+
+        function add(a,b){
+            return a+b;
+        }
+        
+        const message = `두 수의 합의 결과는 ${num1}+${num2}=${add(num1, num2)}입니다.`
+        console.log(message);
+    </script>
+</body>
+</html>
+----------------------------------------------------------------------------------------
