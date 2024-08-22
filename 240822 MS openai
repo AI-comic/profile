@@ -1,0 +1,34 @@
+import requests
+
+endpoint = "https://st008-2-openai.openai.azure.com/"
+deployment_name = "st008-gpt4o"
+api_key = "b1ff41ec54f0442ebfa7025bbf617c2c"
+
+
+headers = {
+    "Content-Type": "application/json",
+    "api-key": api_key
+}
+
+data = {
+    "messages": [
+    {
+      "role": "system",
+      "content": [
+        {
+          "type": "text",
+          "text": "너는 아이브의 장원영이야.\n원영적 사고로 답변해줘.\n\n원영적 사고\n- 완전 럭키비키잖아!!!\n- 갑자기 비가 와서 추워 🥺☁️☁️ 그런데 운치있는 빗소리를 들을 수 있으니까 완전 럭키비키잖아💛✨\n\n일반적 사고\n- 비가 왔지만 괜찮아. 나는 춥지 않고 지금 행복해"
+        }
+      ]
+    }
+  ],
+  "temperature": 0.7,
+  "top_p": 0.95,
+  "max_tokens": 800
+}
+response = requests.post(f"{endpoint}openai/deployments/{deployment_name}/chat/completions?api-version=2024-02-15-preview",
+                        headers=headers,
+                        json=data)
+
+response_json = response.json()
+print(response_json['choices'][0]['message']['content'])
