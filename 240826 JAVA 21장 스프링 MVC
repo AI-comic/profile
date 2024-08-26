@@ -1,0 +1,335 @@
+//index.jsp
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" isELIgnored="false" %>
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>spring 테스트입니다.</title>
+</head>
+<body>
+   <h1>index.jsp파일입니다.</h1>
+   <p>Hello Spring!!</p>
+</body>
+</html>
+------------------------------------------------------------------------------------------------------------------------
+//action-servlet.xml
+<?xml version="1.0" encoding="UTF-8" ?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans   
+http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+http://www.springframework.org/schema/aop
+http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+http://www.springframework.org/schema/context
+http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+<bean id="simpleUrlController" class="com.spring.ex01.SimpleUrlController"/>
+<bean id="urlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+  <property name="mappings">
+    <props>
+      <prop key="/test/index.do">simpleUrlController</prop>
+    </props>
+  </property>  
+</bean>
+
+ 	<bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="viewClass" value="org.springframework.web.servlet.view.JstlView" />
+		<property name="prefix" value="/test/" />
+		<property name="suffix" value=".jsp" />
+	</bean>
+
+	<bean id="userUrlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+		<property name="mappings">
+			<props>
+				<prop key="/test/*.do">userController</prop>
+			</props>
+		</property>
+	</bean>
+
+	<bean id="userController" class="com.spring.ex02.UserController">
+		<property name="methodNameResolver">
+			<ref local="userMethodNameResolver" />
+		</property>
+	</bean>
+
+	<bean id="userMethodNameResolver" class="org.springframework.web.servlet.mvc.multiaction.PropertiesMethodNameResolver">
+		<property name="mappings">
+			<props>
+				<prop key="/test/login.do">login</prop>
+				<prop key="/test/memberInfo.do">memberInfo</prop> 
+			</props>
+		</property>
+	</bean>
+</beans>
+------------------------------------------------------------------------------------------------------------------------
+//web.xml
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd" id="WebApp_ID" version="3.1">
+   <servlet>
+      <servlet-name>action</servlet-name>
+      <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+      <load-on-startup>1</load-on-startup>
+   </servlet>
+
+   <servlet-mapping>
+      <servlet-name>action</servlet-name>
+      <url-pattern>*.do</url-pattern>
+   </servlet-mapping>
+</web-app>
+------------------------------------------------------------------------------------------------------------------------
+//SimpleUrlController.java
+package com.spring.ex01;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.Controller;
+
+public class SimpleUrlController implements Controller {
+	@Override
+	public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		return new ModelAndView("index.jsp");
+	}
+}
+------------------------------------------------------------------------------------------------------------------------
+//UserController.java
+package com.spring.ex02;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.multiaction.MultiActionController;
+
+public class UserController extends MultiActionController {
+	/*public ModelAndView login(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		String userID = "";
+		String passwd = "";
+		ModelAndView mav = new ModelAndView();
+		request.setCharacterEncoding("utf-8");
+		userID = request.getParameter("userID");
+		passwd = request.getParameter("passwd");
+
+		mav.addObject("userID", userID);
+		mav.addObject("passwd", passwd);
+		mav.setViewName("result");
+		return mav;
+	}*/
+	
+	public ModelAndView login(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		String userID = "";
+		String passwd = "";
+		ModelAndView mav = new ModelAndView();
+		request.setCharacterEncoding("utf-8");
+		userID = request.getParameter("userID");
+		passwd = request.getParameter("passwd");
+		String viewName=getViewName(request);
+		
+		mav.addObject("userID", userID);
+		mav.addObject("passwd", passwd);
+		//mav.setViewName("result");
+		mav.setViewName(viewName);
+	    System.out.println("ViewName:"+viewName);
+		return mav;
+	}
+
+	public ModelAndView memberInfo(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		request.setCharacterEncoding("utf-8");
+	    ModelAndView mav=new ModelAndView();
+	    String id=request.getParameter("id");
+	    String pwd=request.getParameter("pwd");
+	    String name=request.getParameter("name");
+	    String email=request.getParameter("email");
+
+	    mav.addObject("id",id);
+	    mav.addObject("pwd",pwd);
+	    mav.addObject("name",name);
+	    mav.addObject("email",email);
+	    mav.setViewName("memberInfo");
+	    return mav;
+	}
+	
+	private  String getViewName(HttpServletRequest request) throws Exception {
+	      String contextPath = request.getContextPath();
+	      String uri = (String)request.getAttribute("javax.servlet.include.request_uri");
+	      if(uri == null || uri.trim().equals("")) {
+	         uri = request.getRequestURI();
+	      }
+	      
+	      //http://localhost:8090/member/listMember.do로 요청 시
+	      int begin = 0;
+	      if(!((contextPath==null)||("".equals(contextPath)))){
+	         begin = contextPath.length();  // 전체 요청명 의 길이를 구함
+	      }
+
+	      int end;
+	      if(uri.indexOf(";")!=-1){
+	         end=uri.indexOf(";");	//요청 uri에 ';'가 있을 경우 ';'문자 위치를 구함
+	      }else if(uri.indexOf("?")!=-1){
+	         end=uri.indexOf("?");	//요청 uri에 '?'가 있을 경우 '?' 문자 위치를 구함
+	      }else{
+	         end=uri.length();
+	      }
+
+	      //http://localhost:8090/member/listMember.do로 요청 시 먼저 '.do'를 제거한 http://localhost:8090/member/listMember를 구한 후,
+	      //다시 http://localhost:8090/member/listMember에서 역순으로 첫번째 '/' 위치를 구한 후, 그 뒤의 listMember를 구한다.
+	      String fileName=uri.substring(begin,end);
+	      if(fileName.indexOf(".")!=-1){
+	         fileName=fileName.substring(0,fileName.lastIndexOf("."));  //요청명에서 역순으로 최초 '.'의 위치를 구한후, '.do' 앞에까지의 문자열을 구함
+	      }
+	      if(fileName.lastIndexOf("/")!=-1){
+	         fileName=fileName.substring(fileName.lastIndexOf("/"),fileName.length()); //요청명에서 역순으로 최초 '/'의 위치를 구한후, '/' 다음부터의 문자열을 구함  
+	      }
+	      return fileName;
+	   }
+}
+------------------------------------------------------------------------------------------------------------------------
+//result.jsp
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" isELIgnored="false" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>    
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%
+   request.setCharacterEncoding("UTF-8");
+%> 
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>결과창</title>
+</head>
+<body>
+<table border="1" width="50%" align="center" >
+
+   <tr align="center">
+      <td>아이디</td>
+      <td>비밀번호</td>
+   </tr>
+   <tr align="center">
+      <td>${userID}</td>
+      <td>${passwd}</td>
+   </tr>
+</table>
+</body>
+</html>
+------------------------------------------------------------------------------------------------------------------------
+//loginForm.jsp
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" isELIgnored="false" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>    
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<c:set var="contextPath"  value="${pageContext.request.contextPath}" />
+<%
+   request.setCharacterEncoding("UTF-8");
+%>     
+<!DOCTYPE html>
+
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>로그인창</title>
+</head>
+
+<body>
+<form name="frmLogin" method="post"  action="${contextPath}/test/login.do">
+   <table border="1"  width="80%" align="center" >
+      <tr align="center">
+         <td>아이디</td>
+         <td>비밀번호</td>
+      </tr>
+      <tr align="center">
+         <td>
+	    <input type="text" name="userID" value="" size="20">
+	 </td>
+         <td>
+	    <input type="password" name="passwd" value="" size="20">
+	 </td>
+      </tr>
+      <tr align="center">
+         <td colspan="2">
+            <input type="submit" value="로그인" > 
+            <input type="reset"  value="다시입력" > 
+         </td>
+      </tr>
+   </table>
+</form>
+</body>
+</html>
+------------------------------------------------------------------------------------------------------------------------
+//memberForm.jsp
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" isELIgnored="false" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>    
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<c:set var="contextPath"  value="${pageContext.request.contextPath}"  />
+<%
+   request.setCharacterEncoding("UTF-8");
+%> 
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>회원 가입창</title>
+<style>
+   .text_center{
+     text-align:center;
+   }
+</style>
+</head>
+<body>
+	<form method="post"   action="${contextPath}/test/memberInfo.do">
+	<h1  class="text_center">회원 가입창</h1>
+	<table  align="center">
+	   <tr>
+	      <td width="200"><p align="right">아이디</td>
+	      <td width="400"><input type="text" name="id"></td>
+	   </tr>
+	   <tr>
+	      <td width="200"><p align="right">비밀번호</td>
+	      <td width="400"><input type="password" name="pwd"></td>
+	    </tr>
+	    <tr>
+	       <td width="200"><p align="right">이름</td>
+	       <td width="400"><p><input type="text" name="name"></td>
+	    </tr>
+	    <tr>
+	       <td width="200"><p align="right">이메일</td>
+	       <td width="400"><p><input type="text" name="email"></td>
+	    </tr>
+	    <tr>
+	       <td width="200"><p>&nbsp;</p></td>
+	       <td width="400"><input type="submit" value="가입하기"><input type="reset" value="다시입력"></td>
+	    </tr>
+	</table>
+	</form>
+</body>
+------------------------------------------------------------------------------------------------------------------------
+//memberInfo.jsp
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" isELIgnored="false" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>    
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+ 
+<html>
+<head>
+<meta charset="UTF-8">
+<title>회원 정보 출력창</title>
+</head>
+<body>
+<table border="1" align="center" width="100%" >
+   <tr align=center   bgcolor="lightgreen">
+      <td ><b>아이디</b></td>
+      <td><b>비밀번호</b></td>
+      <td><b>이름</b></td>
+      <td><b>이메일</b></td>
+   </tr>
+   <tr align="center">
+      <td>${id}</td>
+      <td>${pwd}</td>
+      <td>${name}</td>
+      <td>${email}</td>
+    </tr>
+</table>
+</body>
+</html>
+------------------------------------------------------------------------------------------------------------------------
