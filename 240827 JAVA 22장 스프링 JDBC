@@ -1,0 +1,401 @@
+//action-servlet.xml
+<?xml version="1.0" encoding="UTF-8" ?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.springframework.org/schema/aop
+		http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+		http://www.springframework.org/schema/context
+		http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+	<bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver" >
+		<property name="viewClass" value="org.springframework.web.servlet.view.JstlView" />
+   		<property name="prefix" value="/WEB-INF/views/" />
+   		<property name="suffix" value=".jsp" />
+	</bean>
+	<bean id="memberController" class="com.spring.member.controller.MemberControllerImpl">
+   		<property name="methodNameResolver">
+    		<ref local="methodResolver"/>
+	   	</property>
+	   	<property name="memberService" ref="memberService"/>
+	</bean>
+
+	<bean id="methodResolver" class="org.springframework.web.servlet.mvc.multiaction.PropertiesMethodNameResolver" >
+		<property  name="mappings" >
+			<props>
+				<prop key="/member/listMembers.do" >listMembers</prop>
+				<prop key="/member/addMember.do" >addMember</prop>
+				<prop key="/member/memberForm.do" >memberForm</prop>
+				<prop key="/member/memberDetail.do">memberDetail</prop>
+			</props>
+		</property>
+	</bean>
+   
+	<bean id="userUrlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+		<property name="mappings">
+			<props>
+				<prop key="/member/*.do">memberController</prop>
+			</props>
+		</property>
+	</bean>
+</beans>
+-----------------------------------------------------------------------------------------------------------------
+//action-dataSource.xml
+<?xml version="1.0" encoding="UTF-8" ?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans   
+		http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.springframework.org/schema/aop
+		http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+		http://www.springframework.org/schema/context
+		http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+	<bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer" >
+		<property name="locations" >
+			<list>
+				<value>/WEB-INF/config/jdbc.properties</value>
+			</list>
+		</property>
+	</bean>
+	<bean id="dataSource"
+		class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
+		<property name="driverClass" value="${jdbc.driverClassName}" />
+		<property name="url" value="${jdbc.url}" />
+		<property name="username" value="${jdbc.username}" />
+		<property name="password" value="${jdbc.password}" />
+	</bean>
+	
+	<bean id="memberDAO"   class="com.spring.member.dao.MemberDAOImpl" >
+		<property name="dataSource" ref="dataSource"  />
+	</bean>
+</beans>
+-----------------------------------------------------------------------------------------------------------------
+//jdbc.properties
+jdbc.driverClassName=oracle.jdbc.driver.OracleDriver
+jdbc.url=jdbc:oracle:thin:@localhost:1521:(내oracle서버이름)
+jdbc.username=(내oracle유저이름)
+jdbc.password=(내oracle비번)
+-----------------------------------------------------------------------------------------------------------------
+//MemberController.java
+package com.spring.member.controller;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.web.servlet.ModelAndView;
+
+public interface MemberController {
+	public ModelAndView listMembers(HttpServletRequest request, HttpServletResponse response) throws Exception;
+}
+-----------------------------------------------------------------------------------------------------------------
+//MemberControllerImpl.java
+package com.spring.member.controller;
+
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.multiaction.MultiActionController;
+
+import com.spring.member.service.MemberService;
+
+public class MemberControllerImpl extends MultiActionController implements MemberController {
+	private MemberService memberService;
+
+	public void setMemberService(MemberService memberService) {
+		this.memberService = memberService;
+	}
+
+	public ModelAndView listMembers(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		String viewName = getViewName(request);
+		List membersList = memberService.listMembers();
+		ModelAndView mav = new ModelAndView(viewName);
+		mav.addObject("membersList", membersList);
+		return mav;
+	}
+	
+	private String getViewName(HttpServletRequest request) throws Exception {
+		String contextPath = request.getContextPath();
+		String uri = (String) request.getAttribute("javax.servlet.include.request_uri");
+		if (uri == null || uri.trim().equals("")) {
+			uri = request.getRequestURI();
+		}
+
+		int begin = 0;
+		if (!((contextPath == null) || ("".equals(contextPath)))) {
+			begin = contextPath.length();
+		}
+
+		int end;
+		if (uri.indexOf(";") != -1) {
+			end = uri.indexOf(";");
+		} else if (uri.indexOf("?") != -1) {
+			end = uri.indexOf("?");
+		} else {
+			end = uri.length();
+		}
+
+		String fileName = uri.substring(begin, end);
+		if (fileName.indexOf(".") != -1) {
+			fileName = fileName.substring(0, fileName.lastIndexOf("."));
+		}
+		if (fileName.lastIndexOf("/") != -1) {
+			fileName = fileName.substring(fileName.lastIndexOf("/"), fileName.length());
+		}
+		return fileName;
+	}
+}
+-----------------------------------------------------------------------------------------------------------------
+//MemberService.java
+package com.spring.member.service;
+
+import java.util.List;
+
+import org.springframework.dao.DataAccessException;
+
+public interface MemberService {
+	public List listMembers() throws DataAccessException;
+}
+-----------------------------------------------------------------------------------------------------------------
+//MemberServiceImpl.java
+package com.spring.member.service;
+
+import java.util.List;
+
+import org.springframework.dao.DataAccessException;
+
+import com.spring.member.dao.MemberDAO;
+
+public class MemberServiceImpl implements MemberService {
+	private MemberDAO memberDAO;
+
+	public void setMemberDAO(MemberDAO memberDAO) {
+		this.memberDAO = memberDAO;
+	}
+
+	@Override
+	public List listMembers() throws DataAccessException {
+		List membersList = null;
+		membersList = memberDAO.selectAllMembers();
+		return membersList;
+	}
+}
+-----------------------------------------------------------------------------------------------------------------
+//MemberDao.java
+package com.spring.member.dao;
+
+import java.util.List;
+
+import org.springframework.dao.DataAccessException;
+
+import com.spring.member.vo.MemberVO;
+
+public interface MemberDAO {
+	public List selectAllMembers() throws DataAccessException ;
+	public int addMember(MemberVO memberVO) throws DataAccessException ;
+}
+-----------------------------------------------------------------------------------------------------------------
+//MemberDaoImpl.java
+package com.spring.member.dao;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.sql.DataSource;
+
+import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
+
+import com.spring.member.vo.MemberVO;
+
+public class MemberDAOImpl implements MemberDAO {
+	private JdbcTemplate jdbcTemplate;
+	public void setDataSource(DataSource dataSource) {
+		this.jdbcTemplate = new JdbcTemplate(dataSource);
+	}
+
+	@Override
+	public List selectAllMembers() throws DataAccessException {
+		String query = "select id,pwd,name,email,joinDate" + " from t_member " + " order by joinDate desc";
+		List membersList = new ArrayList();
+
+		membersList = this.jdbcTemplate.query(query, new RowMapper() {
+			public Object mapRow(ResultSet rs, int rowNum) throws SQLException {
+				MemberVO memberVO = new MemberVO();
+				memberVO.setId(rs.getString("id"));
+				memberVO.setPwd(rs.getString("pwd"));
+				memberVO.setName(rs.getString("name"));
+				memberVO.setEmail(rs.getString("email"));
+				memberVO.setJoinDate(rs.getDate("joinDate"));
+				return memberVO;
+			}
+		});
+		return membersList;
+	}
+
+	@Override
+	public int addMember(MemberVO memberVO) throws DataAccessException {
+		String id = memberVO.getId();
+		String pwd = memberVO.getPwd();
+		String name = memberVO.getName();
+		String email = memberVO.getEmail();
+		String query = "insert into t_member(id,pwd, name,email) values  ("
+		                 + "'" + id + "' ,"
+	 	                 + "'" + pwd + "' ,"
+		                 + "'" + name + "' ,"
+		                 + "'" + email + "') ";
+		System.out.println(query);
+		int result = jdbcTemplate.update(query);
+		System.out.println(result);
+		return result;
+	}
+}
+-----------------------------------------------------------------------------------------------------------------
+//MemberVO.java
+package com.spring.member.vo;
+
+import java.sql.Date;
+
+public class MemberVO {
+	private String id;
+	private String pwd;
+	private String name;
+	private String email;
+	private Date joinDate;
+
+	public MemberVO() {		
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public String getPwd() {
+		return pwd;
+	}
+
+	public void setPwd(String pwd) {
+		this.pwd = pwd;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public Date getJoinDate() {
+		return joinDate;
+	}
+
+	public void setJoinDate(Date joinDate) {
+		this.joinDate = joinDate;
+	}
+}
+-----------------------------------------------------------------------------------------------------------------
+//listMembers.jsp
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8" isELIgnored="false"  %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"  %>
+<c:set var="contextPath"  value="${pageContext.request.contextPath}"  />
+<% request.setCharacterEncoding("UTF-8"); %>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>회원 정보 출력창</title>
+</head>
+<body>
+<table border="1"  align="center"  width="80%">
+    <tr align="center"   bgcolor="lightgreen">
+      <td><b>아이디</b></td>
+      <td><b>비밀번호</b></td>
+      <td><b>이름</b></td>
+      <td><b>이메일</b></td>
+      <td><b>가입일</b></td>
+   </tr>
+   
+ <c:forEach var="member" items="${membersList}" >     
+   <tr align="center">
+      <td>${member.id}</td>
+      <td>${member.pwd}</td>
+      <td>${member.name}</td>
+      <td>${member.email}</td>
+      <td>${member.joinDate}</td>
+      
+    </tr>
+  </c:forEach>   
+</table>
+<a href="${contextPath}/member/memberForm.do"><h1 style="text-align:center">회원가입</h1></a>
+</body>
+</html>
+-----------------------------------------------------------------------------------------------------------------
+//memberForm.jsp
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8" isELIgnored="false" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>    
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<c:set var="contextPath"  value="${pageContext.request.contextPath}"  />
+<% request.setCharacterEncoding("UTF-8"); %> 
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>회원 등록창</title>
+<style>
+   .text_center{ text-align:center; }
+</style>
+</head>
+<body>
+	<form method="post"   action="${contextPath}/member/addMember.do">
+	<h1  class="text_center">회원 정보 등록창</h1>
+	<table  align="center">
+	   <tr>
+	      <td width="200"><p align="right">아이디</td>
+	      <td width="400"><input type="text" name="id"></td>
+	   </tr>
+	   <tr>
+	      <td width="200"><p align="right">비밀번호</td>
+	      <td width="400"><input type="password" name="pwd"></td>
+	    </tr>
+	    <tr>
+	       <td width="200"><p align="right">이름</td>
+	       <td width="400"><p><input type="text" name="name"></td>
+	    </tr>
+	    <tr>
+	       <td width="200"><p align="right">이메일</td>
+	       <td width="400"><p><input type="text" name="email"></td>
+	    </tr>
+	    <tr>
+	       <td width="200"><p>&nbsp;</p></td>
+	       <td width="400"><input type="submit" value="가입하기"><input type="reset" value="다시입력"></td>
+	    </tr>
+	</table>
+	</form>
+</body>
