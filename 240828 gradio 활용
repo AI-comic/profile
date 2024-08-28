@@ -1,0 +1,82 @@
+%pip install gradio
+----------------------------------------------------------------------------------------
+import gradio as gr
+
+def hello_world(text, radio):
+    return "Hello world " + text + "!!!!", radio
+
+demo = gr.Interface(fn=hello_world, inputs=["text", gr.Radio(choices=["first", "second"])], outputs=["text", gr.Radio(choices=["first", "second"])])
+
+demo.launch()
+
+----------------------------------------------------------------------------------------
+import gradio as gr
+
+def hello_world(text):
+    return "Hello world " + text + "!!"
+
+def click_clear():
+    return "", ""
+
+with gr.Blocks() as demo:
+    
+    with gr.Row(): #가로배치
+        name_textbox = gr.Textbox(label="이름", scale=1)
+        output_textbox = gr.Textbox(label="출력", scale=3)
+        
+    with gr.Row():
+        submit_button = gr.Button("전송", scale=3)
+        clear_button = gr.Button("지우기", scale=1)
+    
+    submit_button.click(fn=hello_world, inputs=[name_textbox], outputs=[output_textbox])
+    clear_button.click(fn=click_clear, inputs=[], outputs=[name_textbox, output_textbox])
+    
+    #name_textbox.change(fn=hello_world, inputs=[name_textbox], outputs=[output_textbox])
+    
+demo.launch()
+----------------------------------------------------------------------------------------
+import gradio as gr
+
+def hello_world(text):
+    return "Hello world " + text + "!!"
+
+def click_clear():
+    return "", ""
+
+with gr.Blocks() as demo:
+    
+    with gr.Row():
+        with gr.Column():
+            name_textbox = gr.Textbox(label="이름")
+            submit_button = gr.Button("전송")
+        with gr.Column():
+            output_textbox = gr.Textbox(label="출력")
+            clear_button = gr.Button("지우기")
+    
+    submit_button.click(fn=hello_world, inputs=[name_textbox], outputs=[output_textbox])
+    clear_button.click(fn=click_clear, inputs=[], outputs=[name_textbox, output_textbox])
+    
+demo.launch()
+----------------------------------------------------------------------------------------
+import gradio as gr
+import random
+
+def click_send_button(user_message, chatbot_histories):
+    response_list = ["안녕? 반가워.", "나는 AI 챗봇이야.", "저녁은 맛있게 먹었니?"]
+    response_message = random.choice(response_list)
+    
+    chatbot_histories.append((user_message, response_message))
+    return "", chatbot_histories
+
+with gr.Blocks() as demo:
+    
+    with gr.Column():
+        chatbot = gr.Chatbot(label="GPT")
+        
+    with gr.Row():
+        input_textbox = gr.Textbox(label="입력", scale=5)
+        send_button = gr.Button("전송")
+    
+    send_button.click(fn=click_send_button, inputs=[input_textbox, chatbot], outputs=[input_textbox, chatbot])
+demo.launch()
+----------------------------------------------------------------------------------------
