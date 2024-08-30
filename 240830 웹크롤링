@@ -1,0 +1,206 @@
+#naverShopping
+chrome_options = Options()
+chrome_options.add_argument("--headless")  # 브라우저를 화면에 표시하지 않고 실행 (디버깅 시 주석 제거)
+driver = webdriver.Chrome(options=chrome_options)
+
+try:
+    url = 'https://shopping.naver.com/plan2/p/experience.naver?freeTrialStatusSearchType=RECRUITING'
+    driver.get(url)
+    time.sleep(3)  # 페이지 로딩 대기
+
+    # 명시적 대기
+    wait = WebDriverWait(driver, 10)
+    wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, 'a.inner')))
+
+    # 데이터 리스트 초기화
+    data = []
+
+    # 아이템 찾기
+    items = driver.find_elements(By.CSS_SELECTOR, 'a.inner')
+
+    for item in items:
+        try:
+            category = item.find_element(By.CSS_SELECTOR, '.window').text
+            title = item.find_element(By.CSS_SELECTOR, '.title').text
+            date_range = item.find_element(By.CSS_SELECTOR, '.desc_cell').text
+            number_of_people = item.find_elements(By.CSS_SELECTOR, '.desc_cell')[1].text
+            image_url = item.find_element(By.CSS_SELECTOR, '.thumb img').get_attribute('src')
+            #link = item.find_element(By.CSS_SELECTOR, 'a').get_attribute('href')
+
+            data.append([category, title, date_range, number_of_people, image_url])
+            print([category, title, date_range, number_of_people, image_url])
+        except Exception as e:
+            print(f"Error while processing an item: {e}")
+
+    # 데이터 저장
+    filename = "naver_free_trial_data.csv"
+    with open(filename, "w", encoding="utf-8-sig", newline="") as f:
+        writer = csv.writer(f)
+        writer.writerow(["Category", "Title", "Date Range", "Number of People", "Image URL"])
+        writer.writerows(data)
+
+    print(f"Data saved to {filename}")
+
+finally:
+    driver.quit()
+
+---------------------------------------------------------------------------------------------
+//index.html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>네이버 무료 체험단</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>네이버 무료 체험단</h1>
+    </header>
+    <main>
+        <table>
+            <thead>
+                <tr>
+                    <th>분류
+                        <button onclick="sortTable(0, 'asc')">▲</button>
+                        <button onclick="sortTable(0, 'desc')">▼</button>
+                    </th>
+                    <th>제목</th>
+                    <th>신청 기간
+                        <button onclick="sortTable(2, 'asc')">▲</button>
+                        <button onclick="sortTable(2, 'desc')">▼</button>
+                    </th>
+                    <th>모집 인원</th>
+                    <th>사진</th>
+                </tr>
+            </thead>
+            <tbody id="data-table-body">
+                <!-- Data will be inserted here by JavaScript -->
+            </tbody>
+        </table>
+    </main>
+    <script src="script.js"></script>
+</body>
+</html>
+---------------------------------------------------------------------------------------------
+//style.css
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+
+header {
+    background-color: #00b919;
+    color: #fff;
+    padding: 1rem;
+    text-align: center;
+}
+
+h1 {
+    margin: 0;
+}
+
+main {
+    padding: 1rem;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0 auto;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 0.75rem;
+    text-align: left;
+}
+
+th {
+    background-color: #f4f4f4;
+}
+
+td img {
+    max-width: 200px;
+    height: auto;
+}
+
+/* Other styles... */
+
+button {
+    background-color: #00b919; /* Button background color */
+    color: white; /* Text color */
+    border: none; /* Remove default border */
+    border-radius: 4px; /* Rounded corners */
+    cursor: pointer; /* Pointer cursor on hover */
+    padding: 0.2rem 0.3rem; /* Adjust size */
+    font-size: 0.9rem; /* Smaller font size */
+    margin: 0 0rem; /* Space between buttons */
+    transition: background-color 0.3s ease; /* Smooth transition for background color */
+}
+
+button:hover {
+    background-color: #00e5ff; /* Darker background on hover */
+}
+
+button:focus {
+    outline: none; /* Remove focus outline */
+}
+---------------------------------------------------------------------------------------------
+//script.js
+fetch('naver_free_trial_data.csv')
+    .then(response => response.text())
+    .then(text => {
+        const rows = text.split('\n').slice(1); // Skip header row
+        const tableBody = document.getElementById('data-table-body');
+        
+        rows.forEach(row => {
+            const [category, title, dateRange, numberOfPeople, imageUrl, link] = row.split(',');
+
+            if (category && title && dateRange && numberOfPeople && imageUrl) {
+                const rowElement = document.createElement('tr');
+
+                rowElement.innerHTML = `
+                    <td>${category}</td>
+                    <td>${title}</td>
+                    <td>${dateRange}</td>
+                    <td>${numberOfPeople}</td>
+                    <td><img src="${imageUrl}" alt="Image"></td>
+                `;
+
+                tableBody.appendChild(rowElement);
+            }
+        });
+    })
+    .catch(error => console.error('Error fetching CSV data:', error));
+
+    function sortTable(columnIndex, order) {
+        const table = document.querySelector('table');
+        const rows = Array.from(table.querySelectorAll('tbody tr'));
+    
+        rows.sort((rowA, rowB) => {
+            const cellA = rowA.children[columnIndex].innerText.trim();
+            const cellB = rowB.children[columnIndex].innerText.trim();
+    
+            let comparison = 0;
+    
+            if (columnIndex === 2) { // Date Range Sorting
+                const dateA = new Date(cellA.split('~')[0].trim());
+                const dateB = new Date(cellB.split('~')[0].trim());
+                comparison = dateA - dateB;
+            } else if (columnIndex === 3) { // Number of People Sorting
+                const numberA = parseInt(cellA, 10);
+                const numberB = parseInt(cellB, 10);
+                comparison = numberA - numberB;
+            } else {
+                comparison = cellA.localeCompare(cellB);
+            }
+    
+            return order === 'asc' ? comparison : -comparison;
+        });
+    
+        rows.forEach(row => table.querySelector('tbody').appendChild(row));
+    }
