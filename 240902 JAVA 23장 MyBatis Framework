@@ -1,0 +1,638 @@
+----------------------------------------------------------------------------------------------------
+ex01 회원 기능
+----------------------------------------------------------------------------------------------------
+//SqlMapConfig.xml
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<configuration>
+   <typeAliases>
+      <typeAlias type="com.spring.ex01.MemberVO" alias="memberVO"/>
+   </typeAliases>
+
+   <environments default="development">
+     <environment id="development">
+        <transactionManager type="JDBC"/>
+        <dataSource type="POOLED">
+            <property name="driver" value="oracle.jdbc.driver.OracleDriver" />
+            <property name="url" value="JDBC:oracle:thin:@localhost:1521:내DB이름" />
+            <property name="username" value="내가만든이름" />
+            <property name="password" value="내가만든비번"/>        
+        </dataSource>
+     </environment>
+   </environments>
+
+<mappers>
+   <mapper resource="mybatis/mappers/member.xml"/>
+</mappers>
+</configuration>
+----------------------------------------------------------------------------------------------------
+//member.xml
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+      PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="mapper.member">
+ 	<resultMap id="memResult" type="memberVO">
+		<result property="id" column="id" />
+        <result property="pwd" column="pwd" />
+        <result property="name" column="name" />
+        <result property="email" column="email" />
+        <result property="joinDate" column="joinDate" />
+	</resultMap>
+
+	<select id="selectAllMemberList" resultMap="memResult">
+      <![CDATA[
+         select * from t_member	order by joinDate desc	 	
+      ]]>
+	</select>
+</mapper>
+----------------------------------------------------------------------------------------------------
+//MemberServlet.java
+package com.spring.ex01;
+
+import java.io.IOException;
+import java.util.List;
+
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+@WebServlet("/mem.do")
+public class MemberServlet extends HttpServlet {
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		doHandle(request, response);
+	}
+
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		doHandle(request, response);
+	}
+
+	private void doHandle(HttpServletRequest request, HttpServletResponse response)	throws ServletException, IOException {
+		request.setCharacterEncoding("utf-8");
+		response.setContentType("text/html;charset=utf-8");
+		MemberDAO dao = new MemberDAO();
+		List<MemberVO> membersList = dao.selectAllMemberList();
+		//List<HashMap<String, String>> membersList = dao.selectAllMemberList();
+		request.setAttribute("membersList", membersList);
+		RequestDispatcher dispatch = request.getRequestDispatcher("test01/listMembers.jsp");
+		dispatch.forward(request, response);
+	}
+}
+----------------------------------------------------------------------------------------------------
+//MemberDAO.java
+package com.spring.ex01;
+
+import java.io.Reader;
+import java.util.List;
+
+import org.apache.ibatis.io.Resources;
+import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
+import org.apache.ibatis.session.SqlSessionFactoryBuilder;
+
+public class MemberDAO {
+	public static SqlSessionFactory sqlMapper = null;
+
+	private static SqlSessionFactory getInstance() {
+		if (sqlMapper == null) {
+			try {
+				String resource = "mybatis/SqlMapConfig.xml";
+				Reader reader = Resources.getResourceAsReader(resource);
+				sqlMapper = new SqlSessionFactoryBuilder().build(reader);
+				reader.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return sqlMapper;
+	}
+
+	public List<MemberVO> selectAllMemberList() {
+		sqlMapper = getInstance();
+		SqlSession session = sqlMapper.openSession();
+		List<MemberVO> memlist = null;
+		memlist = session.selectList("mapper.member.selectAllMemberList");
+		return memlist;
+	}	
+}
+----------------------------------------------------------------------------------------------------
+//MemberVO.java
+package com.spring.ex01;
+
+import java.sql.Date;
+
+public class MemberVO {
+	private String id;
+	private String pwd;
+	private String name;
+	private String email;
+	private Date joinDate;
+
+	public MemberVO() {		
+	}
+
+	public MemberVO(String id, String pwd, String name, String email) {
+		this.id = id;
+		this.pwd = pwd;
+		this.name = name;
+		this.email = email;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public String getPwd() {
+		return pwd;
+	}
+
+	public void setPwd(String pwd) {
+		this.pwd = pwd;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public Date getJoinDate() {
+		return joinDate;
+	}
+
+	public void setJoinDate(Date joinDate) {
+		this.joinDate = joinDate;
+	}
+}
+----------------------------------------------------------------------------------------------------
+//listMembers.jsp
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" isELIgnored="false" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"  %>
+<c:set var="contextPath"  value="${pageContext.request.contextPath}"  />
+<%
+ request.setCharacterEncoding("UTF-8");
+%>    
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>회원 정보 출력창</title>
+</head>
+<body>
+<table border="1"  align="center"  width="80%">
+    <tr align="center"   bgcolor="lightgreen">
+      <td ><b>아이디</b></td>
+      <td><b>비밀번호</b></td>
+      <td><b>이름</b></td>
+      <td><b>이메일</b></td>
+      <td><b>가입일</b></td>
+   </tr>
+   
+ <c:forEach var="member" items="${membersList}" >     
+   <tr align="center">
+      <td>${member.id}</td>
+      <td>${member.pwd}</td>
+      <td>${member.name}</td>
+      <td>${member.email}</td>
+      <td>${member.joinDate}</td>
+      
+    </tr>
+  </c:forEach>   
+</table>
+<a  href="${contextPath}/member/memberForm.do"><h1 style="text-align:center">회원가입</h1></a>
+</body>
+</html>
+----------------------------------------------------------------------------------------------------
+ex02 CRUD
+----------------------------------------------------------------------------------------------------
+//member.xml
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+      PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="mapper.member">
+ 	<resultMap id="memResult" type="memberVO">
+		<result property="id" column="id" />
+        <result property="pwd" column="pwd" />
+        <result property="name" column="name" />
+        <result property="email" column="email" />
+        <result property="joinDate" column="joinDate" />
+	</resultMap>
+ 
+	<select id="selectAllMemberList" resultMap="memResult">
+      <![CDATA[
+         select * from t_member	order by joinDate desc	 	
+      ]]>
+	</select>
+
+	<select id="selectName" resultType="String">
+    <![CDATA[
+	select name from t_member
+	where id = 'hong'			
+    ]]>
+	</select>
+	
+	<select id="selectPwd" resultType="int" >
+	  <![CDATA[ 
+	    select pwd from t_member 
+	    where id = 'hong'
+	 ]]>
+	 </select> 
+</mapper>
+----------------------------------------------------------------------------------------------------
+//MemberServlet.java
+package com.spring.ex02;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+@WebServlet("/mem2.do")
+public class MemberServlet extends HttpServlet {
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)	throws ServletException, IOException {
+		doHandle(request, response);
+	}
+
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		doHandle(request, response);
+	}
+
+	private void doHandle(HttpServletRequest request, HttpServletResponse response)	throws  ServletException, IOException {
+		request.setCharacterEncoding("utf-8");
+		response.setContentType("text/html;charset=utf-8");
+		MemberDAO dao = new MemberDAO();
+		//String name = dao.selectName();
+		int pwd = dao.selectPwd();
+		PrintWriter pw = response.getWriter();
+		pw.write("<script>");
+		//pw.write("alert('이름: " + name +"');");
+		pw.write("alert('비밀번호: "+ pwd+"');");
+		pw.write("</script>");
+	}
+}
+----------------------------------------------------------------------------------------------------
+//MemberDAO.java
+package com.spring.ex02;
+
+import java.io.Reader;
+import java.util.List;
+
+import org.apache.ibatis.io.Resources;
+import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
+import org.apache.ibatis.session.SqlSessionFactoryBuilder;
+
+public class MemberDAO {
+	private static SqlSessionFactory sqlMapper = null;
+
+	private static SqlSessionFactory getInstance() {
+		if (sqlMapper == null) {
+			try {
+				String resource = "mybatis/SqlMapConfig.xml";
+				Reader reader = Resources.getResourceAsReader(resource);
+				sqlMapper = new SqlSessionFactoryBuilder().build(reader);
+				reader.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return sqlMapper;
+	}
+
+	public String  selectName() {
+		sqlMapper = getInstance();
+		SqlSession session = sqlMapper.openSession();
+		String name = session.selectOne("mapper.member.selectName");
+		return name;
+	} 
+		
+	public int  selectPwd() {
+		sqlMapper = getInstance();
+		SqlSession session = sqlMapper.openSession();
+		int pwd = session.selectOne("mapper.member.selectPwd");
+		return pwd;
+	}
+}
+----------------------------------------------------------------------------------------------------
+23.4.2 HashMap을 이용한 모든 회원 정보 조회
+----------------------------------------------------------------------------------------------------
+//member.xml
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+      PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="mapper.member">
+	<resultMap id="memResult" type="java.util.HashMap">
+      <result property="id" column="id" />
+      <result property="pwd" column="pwd" />
+      <result property="name" column="name" />
+      <result property="email" column="email" />
+      <result property="joinDate" column="joinDate" />
+   </resultMap>
+ 
+	<select id="selectAllMemberList" resultMap="memResult">
+      <![CDATA[
+         select * from t_member	order by joinDate desc	 	
+      ]]>
+	</select> 
+</mapper>
+----------------------------------------------------------------------------------------------------
+//MemberServlet.java
+package com.spring.ex01;
+
+import java.io.IOException;
+import java.util.List;
+
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+@WebServlet("/mem.do")
+public class MemberServlet extends HttpServlet {
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		doHandle(request, response);
+	}
+
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		doHandle(request, response);
+	}
+
+	private void doHandle(HttpServletRequest request, HttpServletResponse response)	throws ServletException, IOException {
+		request.setCharacterEncoding("utf-8");
+		response.setContentType("text/html;charset=utf-8");
+		MemberDAO dao = new MemberDAO();
+		//List<MemberVO> membersList = dao.selectAllMemberList();
+		List<HashMap<String, String>> membersList = dao.selectAllMemberList();
+		request.setAttribute("membersList", membersList);
+		RequestDispatcher dispatch = request.getRequestDispatcher("test01/listMembers.jsp");
+		dispatch.forward(request, response);
+	}
+}
+----------------------------------------------------------------------------------------------------
+//MemberDAO.java
+package com.spring.ex01;
+
+import java.io.Reader;
+import java.util.HashMap;
+import java.util.List;
+
+import org.apache.ibatis.io.Resources;
+import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
+import org.apache.ibatis.session.SqlSessionFactoryBuilder;
+
+public class MemberDAO {
+	public static SqlSessionFactory sqlMapper = null;
+
+	private static SqlSessionFactory getInstance() {
+		if (sqlMapper == null) {
+			try {
+				String resource = "mybatis/SqlMapConfig.xml";
+				Reader reader = Resources.getResourceAsReader(resource);
+				sqlMapper = new SqlSessionFactoryBuilder().build(reader);
+				reader.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return sqlMapper;
+	}
+
+	 public List<HashMap<String, String>> selectAllMemberList() { 
+		sqlMapper = getInstance(); 
+     	SqlSession session = sqlMapper.openSession();
+		List<HashMap<String, String>> memlist = null; 
+		memlist = session.selectList("mapper.member.selectAllMemberList"); 
+		return memlist; 
+	 }	
+}
+----------------------------------------------------------------------------------------------------
+23.4.3 조건 값으로 회원 정보 조회
+----------------------------------------------------------------------------------------------------
+//member.xml
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+      PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="mapper.member">
+ 	<resultMap id="memResult" type="memberVO">
+		<result property="id" column="id" />
+        <result property="pwd" column="pwd" />
+        <result property="name" column="name" />
+        <result property="email" column="email" />
+        <result property="joinDate" column="joinDate" />
+	</resultMap>
+  
+	<select id="selectAllMemberList" resultMap="memResult">
+      <![CDATA[
+         select * from t_member	order by joinDate desc	 	
+      ]]>
+	</select>
+ 	 
+	<select id="selectMemberById" resultType="memberVO"  parameterType="String" >
+      <![CDATA[
+         select * from t_member
+         where
+         id=#{id}
+      ]]>
+	 </select>	
+	
+	<select id="selectMemberByPwd" resultMap="memResult"  parameterType="int" >
+      <![CDATA[
+         select * from t_member
+         where
+         pwd = #{pwd}
+      ]]>
+    </select>    
+</mapper>
+----------------------------------------------------------------------------------------------------
+//MemberServlet.java
+package com.spring.ex03;
+
+import java.io.IOException;
+import java.util.List;
+
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import com.spring.ex01.MemberVO;
+
+@WebServlet("/mem3.do")
+public class MemberServlet extends HttpServlet {
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)	throws ServletException, IOException {
+		doHandle(request, response);
+	}
+
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		doHandle(request, response);
+	}
+
+	private void doHandle(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		request.setCharacterEncoding("utf-8");
+		MemberDAO dao = new MemberDAO();
+		MemberVO memberVO = new MemberVO();
+		String action = request.getParameter("action");
+		String nextPage = "";
+
+		if (action== null || action.equals("listMembers")) {
+			List<MemberVO> membersList = dao.selectAllMemberList();
+			request.setAttribute("membersList", membersList);
+			nextPage = "test02/listMembers.jsp";
+		} else if (action.equals("selectMemberById")) {
+			String id = request.getParameter("value");
+			memberVO = dao.selectMemberById(id);
+			request.setAttribute("member", memberVO);
+			nextPage = "test02/memberInfo.jsp";
+		} else if (action.equals("selectMemberByPwd")) {
+			int pwd = Integer.parseInt(request.getParameter("value"));
+			List<MemberVO> membersList = dao.selectMemberByPwd(pwd);
+			request.setAttribute("membersList", membersList);
+			nextPage = "test02/listMembers.jsp";
+		}		
+		
+		RequestDispatcher dispatch = request.getRequestDispatcher(nextPage);  
+		dispatch.forward(request, response);
+	}
+}
+----------------------------------------------------------------------------------------------------
+//MemberDAO.java
+package com.spring.ex03;
+
+import java.io.Reader;
+import java.util.List;
+
+import org.apache.ibatis.io.Resources;
+import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
+import org.apache.ibatis.session.SqlSessionFactoryBuilder;
+
+import com.spring.ex01.MemberVO;
+
+public class MemberDAO {
+	public static SqlSessionFactory sqlMapper = null;
+
+	private static SqlSessionFactory getInstance() {
+		if (sqlMapper == null) {
+			try {
+				String resource = "mybatis/SqlMapConfig.xml";
+				Reader reader = Resources.getResourceAsReader(resource);
+				sqlMapper = new SqlSessionFactoryBuilder().build(reader);
+				reader.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return sqlMapper;
+	}
+	public List<MemberVO> selectAllMemberList() {
+		sqlMapper = getInstance();
+		SqlSession session = sqlMapper.openSession();
+		List<MemberVO> memlist = null;
+		memlist = session.selectList("mapper.member.selectAllMemberList");
+		return memlist;
+	}
+
+	public MemberVO selectMemberById(String id){
+	      sqlMapper=getInstance();
+	SqlSession session=sqlMapper.openSession();
+	      MemberVO memberVO=session.selectOne("mapper.member.selectMemberById",id);
+	      return memberVO;		
+	   }
+
+	public List<MemberVO> selectMemberByPwd(int pwd) {
+	sqlMapper = getInstance();
+	SqlSession session = sqlMapper.openSession();
+	List<MemberVO> membersList = null;
+	membersList= session.selectList("mapper.member.selectMemberByPwd", pwd);
+	return membersList;
+	}
+}
+----------------------------------------------------------------------------------------------------
+//search.jsp
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" isELIgnored="false" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"  %>
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>회원 검색창</title>
+</head>
+<body>
+ <form action="${pageContext.request.contextPath}/mem3.do">
+   입력 : <input type="text" name="value" />
+   <select name="action">
+     <option value="listMembers">전체</option>
+     <option value="selectMemberById">아이디</option>
+     <option value="selectMemberByPwd">비밀번호</option>
+   </select> <br>
+   <input type="submit" value="검색"  />
+</form>   
+</body>
+</html>
+----------------------------------------------------------------------------------------------------
+//memberInfo.jsp
+<%@ page language="java" contentType="text/html; charset=UTF-8" import="java.io.*,java.util.*" pageEncoding="UTF-8" isELIgnored="false" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>    
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+ 
+<html>
+<head>
+<meta charset=UTF-8">
+<title>회원 정보 출력창</title>
+</head>
+<body>
+<table border=1 align="center" width="100%" >
+   <tr align="center"   bgcolor="lightgreen">
+      <td ><b>아이디</b></td>
+      <td><b>비밀번호</b></td>
+      <td><b>이름</b></td>
+      <td><b>이메일</b></td>
+      <td><b>가입일</b></td>
+   </tr>
+   <tr align="center">
+      <td>${member.id} </td>
+      <td>${member.pwd} </td>
+      <td>${member.name} </td>
+      <td>${member.email} </td>
+      <td>${member.joinDate}</td>
+    </tr>
+</table>
+</body>
+</html>
+----------------------------------------------------------------------------------------------------
