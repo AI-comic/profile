@@ -1,0 +1,1059 @@
+----------------------------------------------------------------------------------------------------
+23.5 마이바티스의 동적 SQL문
+23.5.1 <if> 태그로 동적 SQL문 만들기
+----------------------------------------------------------------------------------------------------
+//member.xml
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="mapper.member">
+ 	<resultMap id="memResult" type="memberVO">
+		<result property="id" column="id" />
+        <result property="pwd" column="pwd" />
+        <result property="name" column="name" />
+        <result property="email" column="email" />
+        <result property="joinDate" column="joinDate" />
+	</resultMap>
+  
+	<select id="selectAllMemberList" resultMap="memResult">
+    <![CDATA[
+      	select * from t_member	order by joinDate desc	 	
+    ]]>
+	</select>
+ 	 
+	<select id="selectMemberById" resultType="memberVO"  parameterType="String" >
+    <![CDATA[
+      	select * from t_member
+       	where id=#{id}
+    ]]>
+	</select>	
+	
+	<select id="selectMemberByPwd" resultMap="memResult"  parameterType="int" >
+    <![CDATA[
+       	select * from t_member
+       	where pwd = #{pwd}
+    ]]>
+    </select>
+    
+    <insert id="insertMember"  parameterType="memberVO">
+	<![CDATA[
+	 	insert into t_member(id,pwd, name, email)
+	 	values(#{id}, #{pwd}, #{name}, #{email})
+	]]>      
+	</insert>
+	
+	<insert id="insertMember2"  parameterType="java.util.Map">
+	<![CDATA[
+		 insert into t_member(id,pwd, name, email)
+		 values(#{id}, #{pwd}, #{name}, #{email})
+	]]>      
+	</insert>
+	
+	<update id="updateMember"  parameterType="memberVO">
+	<![CDATA[
+	   	update t_member
+	   	set pwd=#{pwd}, name=#{name}, email=#{email}
+	   	where id=#{id}
+	]]> 
+	</update>
+	
+	<delete id="deleteMember"  parameterType="String">
+	<![CDATA[
+	   	delete from  t_member
+	   	where id=#{id}
+	]]>
+	</delete>
+	
+	<!-- 동적 SQL문 -->
+  	<select id="searchMember" parameterType="memberVO" resultMap="memResult">
+	  	<![CDATA[
+			select * from t_member
+		]]>
+		<where>
+			<if test="name != '' and name != null">
+				name = #{name}
+			</if>
+			<if test="email != '' and email != null">
+				and email = #{email}
+			</if>
+		</where>
+		order by joinDate desc
+  	</select>
+</mapper>
+----------------------------------------------------------------------------------------------------
+//MemberServlet.java
+package com.spring.ex04;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import com.spring.ex01.MemberVO;
+
+@WebServlet("/mem4.do")
+public class MemberServlet extends HttpServlet {
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		doHandle(request, response);
+	}
+
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		doHandle(request, response);
+	}
+
+	private void doHandle(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		request.setCharacterEncoding("utf-8");
+		MemberDAO dao = new MemberDAO();
+		MemberVO memberVO = new MemberVO();
+		String action = request.getParameter("action");
+		String nextPage = "";
+
+		if (action == null || action.equals("listMembers")) {
+			List<MemberVO> membersList = dao.selectAllMemberList();
+			request.setAttribute("membersList", membersList);
+			nextPage = "test03/listMembers.jsp";
+		} else if (action.equals("selectMemberById")) {
+			String id = request.getParameter("value");
+			memberVO = dao.selectMemberById(id);
+			request.setAttribute("member", memberVO);
+			nextPage = "test03/memberInfo.jsp";
+		} else if (action.equals("selectMemberByPwd")) {
+			int pwd = Integer.parseInt(request.getParameter("value"));
+			List<MemberVO> membersList = dao.selectMemberByPwd(pwd);
+			request.setAttribute("membersList", membersList);
+			nextPage = "test03/listMembers.jsp";
+		} else if(action.equals("insertMember")) {
+			String id=request.getParameter("id");
+            String pwd=request.getParameter("pwd");
+            String name=request.getParameter("name");
+            String email = request.getParameter("email");
+            memberVO.setId(id);
+            memberVO.setPwd(pwd);
+            memberVO.setName(name);
+            memberVO.setEmail(email);
+            dao.insertMember(memberVO);
+            nextPage="/mem4.do?action=listMembers";
+		} else if(action.equals("insertMember2")) {
+			String id=request.getParameter("id");
+            String pwd=request.getParameter("pwd");
+            String name=request.getParameter("name");
+            String email = request.getParameter("email");
+            Map memberMap=new HashMap();
+            memberMap.put("id", id);
+            memberMap.put("pwd", pwd);
+            memberMap.put("name", name);
+            memberMap.put("email", email);
+            dao.insertMember2(memberMap);
+            nextPage="/mem4.do?action=listMembers";
+       } else if(action.equals("updateMember")){
+           String id=request.getParameter("id");
+           String pwd=request.getParameter("pwd");
+           String name=request.getParameter("name");
+           String email = request.getParameter("email");
+           memberVO.setId(id);
+           memberVO.setPwd(pwd);
+           memberVO.setName(name);
+           memberVO.setEmail(email);
+           dao.updateMember(memberVO);
+           nextPage="/mem4.do?action=listMembers";
+       } else if(action.equals("deleteMember")){
+    	   String id=request.getParameter("id");
+    	   dao.deleteMember(id);
+    	   nextPage="/mem4.do?action=listMembers";
+       } else if(action.equals("searchMember")){
+    	   String name=request.getParameter("name");
+           String email=request.getParameter("email");
+           memberVO.setName(name);
+           memberVO.setEmail(email);
+           List<MemberVO> membersList =dao.searchMember(memberVO);
+           request.setAttribute("membersList",membersList);
+           nextPage="test03/listMembers.jsp";
+       }
+	   RequestDispatcher dispatch = request.getRequestDispatcher(nextPage);  
+	   dispatch.forward(request, response);
+	}
+}
+----------------------------------------------------------------------------------------------------
+//MemberDAO.java
+package com.spring.ex04;
+
+import java.io.Reader;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.ibatis.io.Resources;
+import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
+import org.apache.ibatis.session.SqlSessionFactoryBuilder;
+
+import com.spring.ex01.MemberVO;
+
+public class MemberDAO {
+	private static SqlSessionFactory sqlMapper = null;
+
+	private static SqlSessionFactory getInstance() {
+		if (sqlMapper == null) {
+			try {
+				String resource = "mybatis/SqlMapConfig.xml";
+				Reader reader = Resources.getResourceAsReader(resource);
+				sqlMapper = new SqlSessionFactoryBuilder().build(reader);
+				reader.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return sqlMapper;
+	}
+	public List<MemberVO> selectAllMemberList() {
+		sqlMapper = getInstance();
+		SqlSession session = sqlMapper.openSession();
+		List<MemberVO> memlist = null;
+		memlist = session.selectList("mapper.member.selectAllMemberList");
+		return memlist;
+	}
+
+	public MemberVO selectMemberById(String id){
+	      sqlMapper=getInstance();
+	SqlSession session=sqlMapper.openSession();
+	      MemberVO memberVO=session.selectOne("mapper.member.selectMemberById",id);
+	      return memberVO;		
+	   }
+
+	public List<MemberVO> selectMemberByPwd(int pwd) {
+	sqlMapper = getInstance();
+	SqlSession session = sqlMapper.openSession();
+	List<MemberVO> membersList = null;
+	membersList= session.selectList("mapper.member.selectMemberByPwd", pwd);
+	return membersList;
+	}
+
+	public int insertMember(MemberVO memberVO) {
+		sqlMapper = getInstance();
+		SqlSession session = sqlMapper.openSession();
+		int result = 0;
+		result = session.insert("mapper.member.insertMember", memberVO);
+		session.commit();
+		return result;
+	}
+	
+	public int insertMember2(Map<String,String> memberMap){
+        sqlMapper=getInstance();
+        SqlSession session=sqlMapper.openSession();
+        int result= result=session.insert("mapper.member.insertMember2",memberMap);
+        session.commit();	
+        return result;		
+	}
+	
+	public int updateMember(MemberVO memberVO) {
+		sqlMapper = getInstance();
+		SqlSession session = sqlMapper.openSession();
+		int result = session.update("mapper.member.updateMember", memberVO);
+		session.commit();
+		return result;
+	}
+	
+	public int deleteMember(String id) {
+		sqlMapper = getInstance();
+		SqlSession session = sqlMapper.openSession();
+		int result = 0;
+		result = session.delete("mapper.member.deleteMember", id);
+		session.commit();
+		return result;
+    }
+	
+	public List<MemberVO>  searchMember(MemberVO  memberVO){
+        sqlMapper=getInstance();
+        SqlSession session=sqlMapper.openSession();
+        List list=session.selectList("mapper.member.searchMember",memberVO);
+        return list;		
+    } 
+}
+----------------------------------------------------------------------------------------------------
+//searchMember.jsp
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" isELIgnored="false" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>    
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<c:set var="contextPath"  value="${pageContext.request.contextPath}" />
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>회원 검색창</title>
+</head>
+<body>
+<h1>회원 검색</h1>
+<form action="${contextPath}/mem4.do">
+	<input type="hidden" name="action" value="searchMember" />
+	이름: <input type="text" name="name" /><br>
+	이메일: <input type="text" name="email" /><br>
+	<input type="submit" value="검색" />
+</form> 
+</body>
+</html>
+----------------------------------------------------------------------------------------------------
+23.5.2 <choose> 태그로 동적 SQL문 만들기
+23.5.3 <foreach> 태그로 회원 정보 조회하기
+----------------------------------------------------------------------------------------------------
+//member.xml
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+      PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="mapper.member">
+ 	<resultMap id="memResult" type="memberVO">
+		<result property="id" column="id" />
+        <result property="pwd" column="pwd" />
+        <result property="name" column="name" />
+        <result property="email" column="email" />
+        <result property="joinDate" column="joinDate" />
+	</resultMap>
+  
+	<select id="selectAllMemberList" resultMap="memResult">
+    <![CDATA[
+      	select * from t_member	order by joinDate desc	 	
+    ]]>
+	</select>
+ 	 
+	<select id="selectMemberById" resultType="memberVO"  parameterType="String" >
+    <![CDATA[
+      	select * from t_member
+       	where id=#{id}
+    ]]>
+	</select>	
+	
+	<select id="selectMemberByPwd" resultMap="memResult"  parameterType="int" >
+    <![CDATA[
+       	select * from t_member
+       	where pwd = #{pwd}
+    ]]>
+    </select>
+    
+    <insert id="insertMember"  parameterType="memberVO">
+	<![CDATA[
+	 	insert into t_member(id,pwd, name, email)
+	 	values(#{id}, #{pwd}, #{name}, #{email})
+	]]>      
+	</insert>
+	
+	<insert id="insertMember2"  parameterType="java.util.Map">
+	<![CDATA[
+		 insert into t_member(id,pwd, name, email)
+		 values(#{id}, #{pwd}, #{name}, #{email})
+	]]>      
+	</insert>
+	
+	<update id="updateMember"  parameterType="memberVO">
+	<![CDATA[
+	   	update t_member
+	   	set pwd=#{pwd}, name=#{name}, email=#{email}
+	   	where id=#{id}
+	]]> 
+	</update>
+	
+	<delete id="deleteMember"  parameterType="String">
+	<![CDATA[
+	   	delete from  t_member
+	   	where id=#{id}
+	]]>
+	</delete>
+	
+	<!-- 동적 SQL문 -->
+  	<select id="searchMember" parameterType="memberVO" resultMap="memResult">
+	  	<![CDATA[
+			select * from t_member
+		]]>
+		<where>
+			<choose>
+		      <when test="name != '' and name != null and  email != '' and email != null">
+			     name=#{name} and email=#{email}
+		      </when>
+		      <when test="name != '' and name != null">
+			     name = #{name}
+		      </when>
+		      <when test="email !='' and email != null">
+			    email = #{email}
+		      </when>
+	      	</choose>
+		</where>
+		order by joinDate desc
+  	</select>
+  	
+  	<select id="foreachSelect" resultMap="memResult" parameterType="java.util.Map">
+	  	<![CDATA[
+			select * from t_member
+		]]>
+      	where name in
+      	<foreach item="item" collection="list" open="(" separator="," close=")" >
+         	#{item}
+      	</foreach>
+      	order by joinDate desc
+   	</select>   
+</mapper>
+----------------------------------------------------------------------------------------------------
+//MemberSerlvet.java
+package com.spring.ex04;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import com.spring.ex01.MemberVO;
+
+@WebServlet("/mem4.do")
+public class MemberServlet extends HttpServlet {
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		doHandle(request, response);
+	}
+
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		doHandle(request, response);
+	}
+
+	private void doHandle(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		request.setCharacterEncoding("utf-8");
+		MemberDAO dao = new MemberDAO();
+		MemberVO memberVO = new MemberVO();
+		String action = request.getParameter("action");
+		String nextPage = "";
+
+		if (action == null || action.equals("listMembers")) {
+			List<MemberVO> membersList = dao.selectAllMemberList();
+			request.setAttribute("membersList", membersList);
+			nextPage = "test03/listMembers.jsp";
+		} else if (action.equals("selectMemberById")) {
+			String id = request.getParameter("value");
+			memberVO = dao.selectMemberById(id);
+			request.setAttribute("member", memberVO);
+			nextPage = "test03/memberInfo.jsp";
+		} else if (action.equals("selectMemberByPwd")) {
+			int pwd = Integer.parseInt(request.getParameter("value"));
+			List<MemberVO> membersList = dao.selectMemberByPwd(pwd);
+			request.setAttribute("membersList", membersList);
+			nextPage = "test03/listMembers.jsp";
+		} else if(action.equals("insertMember")) {
+			String id=request.getParameter("id");
+            String pwd=request.getParameter("pwd");
+            String name=request.getParameter("name");
+            String email = request.getParameter("email");
+            memberVO.setId(id);
+            memberVO.setPwd(pwd);
+            memberVO.setName(name);
+            memberVO.setEmail(email);
+            dao.insertMember(memberVO);
+            nextPage="/mem4.do?action=listMembers";
+		} else if(action.equals("insertMember2")) {
+			String id=request.getParameter("id");
+            String pwd=request.getParameter("pwd");
+            String name=request.getParameter("name");
+            String email = request.getParameter("email");
+            Map memberMap=new HashMap();
+            memberMap.put("id", id);
+            memberMap.put("pwd", pwd);
+            memberMap.put("name", name);
+            memberMap.put("email", email);
+            dao.insertMember2(memberMap);
+            nextPage="/mem4.do?action=listMembers";
+       } else if(action.equals("updateMember")){
+           String id=request.getParameter("id");
+           String pwd=request.getParameter("pwd");
+           String name=request.getParameter("name");
+           String email = request.getParameter("email");
+           memberVO.setId(id);
+           memberVO.setPwd(pwd);
+           memberVO.setName(name);
+           memberVO.setEmail(email);
+           dao.updateMember(memberVO);
+           nextPage="/mem4.do?action=listMembers";
+       } else if(action.equals("deleteMember")){
+    	   String id=request.getParameter("id");
+    	   dao.deleteMember(id);
+    	   nextPage="/mem4.do?action=listMembers";
+       } else if(action.equals("searchMember")){
+    	   String name=request.getParameter("name");
+           String email=request.getParameter("email");
+           memberVO.setName(name);
+           memberVO.setEmail(email);
+           List<MemberVO> membersList =dao.searchMember(memberVO);
+           request.setAttribute("membersList",membersList);
+           nextPage="test03/listMembers.jsp";
+       } else if(action.equals("foreachSelect")) {
+ 		  List<String> nameList = new ArrayList<String>();
+ 		  nameList.add("홍길동");
+ 		  nameList.add("차범근");
+ 		  nameList.add("이순신");
+ 		  List<String> membersList=dao.foreachSelect(nameList);
+ 		  request.setAttribute("membersList",membersList);
+ 		  nextPage="test03/listMembers.jsp";
+ 	   }
+	   RequestDispatcher dispatch = request.getRequestDispatcher(nextPage);  
+	   dispatch.forward(request, response);
+	}
+}
+----------------------------------------------------------------------------------------------------
+//MemberDAO.java
+package com.spring.ex04;
+
+import java.io.Reader;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.ibatis.io.Resources;
+import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
+import org.apache.ibatis.session.SqlSessionFactoryBuilder;
+
+import com.spring.ex01.MemberVO;
+
+public class MemberDAO {
+	private static SqlSessionFactory sqlMapper = null;
+
+	private static SqlSessionFactory getInstance() {
+		if (sqlMapper == null) {
+			try {
+				String resource = "mybatis/SqlMapConfig.xml";
+				Reader reader = Resources.getResourceAsReader(resource);
+				sqlMapper = new SqlSessionFactoryBuilder().build(reader);
+				reader.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return sqlMapper;
+	}
+	public List<MemberVO> selectAllMemberList() {
+		sqlMapper = getInstance();
+		SqlSession session = sqlMapper.openSession();
+		List<MemberVO> memlist = null;
+		memlist = session.selectList("mapper.member.selectAllMemberList");
+		return memlist;
+	}
+
+	public MemberVO selectMemberById(String id){
+	      sqlMapper=getInstance();
+	SqlSession session=sqlMapper.openSession();
+	      MemberVO memberVO=session.selectOne("mapper.member.selectMemberById",id);
+	      return memberVO;		
+	   }
+
+	public List<MemberVO> selectMemberByPwd(int pwd) {
+	sqlMapper = getInstance();
+	SqlSession session = sqlMapper.openSession();
+	List<MemberVO> membersList = null;
+	membersList= session.selectList("mapper.member.selectMemberByPwd", pwd);
+	return membersList;
+	}
+
+	public int insertMember(MemberVO memberVO) {
+		sqlMapper = getInstance();
+		SqlSession session = sqlMapper.openSession();
+		int result = 0;
+		result = session.insert("mapper.member.insertMember", memberVO);
+		session.commit();
+		return result;
+	}
+	
+	public int insertMember2(Map<String,String> memberMap){
+        sqlMapper=getInstance();
+        SqlSession session=sqlMapper.openSession();
+        int result= result=session.insert("mapper.member.insertMember2",memberMap);
+        session.commit();	
+        return result;		
+	}
+	
+	public int updateMember(MemberVO memberVO) {
+		sqlMapper = getInstance();
+		SqlSession session = sqlMapper.openSession();
+		int result = session.update("mapper.member.updateMember", memberVO);
+		session.commit();
+		return result;
+	}
+	
+	public int deleteMember(String id) {
+		sqlMapper = getInstance();
+		SqlSession session = sqlMapper.openSession();
+		int result = 0;
+		result = session.delete("mapper.member.deleteMember", id);
+		session.commit();
+		return result;
+    }
+	
+	public List<MemberVO>  searchMember(MemberVO  memberVO){
+        sqlMapper=getInstance();
+        SqlSession session=sqlMapper.openSession();
+        List list=session.selectList("mapper.member.searchMember",memberVO);
+        return list;		
+    }
+	
+	public List<String> foreachSelect(List<String> nameList){
+        sqlMapper=getInstance();
+        SqlSession session=sqlMapper.openSession();
+        List list=session.selectList("mapper.member.foreachSelect",nameList);
+        return list;		
+	}
+}
+----------------------------------------------------------------------------------------------------
+23.5.4 <foreach> 태그로 회원 정보 추가하기
+----------------------------------------------------------------------------------------------------
+//member.xml
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+      PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="mapper.member">
+ 	<resultMap id="memResult" type="memberVO">
+		<result property="id" column="id" />
+        <result property="pwd" column="pwd" />
+        <result property="name" column="name" />
+        <result property="email" column="email" />
+        <result property="joinDate" column="joinDate" />
+	</resultMap>
+  
+	<select id="selectAllMemberList" resultMap="memResult">
+    <![CDATA[
+      	select * from t_member	order by joinDate desc	 	
+    ]]>
+	</select>
+ 	 
+	<select id="selectMemberById" resultType="memberVO"  parameterType="String" >
+    <![CDATA[
+      	select * from t_member
+       	where id=#{id}
+    ]]>
+	</select>	
+	
+	<select id="selectMemberByPwd" resultMap="memResult"  parameterType="int" >
+    <![CDATA[
+       	select * from t_member
+       	where pwd = #{pwd}
+    ]]>
+    </select>
+    
+    <insert id="insertMember"  parameterType="memberVO">
+	<![CDATA[
+	 	insert into t_member(id,pwd, name, email)
+	 	values(#{id}, #{pwd}, #{name}, #{email})
+	]]>      
+	</insert>
+	
+	<insert id="insertMember2"  parameterType="java.util.Map">
+	<![CDATA[
+		 insert into t_member(id,pwd, name, email)
+		 values(#{id}, #{pwd}, #{name}, #{email})
+	]]>      
+	</insert>
+	
+	<update id="updateMember"  parameterType="memberVO">
+	<![CDATA[
+	   	update t_member
+	   	set pwd=#{pwd}, name=#{name}, email=#{email}
+	   	where id=#{id}
+	]]> 
+	</update>
+	
+	<delete id="deleteMember"  parameterType="String">
+	<![CDATA[
+	   	delete from  t_member
+	   	where id=#{id}
+	]]>
+	</delete>
+	
+	<!-- 동적 SQL문 -->
+  	<select id="searchMember" parameterType="memberVO" resultMap="memResult">
+	  	<![CDATA[
+			select * from t_member
+		]]>
+		<where>
+			<choose>
+		      <when test="name != '' and name != null and  email != '' and email != null">
+			     name=#{name} and email=#{email}
+		      </when>
+		      <when test="name != '' and name != null">
+			     name = #{name}
+		      </when>
+		      <when test="email !='' and email != null">
+			    email = #{email}
+		      </when>
+	      	</choose>
+		</where>
+		order by joinDate desc
+  	</select>
+  	
+  	<select id="foreachSelect" resultMap="memResult" parameterType="java.util.Map">
+	  	<![CDATA[
+			select * from t_member
+		]]>
+      	where name in
+      	<foreach item="item" collection="list" open="(" separator="," close=")" >
+         	#{item}
+      	</foreach>
+      	order by joinDate desc
+   	</select>
+   	
+	<insert id="foreachInsert" parameterType="java.util.Map">
+      	<foreach item="item" collection="list" open="INSERT ALL" separator=" " close="SELECT * FROM DUAL" >
+          INTO t_member(id, pwd, name, email)
+          VALUES (#{item.id},
+                  #{item.pwd},
+                  #{item.name},
+                  #{item.email})
+      	</foreach>
+   	</insert>
+</mapper>
+----------------------------------------------------------------------------------------------------
+//MemberServlet.java
+package com.spring.ex04;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import com.spring.ex01.MemberVO;
+
+@WebServlet("/mem4.do")
+public class MemberServlet extends HttpServlet {
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		doHandle(request, response);
+	}
+
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		doHandle(request, response);
+	}
+
+	private void doHandle(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		request.setCharacterEncoding("utf-8");
+		MemberDAO dao = new MemberDAO();
+		MemberVO memberVO = new MemberVO();
+		String action = request.getParameter("action");
+		String nextPage = "";
+
+		if (action == null || action.equals("listMembers")) {
+			List<MemberVO> membersList = dao.selectAllMemberList();
+			request.setAttribute("membersList", membersList);
+			nextPage = "test03/listMembers.jsp";
+		} else if (action.equals("selectMemberById")) {
+			String id = request.getParameter("value");
+			memberVO = dao.selectMemberById(id);
+			request.setAttribute("member", memberVO);
+			nextPage = "test03/memberInfo.jsp";
+		} else if (action.equals("selectMemberByPwd")) {
+			int pwd = Integer.parseInt(request.getParameter("value"));
+			List<MemberVO> membersList = dao.selectMemberByPwd(pwd);
+			request.setAttribute("membersList", membersList);
+			nextPage = "test03/listMembers.jsp";
+		} else if(action.equals("insertMember")) {
+			String id=request.getParameter("id");
+            String pwd=request.getParameter("pwd");
+            String name=request.getParameter("name");
+            String email = request.getParameter("email");
+            memberVO.setId(id);
+            memberVO.setPwd(pwd);
+            memberVO.setName(name);
+            memberVO.setEmail(email);
+            dao.insertMember(memberVO);
+            nextPage="/mem4.do?action=listMembers";
+		} else if(action.equals("insertMember2")) {
+			String id=request.getParameter("id");
+            String pwd=request.getParameter("pwd");
+            String name=request.getParameter("name");
+            String email = request.getParameter("email");
+            Map memberMap=new HashMap();
+            memberMap.put("id", id);
+            memberMap.put("pwd", pwd);
+            memberMap.put("name", name);
+            memberMap.put("email", email);
+            dao.insertMember2(memberMap);
+            nextPage="/mem4.do?action=listMembers";
+       } else if(action.equals("updateMember")){
+           String id=request.getParameter("id");
+           String pwd=request.getParameter("pwd");
+           String name=request.getParameter("name");
+           String email = request.getParameter("email");
+           memberVO.setId(id);
+           memberVO.setPwd(pwd);
+           memberVO.setName(name);
+           memberVO.setEmail(email);
+           dao.updateMember(memberVO);
+           nextPage="/mem4.do?action=listMembers";
+       } else if(action.equals("deleteMember")){
+    	   String id=request.getParameter("id");
+    	   dao.deleteMember(id);
+    	   nextPage="/mem4.do?action=listMembers";
+       } else if(action.equals("searchMember")){
+    	   String name=request.getParameter("name");
+           String email=request.getParameter("email");
+           memberVO.setName(name);
+           memberVO.setEmail(email);
+           List<MemberVO> membersList =dao.searchMember(memberVO);
+           request.setAttribute("membersList",membersList);
+           nextPage="test03/listMembers.jsp";
+       } else if(action.equals("foreachSelect")) {
+ 		  List<String> nameList = new ArrayList<String>();
+ 		  nameList.add("홍길동");
+ 		  nameList.add("차범근");
+ 		  nameList.add("이순신");
+ 		  List<String> membersList=dao.foreachSelect(nameList);
+ 		  request.setAttribute("membersList",membersList);
+ 		  nextPage="test03/listMembers.jsp";
+ 	   } else if(action.equals("foreachInsert")) {
+          List<MemberVO> memList = new ArrayList<MemberVO>();
+          memList.add(new MemberVO("m1", "1234", "박길동", "m1@test.com"));
+          memList.add(new MemberVO("m2", "1234", "이길동", "m2@test.com"));
+          memList.add(new MemberVO("m3", "1234", "김길동", "m3@test.com"));
+          int result=dao.foreachInsert(memList);
+          nextPage="/mem4.do?action=listMembers";
+ 	   }
+	   RequestDispatcher dispatch = request.getRequestDispatcher(nextPage);  
+	   dispatch.forward(request, response);
+	}
+}
+----------------------------------------------------------------------------------------------------
+//MemberDAO.java
+package com.spring.ex04;
+
+import java.io.Reader;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.ibatis.io.Resources;
+import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
+import org.apache.ibatis.session.SqlSessionFactoryBuilder;
+
+import com.spring.ex01.MemberVO;
+
+public class MemberDAO {
+	private static SqlSessionFactory sqlMapper = null;
+
+	private static SqlSessionFactory getInstance() {
+		if (sqlMapper == null) {
+			try {
+				String resource = "mybatis/SqlMapConfig.xml";
+				Reader reader = Resources.getResourceAsReader(resource);
+				sqlMapper = new SqlSessionFactoryBuilder().build(reader);
+				reader.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return sqlMapper;
+	}
+	public List<MemberVO> selectAllMemberList() {
+		sqlMapper = getInstance();
+		SqlSession session = sqlMapper.openSession();
+		List<MemberVO> memlist = null;
+		memlist = session.selectList("mapper.member.selectAllMemberList");
+		return memlist;
+	}
+
+	public MemberVO selectMemberById(String id){
+	      sqlMapper=getInstance();
+	SqlSession session=sqlMapper.openSession();
+	      MemberVO memberVO=session.selectOne("mapper.member.selectMemberById",id);
+	      return memberVO;		
+	   }
+
+	public List<MemberVO> selectMemberByPwd(int pwd) {
+	sqlMapper = getInstance();
+	SqlSession session = sqlMapper.openSession();
+	List<MemberVO> membersList = null;
+	membersList= session.selectList("mapper.member.selectMemberByPwd", pwd);
+	return membersList;
+	}
+
+	public int insertMember(MemberVO memberVO) {
+		sqlMapper = getInstance();
+		SqlSession session = sqlMapper.openSession();
+		int result = 0;
+		result = session.insert("mapper.member.insertMember", memberVO);
+		session.commit();
+		return result;
+	}
+	
+	public int insertMember2(Map<String,String> memberMap){
+        sqlMapper=getInstance();
+        SqlSession session=sqlMapper.openSession();
+        int result= result=session.insert("mapper.member.insertMember2",memberMap);
+        session.commit();	
+        return result;		
+	}
+	
+	public int updateMember(MemberVO memberVO) {
+		sqlMapper = getInstance();
+		SqlSession session = sqlMapper.openSession();
+		int result = session.update("mapper.member.updateMember", memberVO);
+		session.commit();
+		return result;
+	}
+	
+	public int deleteMember(String id) {
+		sqlMapper = getInstance();
+		SqlSession session = sqlMapper.openSession();
+		int result = 0;
+		result = session.delete("mapper.member.deleteMember", id);
+		session.commit();
+		return result;
+    }
+	
+	public List<MemberVO>  searchMember(MemberVO  memberVO){
+        sqlMapper=getInstance();
+        SqlSession session=sqlMapper.openSession();
+        List list=session.selectList("mapper.member.searchMember",memberVO);
+        return list;		
+    }
+	
+	public List<String> foreachSelect(List<String> nameList){
+        sqlMapper=getInstance();
+        SqlSession session=sqlMapper.openSession();
+        List list=session.selectList("mapper.member.foreachSelect",nameList);
+        return list;		
+	}
+	
+	public int foreachInsert(List<MemberVO> memList){
+        sqlMapper=getInstance();
+        SqlSession session=sqlMapper.openSession();
+        int result = session.insert("mapper.member.foreachInsert",memList);
+        session.commit();
+        return result ;		
+	}
+}
+----------------------------------------------------------------------------------------------------
+//23.5.5 <sql> 태그와 <include> 태그로 SQL문 중복 제거하기
+----------------------------------------------------------------------------------------------------
+//member.xml
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+      PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="mapper.member">
+ 	<resultMap id="memResult" type="memberVO">
+		<result property="id" column="id" />
+        <result property="pwd" column="pwd" />
+        <result property="name" column="name" />
+        <result property="email" column="email" />
+        <result property="joinDate" column="joinDate" />
+	</resultMap>
+  
+	<select id="selectAllMemberList" resultMap="memResult">
+	    <![CDATA[
+	      	select * from t_member	order by joinDate desc	 	
+	    ]]>
+	</select>
+ 	 
+	<select id="selectMemberById" resultType="memberVO"  parameterType="String" >
+	    <![CDATA[
+	      	select * from t_member
+	       	where id=#{id}
+	    ]]>
+	</select>	
+	
+	<select id="selectMemberByPwd" resultMap="memResult"  parameterType="int" >
+	    <![CDATA[
+	       	select * from t_member
+	       	where pwd = #{pwd}
+	    ]]>
+    </select>
+    
+    <insert id="insertMember"  parameterType="memberVO">
+		<![CDATA[
+		 	insert into t_member(id,pwd, name, email)
+		 	values(#{id}, #{pwd}, #{name}, #{email})
+		]]>      
+	</insert>
+	
+	<insert id="insertMember2"  parameterType="java.util.Map">
+		<![CDATA[
+			 insert into t_member(id,pwd, name, email)
+			 values(#{id}, #{pwd}, #{name}, #{email})
+		]]>      
+	</insert>
+	
+	<update id="updateMember"  parameterType="memberVO">
+		<![CDATA[
+		   	update t_member
+		   	set pwd=#{pwd}, name=#{name}, email=#{email}
+		   	where id=#{id}
+		]]> 
+	</update>
+	
+	<delete id="deleteMember"  parameterType="String">
+		<![CDATA[
+		   	delete from  t_member
+		   	where id=#{id}
+		]]>
+	</delete>
+	
+	<sql id="a">
+    	<![CDATA[
+    		select * from t_member
+	    ]]> 
+   	</sql>
+	
+	<!-- 동적 SQL문 -->
+  	<select id="searchMember" parameterType="memberVO" resultMap="memResult">
+	  	<include refid="a" />
+	  	<where>
+			<choose>
+		      <when test="name != '' and name != null and email != '' and email != null">
+			     name=#{name} and email=#{email}
+		      </when>
+		      <when test="name != '' and name != null">
+			     name = #{name}
+		      </when>
+		      <when test="email !='' and email != null">
+			    email = #{email}
+		      </when>
+	      	</choose>
+		</where>
+		order by joinDate desc
+  	</select>
+  	
+  	<select id="foreachSelect" resultMap="memResult" parameterType="java.util.Map">
+	  	<include refid="a" />
+      	where name in
+      	<foreach item="item" collection="list" open="(" separator="," close=")" >
+         	#{item}
+      	</foreach>
+      	order by joinDate desc
+   	</select>
+   	
+	<insert id="foreachInsert" parameterType="java.util.Map">
+      	<foreach item="item" collection="list" open="INSERT ALL" separator=" " close="SELECT * FROM DUAL" >
+          INTO t_member(id, pwd, name, email)
+          VALUES (#{item.id},
+                  #{item.pwd},
+                  #{item.name},
+                  #{item.email})
+      	</foreach>
+   	</insert>
+</mapper>
+----------------------------------------------------------------------------------------------------
