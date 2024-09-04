@@ -1,0 +1,106 @@
+import gradio as gr
+import random
+import requests
+
+
+def request_chatgpt(input_text, histories, system_text):
+    api_key = "내 api_key"
+    endpoint = "내 endpoint"
+    deployment_name = "내가 설정한 이름"
+    
+    ENDPOINT_URL = f"{endpoint}openai/deployments/{deployment_name}/chat/completions?api-version=2024-02-15-preview"
+    
+    headers = {
+        "Content-type": "application/json",
+        "api-key": api_key
+    }
+    
+    body = {
+        "temperature": 0.7,
+        "top_p": 0.95,
+        "max_tokens": 800
+    }
+    
+    messages = []
+    
+    # system
+    messages.append({
+            "role": "system",
+            "content": [{
+                "type": "text",
+                "text": system_text
+            }]
+        })
+    
+    # assistants
+    
+    for history in histories:
+        
+        messages.append({
+            "role": "assistant",
+            "content": [{
+                "type": "text",
+                "text": history[0]
+            }]
+        })
+        
+        messages.append({
+            "role": "assistant",
+            "content": [{
+                "type": "text",
+                "text": history[1]
+            }]
+        })
+    
+    user_message = {
+        "role": "user",
+        "content": [{
+            "type": "text",
+            "text": input_text
+        }]
+    }
+    
+    messages.append(user_message)
+    
+    print(messages)
+    
+    body.update({"messages": messages})
+    
+    response = requests.post(ENDPOINT_URL,
+                            headers=headers,
+                            json=body)
+    response_json = response.json()
+    
+    if response.status_code == 200:
+        response_text = response_json['choices'][0]['message']['content']
+        print(response_text)
+        return response_text
+
+    else:
+        print(response.text)
+        return None   
+
+def click_send_button(user_message, chatbot_histories, system_message):
+    
+    response_message = request_chatgpt(user_message, chatbot_histories, system_message)
+    
+    if response_message is None:
+        return "", chatbot_histories 
+    
+    print(chatbot_histories)
+    chatbot_histories.append((user_message, response_message))
+    return "", chatbot_histories
+
+with gr.Blocks() as demo:
+    
+    with gr.Column():
+        chatbot = gr.Chatbot(label="GPT")
+        system_texbox = gr.Textbox(label="시스템메시지")
+        
+    with gr.Row():
+        input_textbox = gr.Textbox(label="입력", scale=5)
+        send_button = gr.Button("전송")
+    
+    send_button.click(fn=click_send_button, inputs=[input_textbox, chatbot, system_texbox], outputs=[input_textbox, chatbot])
+    input_textbox.submit(fn=click_send_button, inputs=[input_textbox, chatbot, system_texbox], outputs=[input_textbox, chatbot])
+demo.launch()
