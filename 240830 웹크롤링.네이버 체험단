@@ -164,24 +164,33 @@ button:focus {
 fetch('naver_free_trial_data.csv')
     .then(response => response.text())
     .then(text => {
-        const rows = text.split('\n').slice(1);
-        const tableBody = document.getElementById('data-table-body');
-        
-        rows.forEach(row => {
-            const [category, title, dateRange, numberOfPeople, imageUrl, link] = row.split(',');
+        Papa.parse(text, {
+            header: false,
+            complete: function(results) {
+                const tableBody = document.getElementById('data-table-body');
+                const data = results.data;
+                const rows = data.slice(1);
 
-            if (category && title && dateRange && numberOfPeople && imageUrl && link) {
-                const rowElement = document.createElement('tr');
+                rows.forEach(row => {
+                    const [category, title, dateRange, numberOfPeople, imageUrl, link] = row;
 
-                rowElement.innerHTML = `
-                    <td>${category}</td>
-                    <td><a href="${link}" target="_blank">${title}</a></td>
-                    <td>${dateRange}</td>
-                    <td>${numberOfPeople}</td>
-                    <td><img src="${imageUrl}" alt="Image"></td>
-                `;
+                    if (category && title && dateRange && numberOfPeople && imageUrl && link) {
+                        const rowElement = document.createElement('tr');
 
-                tableBody.appendChild(rowElement);
+                        rowElement.innerHTML = `
+                            <td>${category}</td>
+                            <td><a href="${link}" target="_blank">${title}</a></td>
+                            <td>${dateRange}</td>
+                            <td>${numberOfPeople}</td>
+                            <td><img src="${imageUrl}" alt="Image"></td>
+                        `;
+
+                        tableBody.appendChild(rowElement);
+                    }
+                });
+            },
+            error: function(error) {
+                console.error('Error parsing CSV data:', error);
             }
         });
     })
