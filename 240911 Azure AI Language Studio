@@ -1,0 +1,123 @@
+# This example requires environment variables named "LANGUAGE_KEY" and "LANGUAGE_ENDPOINT"
+language_key = ''
+language_endpoint = ''
+
+from azure.ai.textanalytics import TextAnalyticsClient
+from azure.core.credentials import AzureKeyCredential
+
+# Authenticate the client using your key and endpoint 
+def authenticate_client():
+    ta_credential = AzureKeyCredential(language_key)
+    text_analytics_client = TextAnalyticsClient(
+            endpoint=language_endpoint, 
+            credential=ta_credential)
+    return text_analytics_client
+
+client = authenticate_client()
+
+# Example method for detecting sentiment and opinions in text 
+def sentiment_analysis_with_opinion_mining_example(client):
+
+    documents = [
+        "오래 기다리긴 했지만... 그럴만한 이유가 있습니다. 멋진 이탈리아 음식과 멋진 분위기. Contoso Bistro에서는 항상 라이브 음악이나 이벤트를 진행하여 즐거움을 선사합니다. 그래도 음식은 나를 즐겁게 해줄 만큼 맛있습니다!"
+    ]
+
+    result = client.analyze_sentiment(documents, show_opinion_mining=True, language='kor')
+    doc_result = [doc for doc in result if not doc.is_error]
+
+    positive_reviews = [doc for doc in doc_result if doc.sentiment == "positive"]
+    negative_reviews = [doc for doc in doc_result if doc.sentiment == "negative"]
+
+    positive_mined_opinions = []
+    mixed_mined_opinions = []
+    negative_mined_opinions = []
+
+    for document in doc_result:
+        print("Document Sentiment: {}".format(document.sentiment))
+        print("Overall scores: positive={0:.2f}; neutral={1:.2f}; negative={2:.2f} \n".format(
+            document.confidence_scores.positive,
+            document.confidence_scores.neutral,
+            document.confidence_scores.negative,
+        ))
+        for sentence in document.sentences:
+            print("Sentence: {}".format(sentence.text))
+            print("Sentence sentiment: {}".format(sentence.sentiment))
+            print("Sentence score:\nPositive={0:.2f}\nNeutral={1:.2f}\nNegative={2:.2f}\n".format(
+                sentence.confidence_scores.positive,
+                sentence.confidence_scores.neutral,
+                sentence.confidence_scores.negative,
+            ))
+            for mined_opinion in sentence.mined_opinions:
+                target = mined_opinion.target
+                print("......'{}' target '{}'".format(target.sentiment, target.text))
+                print("......Target score:\n......Positive={0:.2f}\n......Negative={1:.2f}\n".format(
+                    target.confidence_scores.positive,
+                    target.confidence_scores.negative,
+                ))
+                for assessment in mined_opinion.assessments:
+                    print("......'{}' assessment '{}'".format(assessment.sentiment, assessment.text))
+                    print("......Assessment score:\n......Positive={0:.2f}\n......Negative={1:.2f}\n".format(
+                        assessment.confidence_scores.positive,
+                        assessment.confidence_scores.negative,
+                    ))
+            print("\n")
+        print("\n")
+          
+sentiment_analysis_with_opinion_mining_example(client)
+
+--------------------------------------------------------------------------------------------------------------
+pip install azure-ai-textanalytics==5.3.0
+--------------------------------------------------------------------------------------------------------------
+# This example requires environment variables named "LANGUAGE_KEY" and "LANGUAGE_ENDPOINT"
+key = ''
+endpoint = ''
+
+from azure.ai.textanalytics import TextAnalyticsClient
+from azure.core.credentials import AzureKeyCredential
+
+# Authenticate the client using your key and endpoint 
+def authenticate_client():
+    ta_credential = AzureKeyCredential(key)
+    text_analytics_client = TextAnalyticsClient(
+            endpoint=endpoint, 
+            credential=ta_credential)
+    return text_analytics_client
+
+client = authenticate_client()
+
+# Example method for summarizing text
+def sample_extractive_summarization(client):
+    from azure.core.credentials import AzureKeyCredential
+    from azure.ai.textanalytics import (
+        TextAnalyticsClient,
+        ExtractiveSummaryAction
+    ) 
+
+    document = [
+        "추출적 요약 기능은 자연어 처리 기술을 사용하여 구조화되지 않은 텍스트 문서에서 핵심 문장을 찾습니다."
+        "이 문장들은 문서의 주요 아이디어를 종합적으로 전달합니다. 이 기능은 개발자를 위한 API로 제공됩니다." 
+        "다양한 사용 사례를 지원하기 위해 추출된 관련 정보를 기반으로 지능형 솔루션을 구축하는 데 이를 사용할 수 있습니다."
+        "추출 요약은 여러 언어를 지원합니다. 이는 전체론적 표현을 추구하는 과정의 일부인 사전 훈련된 다국어 변환기 모델을 기반으로 합니다. "
+        "단일 언어 전반에 걸친 전이 학습의 장점을 활용하고 언어의 공유 특성을 활용하여 향상된 품질과 효율성의 모델을 생성합니다."
+    ]
+
+    poller = client.begin_analyze_actions(
+        document,
+        actions=[
+            ExtractiveSummaryAction(max_sentence_count=1)
+        ],
+    )
+
+    document_results = poller.result()
+    for result in document_results:
+        extract_summary_result = result[0]  # first document, first result
+        if extract_summary_result.is_error:
+            print("...Is an error with code '{}' and message '{}'".format(
+                extract_summary_result.code, extract_summary_result.message
+            ))
+        else:
+            print("Summary extracted: \n{}".format(
+                " ".join([sentence.text for sentence in extract_summary_result.sentences]))
+            )
+
+sample_extractive_summarization(client)
