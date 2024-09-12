@@ -63,6 +63,10 @@ finally:
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>네이버 무료 체험단</title>
     <link rel="stylesheet" href="styles.css">
+    <link href="https://hangeul.pstatic.net/hangeul_static/css/nanum-gothic.css" rel="stylesheet">
+    <link href="https://hangeul.pstatic.net/hangeul_static/css/nanum-square-neo.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+    <style>a {text-decoration: none}</style>
 </head>
 <body>
     <header>
@@ -75,6 +79,15 @@ finally:
                     <th>분류
                         <button onclick="sortTable(0, 'asc')">▲</button>
                         <button onclick="sortTable(0, 'desc')">▼</button>
+                        <select id="category-filter" onchange="filterByCategory()">
+                            <option value="">전체</option>
+                            <option value="뷰티">뷰티</option>
+                            <option value="키즈윈도">키즈윈도</option>
+                            <option value="네이버 펫">네이버 펫</option>
+                            <option value="리빙윈도">리빙윈도</option>
+                            <option value="푸드윈도">푸드윈도</option>
+                            <option value="플레이윈도">플레이윈도</option>
+                        </select>
                     </th>
                     <th>제목</th>
                     <th>신청 기간
@@ -86,7 +99,7 @@ finally:
                 </tr>
             </thead>
             <tbody id="data-table-body">
-                <!-- Data will be inserted here by JavaScript -->
+                <!-- JavaScript 자료가 들어갈 공간 -->
             </tbody>
         </table>
     </main>
@@ -138,26 +151,24 @@ td img {
     height: auto;
 }
 
-/* Other styles... */
-
 button {
-    background-color: #00b919; /* Button background color */
-    color: white; /* Text color */
-    border: none; /* Remove default border */
-    border-radius: 4px; /* Rounded corners */
-    cursor: pointer; /* Pointer cursor on hover */
-    padding: 0.2rem 0.3rem; /* Adjust size */
-    font-size: 0.9rem; /* Smaller font size */
-    margin: 0 0rem; /* Space between buttons */
-    transition: background-color 0.3s ease; /* Smooth transition for background color */
+    background-color: #00b919;
+    color: white;
+    border: none; 
+    border-radius: 4px;
+    cursor: pointer;
+    padding: 0.2rem 0.3rem;
+    font-size: 0.9rem;
+    margin: 0 0rem;
+    transition: background-color 0.3s ease;
 }
 
 button:hover {
-    background-color: #00e5ff; /* Darker background on hover */
+    background-color: #00e5ff; 
 }
 
 button:focus {
-    outline: none; /* Remove focus outline */
+    outline: none;
 }
 ---------------------------------------------------------------------------------------------
 //script.js
@@ -182,9 +193,10 @@ fetch('naver_free_trial_data.csv')
                             <td><a href="${link}" target="_blank">${title}</a></td>
                             <td>${dateRange}</td>
                             <td>${numberOfPeople}</td>
-                            <td><img src="${imageUrl}" alt="Image"></td>
+                            <td>
+                                <img src="${imageUrl}" alt="Image" style="cursor: pointer;" onclick="openImage('${imageUrl}')">
+                            </td>
                         `;
-
                         tableBody.appendChild(rowElement);
                     }
                 });
@@ -222,4 +234,22 @@ fetch('naver_free_trial_data.csv')
         });
     
         rows.forEach(row => table.querySelector('tbody').appendChild(row));
+    }
+
+    function filterByCategory() {
+        const selectedCategory = document.getElementById('category-filter').value;
+        const rows = document.querySelectorAll('#data-table-body tr');
+    
+        rows.forEach(row => {
+            const categoryCell = row.children[0].innerText;
+            if (selectedCategory === "" || categoryCell === selectedCategory) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    }
+
+    function openImage(imageUrl) {
+        window.open(imageUrl, '_blank');
     }
