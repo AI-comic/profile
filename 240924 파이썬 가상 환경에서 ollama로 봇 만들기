@@ -1,0 +1,545 @@
+vs코드 터미널에서
+
+python -m venv venv
+.\venv\Scripts\activate
+
+ExecutionPolicy 오류가 뜰 경우
+powershell 관리자로 실행
+
+Set-ExecutionPolicy unrestricted
+A
+
+vs코드로 와서
+pip install ollama
+
+#local ollama inference
+ 
+import ollama
+ 
+response = ollama.chat(model='qwen2.5:7b', messages=[
+    {'role': 'system', 'content': '당신은 인공지능입니다. 사용자가 입력한 내용을 영어로 번역해서 출력합니다.'},
+    {'role': 'user', 'content': '너 이름이 뭐니?'}
+])
+ 
+print(response['message']['content'])
+
+------------------------------------------------------------------------------------------------------------------------
+#번역봇.ipynb
+import ollama
+ 
+def generate_response(system_message, user_message, model="gemma2:9b", temperature=0, top_p=1, top_k=1):
+    client = ollama.Client()
+    response = client.chat(
+        model=model,
+        stream=True,
+        messages=[
+            {"role": "system", "content": system_message},
+            {"role": "user", "content": user_message}
+        ],
+        options={
+            "temperature": temperature,
+            "top_p": top_p,
+            "top_k": top_k,
+        }
+    )
+    full_response = ""    
+    for chunk in response:
+        content = chunk['message']['content']
+        print(content, end='', flush=True)  # 실시간 스트리밍 출력
+        full_response += content  # 전체 응답 구성      
+    return full_response
+ 
+# 예시 사용법
+system_msg = """
+### Instruction
+너는 지금부터 전문 번역가야  
+너의 역할은 주어진 언어를 영어로 번역하는 것이야.
+너는 사용자의 입력을 출력하고, 그 아래에 번역한 내용을 넣어줘.
+ 
+원문 : 사용자 입력
+번역 : 사용자 입력을 번역한 내용
+ 
+출력 템플릿은 다음과 같아. 반드시 번역 결과만 출력해야해.
+<번역> My name is Hong-gil-dong.
+"""
+ 
+text = "나는 밥을 학생식당에서 먹어서 배가 너무 불러."
+user_msg = f"""
+### Question
+ <원문> {text}
+ <번역>
+"""
+ 
+response = generate_response(system_msg, user_msg, model="gemma2:9b", temperature=0.5, top_p=1, top_k=1)
+# print(response)
+
+------------------------------------------------------------------------------------------------------------------------
+#요약봇.ipynb
+import ollama
+ 
+def generate_response(system_message, user_message, model="gemma2:9b", temperature=0, top_p=1, top_k=1):
+    client = ollama.Client()
+    response = client.chat(
+        model=model,
+        stream=True,
+        messages=[
+            {"role": "system", "content": system_message},
+            {"role": "user", "content": user_message}
+        ],
+        options={
+            "temperature": temperature,
+            "top_p": top_p,
+            "top_k": top_k,
+        }
+    )
+    full_response = ""    
+    for chunk in response:
+        content = chunk['message']['content']
+        print(content, end='', flush=True)  # 실시간 스트리밍 출력
+        full_response += content  # 전체 응답 구성      
+    return full_response
+ 
+# 예시 사용법
+system_msg = """
+### Instruction
+너는 지금부터 전문 요약가야.
+너의 역할은 주어진 문장을 간략히 요약하는 것이야.
+너는 사용자의 입력을 문단 번호로 나누고 문단마다 주장, 근거, 요약을 정리하는 거야.
+JSON의 기본 구조로 답변하고 문단번호, 주장, 근거, 요약이 들어간다.
+"""
+ 
+text = """인공지능의 발전과 직업 및 소득의 변화
+ 
+인공지능(AI)의 발전은 직업과 소득 구조에 큰 변화를 일으키고 있습니다. 노동 시장의 재편은 직업의 성격과 소득 분포에 심대한 영향을 미치고 있습니다. 본 에세이에서는 AI가 직업과 소득에 미치는 영향을 분석하고, 이에 대한 대응 방안을 제시하고자 합니다.
+ 
+AI 기술의 발전으로 단순하고 반복적인 작업은 AI와 로봇에 의해 대체되고 있습니다. 제조업, 물류, 서비스 업종에서 로봇이 인간의 노동을 대신하며, 이는 해당 분야의 일자리 감소로 이어지고 있습니다.
+ 
+그러나 AI는 새로운 직업 기회도 창출합니다. 데이터 과학자, 머신러닝 엔지니어 등의 직업이 생겨났으며, 자율주행차, 스마트 헬스케어 등 AI 기술을 활용한 새로운 산업에서도 많은 일자리가 창출되고 있습니다. 이러한 변화는 직업의 재교육과 전환을 필요로 하며, 새로운 기술 습득의 중요성이 커지고 있습니다.
+ 
+AI 도입은 소득 분포에도 큰 변화를 초래합니다. 고도로 숙련된 기술직의 수요 증가로 이들 직업의 소득은 상승하고 있지만, 자동화로 대체 가능한 직업에 종사하던 노동자들은 실직하거나 낮은 임금을 받게 되어 소득 불균형이 심화될 수 있습니다.
+또한 AI 기업의 부상으로 일부 기업가와 투자자들은 막대한 수익을 올리고 있습니다. 이로 인해 상위 1%의 소득이 증가하고, 중산층과 하위 계층의 소득은 상대적으로 정체되거나 감소하는 양상을 보이고 있습니다. 이러한 소득 불균형은 사회적 불안정성을 초래할 수 있으며, 이에 대한 대책 마련이 중요합니다.
+ 
+AI의 발전에 따른 직업과 소득의 변화에 대응하기 위해 몇 가지 중요한 방안이 필요합니다. 첫째, 교육과 재교육 프로그램을 강화해야 합니다. 빠르게 변화하는 기술 환경에 적응하기 위해서는 지속적인 학습이 필요하며, 정부와 기업은 이를 지원하는 체계를 구축해야 합니다.
+둘째, 사회 안전망을 강화해야 합니다. 일자리 변동성과 불확실성이 증가하는 시대에 실직자와 저소득층을 보호하기 위한 사회 안전망이 필수적입니다. 기본소득제 도입, 실업보험 강화, 직업 재교육 지원 등의 방안을 고려할 수 있습니다.
+ 
+셋째, 소득 불균형을 해소하기 위한 정책이 필요합니다. 세금 정책을 통해 고소득층과 기업의 이익을 공정하게 분배하고, 중산층과 저소득층의 소득을 증대시키는 방안을 마련해야 합니다. 또한 기업은 사회적 책임을 다하고 공정한 노동 환경을 조성해야 합니다.
+ 
+인공지능의 발전은 직업과 소득 구조에 큰 변화를 초래하고 있습니다. 자동화와 새로운 기술의 도입으로 일부 직업은 사라지고, 새로운 직업이 생겨나며, 소득 불균형이 심화되고 있습니다. 이러한 변화에 효과적으로 대응하기 위해서는 교육과 재교육, 사회 안전망 강화, 소득 불균형 해소를 위한 정책이 필요합니다. AI 시대의 도래는 도전과 기회를 동시에 제공하며, 이를 잘 활용하는 것이 앞으로의 사회적 안정과 번영을 위한 열쇠가 될 것입니다."""
+user_msg = f"""
+### Question
+ <원문> {text}
+"""
+ 
+response = generate_response(system_msg, user_msg, model="gemma2:9b", temperature=0.5, top_p=1, top_k=1)
+# print(response)
+------------------------------------------------------------------------------------------------------------------------
+#감정분류.ipynb
+import ollama
+ 
+def generate_response(system_message, user_message, model="gemma2:9b", temperature=0, top_p=1, top_k=1):
+    client = ollama.Client()
+    response = client.chat(
+        model=model,
+        stream=True,
+        messages=[
+            {"role": "system", "content": system_message},
+            {"role": "user", "content": user_message}
+        ],
+        options={
+            "temperature": temperature,
+            "top_p": top_p,
+            "top_k": top_k,
+        }
+    )
+    full_response = ""    
+    for chunk in response:
+        content = chunk['message']['content']
+        print(content, end='', flush=True)  # 실시간 스트리밍 출력
+        full_response += content  # 전체 응답 구성      
+    return full_response
+ 
+# 예시 사용법
+system_msg = """
+### Instruction
+너는 지금부터 감정 분류 전문가야.
+너의 역할은 사용자가 입력한 문장을 파악해서 어떤 감정인지 판단하면 돼.
+JSON의 기본 구조로 답변하고 문장, 감정이 들어간다.
+감정의 종류는 긍정, 부정, 중립이 있다.
+"""
+ 
+text = """나는 이 음식이 그냥 그렇다고 생각해.
+
+나는 이 영화가 정말 재미없어.
+
+나는 우리 대학교 학식이 맛있어.
+"""
+user_msg = f"""
+### Question
+ <원문> {text}
+"""
+ 
+response = generate_response(system_msg, user_msg, model="gemma2:9b", temperature=0.5, top_p=1, top_k=1)
+# print(response)
+------------------------------------------------------------------------------------------------------------------------
+#app.py
+
+import os
+import json
+import datetime
+
+import streamlit as st
+import ollama
+
+try:
+    OLLAMA_MODELS = ollama.list()["models"]
+except Exception as e:
+    st.warning("Please make sure Ollama is installed first. See https://ollama.ai for more details.")
+    st.stop()
+
+def st_ollama(model_name, user_question, chat_history_key, params):
+    if chat_history_key not in st.session_state.keys():
+        st.session_state[chat_history_key] = []
+
+    print_chat_history_timeline(chat_history_key)
+        
+    if user_question:
+        st.session_state[chat_history_key].append({"content": f"{user_question}", "role": "user"})
+        with st.chat_message("question", avatar="🧑‍🚀"):
+            st.write(user_question)
+
+        # 파라미터 출력
+        with st.chat_message("parameters", avatar="🔧"):
+            st.write("Ollama Parameters:")
+            for key, value in params.items():
+                if key != "system":  # 시스템 프롬프트는 별도로 표시
+                    st.write(f"{key}: {value}")
+            st.write(f"System Prompt: {params.get('system', 'None')}")
+
+        messages = [dict(content=message["content"], role=message["role"]) for message in st.session_state[chat_history_key]]
+        
+        # 시스템 프롬프트가 있으면 메시지 리스트의 시작 부분에 추가
+        if params.get("system"):
+            messages.insert(0, {"role": "system", "content": params["system"]})
+
+        def llm_stream(response):
+            response = ollama.chat(
+                model_name, 
+                messages, 
+                stream=True,
+                options={k: v for k, v in params.items() if k != "system"}  # system 프롬프트는 options에서 제외
+            )
+            for chunk in response:
+                yield chunk['message']['content']
+
+        with st.chat_message("response", avatar="🤖"):
+            chat_box = st.empty()
+            response_message = chat_box.write_stream(llm_stream(messages))
+
+        st.session_state[chat_history_key].append({"content": f"{response_message}", "role": "assistant"})
+        
+        return response_message
+
+def print_chat_history_timeline(chat_history_key):
+    for message in st.session_state[chat_history_key]:
+        role = message["role"]
+        if role == "user":
+            with st.chat_message("user", avatar="🧑‍🚀"): 
+                question = message["content"]
+                st.markdown(f"{question}", unsafe_allow_html=True)
+        elif role == "assistant":
+            with st.chat_message("assistant", avatar="🤖"):
+                st.markdown(message["content"], unsafe_allow_html=True)
+
+def assert_models_installed():
+    if len(OLLAMA_MODELS) < 1:
+        st.sidebar.warning("No models found. Please install at least one model e.g. `ollama run llama2`")
+        st.stop()
+
+def select_model(key):
+    model_names = ["선택안함"] + [model["name"] for model in OLLAMA_MODELS]
+    default_index = model_names.index('gemma2:9b') if 'gemma2:9b' in model_names else 0
+    llm_name = st.sidebar.selectbox(f"Choose Agent for {key}", model_names, index=default_index, key=f"model_select_{key}")
+    if llm_name and llm_name != "선택안함":
+        llm_details = [model for model in OLLAMA_MODELS if model["name"] == llm_name][0]
+        if type(llm_details["size"]) != str:
+            llm_details["size"] = f"{round(llm_details['size'] / 1e9, 2)} GB"
+        with st.expander(f"LLM Details for {key}"):
+            st.write(llm_details)
+    return llm_name
+
+def save_conversation(llm_name, conversation_key):
+    OUTPUT_DIR = "llm_conversations"
+    OUTPUT_DIR = os.path.join(os.getcwd(), OUTPUT_DIR)
+    timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
+    filename = f"{OUTPUT_DIR}/{timestamp}_{llm_name.replace(':', '-')}"
+
+    if not os.path.exists(OUTPUT_DIR):
+        os.makedirs(OUTPUT_DIR)
+
+    if st.session_state[conversation_key]:
+        if st.sidebar.button(f"Save conversation {conversation_key}"):
+            with open(f"{filename}_{conversation_key}.json", "w") as f:
+                json.dump(st.session_state[conversation_key], f, indent=4)
+            st.success(f"Conversation saved to {filename}_{conversation_key}.json")
+
+if __name__ == "__main__":
+    st.set_page_config(layout="wide", page_title="Ollama Chat", page_icon="🦙")
+
+    st.sidebar.title("Ollama Chat 🦙")
+    
+    assert_models_installed()
+
+    # Model 1 선택
+    llm_name_1 = select_model("Model 1")
+    
+    # Model 2 선택
+    llm_name_2 = select_model("Model 2")
+
+    # Model 1 Parameters
+    # Model 1 Parameters
+    params_1 = {}
+    if llm_name_1 != "선택안함":
+        st.sidebar.subheader("Model 1 Parameters")
+        system_prompt_1 = st.sidebar.text_area("System Prompt for Model 1", "사용자의 문장을 완성하세요. 반드시 한 문장으로 작성하세요. 결과만 제공해주세요.", help="모델의 전반적인 행동을 지시. 구체적일수록 원하는 결과를 얻기 쉬움", height=100)
+        params_1 = {
+            "system": system_prompt_1,
+            "num_predict": st.sidebar.number_input("Max Tokens (num_predict) 1", min_value=1, max_value=2048, value=1024, step=1, help="생성할 최대 토큰 수. 높을수록 긴 응답, 낮을수록 짧은 응답"),
+            "temperature": st.sidebar.slider("Temperature 1", 0.0, 2.0, 0.0, 0.1, help="높을수록 창의성과 다양성 증가, 낮을수록 일관성과 정확성 증가"),
+            "top_k": st.sidebar.slider("Top K 1", 1, 100, 40, 1, help="다음 토큰 선택 시 고려할 상위 K개의 토큰. 높을수록 다양성 증가, 낮을수록 정확성 증가"),
+            "top_p": st.sidebar.slider("Top P 1", 0.0, 1.0, 0.9, 0.05, help="누적 확률 P에 해당하는 상위 토큰만 고려. 1에 가까울수록 다양성 증가, 0에 가까울수록 정확성 증가"),
+            "repeat_penalty": st.sidebar.slider("Repeat Penalty 1", 0.0, 2.0, 1.1, 0.1, help="단어 반복 억제. 높을수록 반복 감소, 낮을수록 자연스러운 반복 허용"),
+            "presence_penalty": st.sidebar.slider("Presence Penalty 1", 0.0, 2.0, 0.0, 0.1, help="새로운 주제 도입 장려. 높을수록 새로운 주제 도입 증가, 낮을수록 기존 주제 유지"),
+            "frequency_penalty": st.sidebar.slider("Frequency Penalty 1", 0.0, 2.0, 0.0, 0.1, help="자주 사용된 단어 억제. 높을수록 다양한 어휘 사용, 낮을수록 자연스러운 단어 빈도 유지"),
+            "stop": st.sidebar.text_input("Stop Sequences 1 (comma-separated)", "", help="생성 중단 시퀀스. 여러 개 입력 시 쉼표로 구분"),
+            "seed": 1
+        }
+        params_1["stop"] = [s.strip() for s in params_1["stop"].split(',') if s.strip()]
+
+    # Model 2 Parameters
+    params_2 = {}
+    if llm_name_2 != "선택안함":
+        st.sidebar.subheader("Model 2 Parameters")
+        system_prompt_2 = st.sidebar.text_area("System Prompt for Model 2", "사용자의 문장을 완성하세요. 반드시 한 문장으로 작성하세요. 결과만 제공해주세요.", help="모델의 전반적인 행동을 지시. 구체적일수록 원하는 결과를 얻기 쉬움", height=100)
+        params_2 = {
+            "system": system_prompt_2,
+            "num_predict": st.sidebar.number_input("Max Tokens (num_predict) 2", min_value=1, max_value=2048, value=1024, step=1, help="생성할 최대 토큰 수. 높을수록 긴 응답, 낮을수록 짧은 응답"),
+            "temperature": st.sidebar.slider("Temperature 2", 0.0, 2.0, 2.0, 0.1, help="높을수록 창의성과 다양성 증가, 낮을수록 일관성과 정확성 증가"),
+            "top_k": st.sidebar.slider("Top K 2", 1, 100, 40, 1, help="다음 토큰 선택 시 고려할 상위 K개의 토큰. 높을수록 다양성 증가, 낮을수록 정확성 증가"),
+            "top_p": st.sidebar.slider("Top P 2", 0.0, 1.0, 0.9, 0.05, help="누적 확률 P에 해당하는 상위 토큰만 고려. 1에 가까울수록 다양성 증가, 0에 가까울수록 정확성 증가"),
+            "repeat_penalty": st.sidebar.slider("Repeat Penalty 2", 0.0, 2.0, 1.1, 0.1, help="단어 반복 억제. 높을수록 반복 감소, 낮을수록 자연스러운 반복 허용"),
+            "presence_penalty": st.sidebar.slider("Presence Penalty 2", 0.0, 2.0, 0.0, 0.1, help="새로운 주제 도입 장려. 높을수록 새로운 주제 도입 증가, 낮을수록 기존 주제 유지"),
+            "frequency_penalty": st.sidebar.slider("Frequency Penalty 2", 0.0, 2.0, 0.0, 0.1, help="자주 사용된 단어 억제. 높을수록 다양한 어휘 사용, 낮을수록 자연스러운 단어 빈도 유지"),
+            "stop": st.sidebar.text_input("Stop Sequences 2 (comma-separated)", "", help="생성 중단 시퀀스. 여러 개 입력 시 쉼표로 구분"),
+            "seed": 41
+        }
+        params_2["stop"] = [s.strip() for s in params_2["stop"].split(',') if s.strip()]
+
+    prompt = st.chat_input("Ask a question ...")
+
+    col1, col2 = st.columns(2)
+
+    with col1:
+        st.subheader("Model 1 Output")
+        if llm_name_1 != "선택안함":
+            conversation_key_1 = f"model_{llm_name_1}_1"
+            st_ollama(llm_name_1, prompt, conversation_key_1, params_1)
+            
+            # Clear and Save buttons for Model 1
+            if st.session_state.get(conversation_key_1):
+                clear_conversation_1 = st.sidebar.button("Clear chat 1")
+                if clear_conversation_1:
+                    st.session_state[conversation_key_1] = []
+                    st.rerun()
+            save_conversation(llm_name_1, conversation_key_1)
+        else:
+            st.write("모델이 선택되지 않았습니다.")
+
+    with col2:
+        st.subheader("Model 2 Output")
+        if llm_name_2 != "선택안함":
+            conversation_key_2 = f"model_{llm_name_2}_2"
+            st_ollama(llm_name_2, prompt, conversation_key_2, params_2)
+            
+            # Clear and Save buttons for Model 2
+            if st.session_state.get(conversation_key_2):
+                clear_conversation_2 = st.sidebar.button("Clear chat 2")
+                if clear_conversation_2:
+                    st.session_state[conversation_key_2] = []
+                    st.rerun()
+            save_conversation(llm_name_2, conversation_key_2)
+        else:
+            st.write("모델이 선택되지 않았습니다.")
+------------------------------------------------------------------------------------------------------------------------
+#문서정제law.ipynb
+!pip install pdfminer.six
+
+from pdfminer.pdfinterp import PDFResourceManager, PDFPageInterpreter
+from pdfminer.converter import TextConverter
+from pdfminer.layout import LAParams
+from pdfminer.pdfpage import PDFPage
+from io import StringIO
+import re
+
+def convert_pdf_to_txt():
+    rsrcmgr = PDFResourceManager()
+    retstr = StringIO()
+    codec = 'utf-8'
+    laparams = LAParams()
+    device = TextConverter(rsrcmgr, retstr, codec=codec, laparams=laparams)
+    fp = open('law1.pdf', 'rb')
+    interpreter = PDFPageInterpreter(rsrcmgr, device)
+    password = ""
+    maxpages = 999
+    caching = True
+    pagenos=set()
+
+    for page in PDFPage.get_pages(fp, pagenos, maxpages=maxpages, password=password,caching=caching, check_extractable=True):
+        interpreter.process_page(page)
+
+    text = retstr.getvalue()
+
+    fp.close()
+    device.close()
+    retstr.close()
+    return text
+
+v = convert_pdf_to_txt()
+print(v)
+
+def preprocess_document(document):
+
+    # 3. \n\n을 [para]로 변경
+    # document = re.sub(r'법제처\s*\d+\s*국가법령정보센터\s*민법', '', document)
+    # document = re.sub(r'법제처\s*\d+\s*국가법령정보센터\s', '', document)
+    pattern = re.compile(r'\x0c')  # '\x0c'는 FORM FEED 문자를 나타냅니다.
+    document = pattern.sub('', document)
+    
+    document = document.replace('           제', '[관]제')
+    document = document.replace('         제', '[절]제')
+    document = document.replace('       제', '[장]제')
+    document = document.replace('     제', '[편]제')        
+    document = document.replace('\n\n제', '[조]제')
+    document = document.replace('\n제', '[조]제')
+    document = document.replace('\n\n', ' ')
+    document = document.replace('\n ', ' ')
+          
+    document = re.sub(r'법제처\s*.*', '', document)
+    
+    # 문서를 줄 단위로 분리
+    lines = document.split('\n')
+    # 각 줄의 가장 앞에 있는 '민법'이라는 단어를 삭제
+    for i in range(len(lines)):
+        lines[i] = re.sub(r'^\s*민법\s*', '', lines[i])   
+    # 재결합
+    document = '\n'.join(lines)
+    
+    document = document.replace(' \n', ' ')
+    document = document.replace('[조]', '\n')    
+    document = document.replace('\n제325조의', ' 제325조의')
+    document = document.replace('[편]', '\n\n')
+    document = document.replace('[장]', '\n\n\n')
+    document = document.replace('[절]', '\n\n\n\n')
+    document = document.replace('[관]', '\n\n\n\n\n')
+    
+    # 라인별 분리
+    lines = document.split('\n')
+    # 정규표현식을 사용하여 '제X조'로 시작하는 부분을 '[조]제X조'로 변경
+    for i in range(len(lines)):
+        lines[i] = re.sub(r'^(제\d+조)', r'[조]\1', lines[i])
+        lines[i] = re.sub(r'^(제\d+편)', r'[편]\1', lines[i])
+        lines[i] = re.sub(r'^(제\d+장)', r'[장]\1', lines[i])
+        lines[i] = re.sub(r'^(제\d+절)', r'[절]\1', lines[i])
+        lines[i] = re.sub(r'^(제\d+관)', r'[관]\1', lines[i])
+    # 다시 결합
+    document = '\n'.join(lines)    
+    
+    document = document.replace('\n제', ' 제')    
+    document = document.replace('[조]', '')    
+    document = document.replace('[편]', '')
+    document = document.replace('[장]', '')
+    document = document.replace('[절]', '')
+    document = document.replace('[관]', '')
+    return document    
+
+text = preprocess_document(v)
+print(text)
+
+#문서로 저장
+with open('law1.txt', 'w', encoding='utf-8') as file:
+    file.write(text)
+
+print("law1.txt에 성공적으로 저장되었습니다.")
+------------------------------------------------------------------------------------------------------------------------
+#문서정제2.ipynb
+pip install olefile
+
+import olefile
+import zlib
+import struct
+ 
+def get_hwp_text(filename):
+    f = olefile.OleFileIO(filename)
+    dirs = f.listdir()
+ 
+    if ["FileHeader"] not in dirs or \
+            ["\x05HwpSummaryInformation"] not in dirs:
+        raise Exception("Not Valid HWP.")
+ 
+    header = f.openstream("FileHeader")
+    header_data = header.read()
+    is_compressed = (header_data[36] & 1) == 1
+ 
+    nums = []
+    for d in dirs:
+        if d[0] == "BodyText":
+            nums.append(int(d[1][len("Section"):]))
+    sections = ["BodyText/Section" + str(x) for x in sorted(nums)]
+ 
+    text = ""
+    for section in sections:
+        bodytext = f.openstream(section)
+        data = bodytext.read()
+        if is_compressed:
+            unpacked_data = zlib.decompress(data, -15)
+        else:
+            unpacked_data = data
+ 
+        section_text = ""
+        i = 0
+        size = len(unpacked_data)
+        while i < size:
+            header = struct.unpack_from("<I", unpacked_data, i)[0]
+            rec_type = header & 0x3ff
+            rec_len = (header >> 20) & 0xfff
+ 
+            if rec_type in [67]:
+                rec_data = unpacked_data[i + 4:i + 4 + rec_len]
+                section_text += rec_data.decode('utf-16')
+                section_text += "\n"
+            i += 4 + rec_len
+ 
+        text += section_text
+        text += "\n"
+    
+    return text
+    
+text = get_hwp_text('sample2.hwp')
+
+#문서 정제
+import re
+
+def clean_text(text):
+    # 가-힣, a-zA-Z, 0-9, 괄호 (), <>, 따옴표 "", 구두점(. , : [ ] ! ? -)을 제외한 모든 문자 제거
+    cleaned_text = re.sub(r'[^가-힣a-zA-Z0-9()<>\"\".,:\s\[\]]', '', text)
+    # '부칙' 이후의 모든 내용 제거
+    cleaned_text = re.sub(r'부\s*칙.*', '', cleaned_text, flags=re.DOTALL)
+    return cleaned_text
+
+cleaned_text = clean_text(text)  # 텍스트 정제
+print(cleaned_text)
+
+#문서로 저장
+with open('law2.txt', 'w', encoding='utf-8') as file:
+    file.write(cleaned_text)
+
+print("law2.txt에 성공적으로 저장되었습니다.")
