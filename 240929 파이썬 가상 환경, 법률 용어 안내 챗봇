@@ -1,0 +1,87 @@
+#legal.py
+
+import requests
+import streamlit as st
+from langchain.vectorstores import FAISS
+from langchain.schema import Document
+from langchain.embeddings.sentence_transformer import SentenceTransformerEmbeddings
+from langchain_community.chat_models import ChatOllama
+from langchain.chains import RetrievalQA
+
+# Streamlit 앱 UI 시작
+st.set_page_config(page_title="법률 용어 안내 챗봇", page_icon="⚖️", layout="wide")
+
+st.title("법률 용어 안내 챗봇 ⚖️")
+st.markdown("""
+이 챗봇은 법률 용어에 대한 설명을 제공합니다. 
+궁금한 법률 용어 또는 질문을 입력해 주세요!
+""")
+
+# 사용자 입력
+query = st.text_input("질문을 입력하세요.", "")
+submit_button = st.button("검색")
+
+# API에서 법률 용어 데이터 로드
+def load_legal_terms():
+    url = 'https://api.odcloud.kr/api/15069932/v1/uddi:3799441a-4012-4caa-9955-b4d20697b555'
+    params = {
+        'serviceKey': '내 키를 입력하는 공간',
+        'returnType': 'json',
+        'numOfRows': '100',
+        'pageNo': '1',
+        'ver': '1.0'
+    }
+
+    response = requests.get(url, params=params)
+
+    if response.status_code != 200:
+        st.error(f"데이터를 불러오는 중 오류가 발생했습니다: {response.status_code}")
+        return []
+
+    data = response.json()
+    return data['data']
+
+# 법률 용어 데이터를 불러와서 Document 리스트로 변환
+legal_terms_data = load_legal_terms()
+documents = [Document(page_content=", ".join([f"{key}: {str(info[key])}" for key in ['설명', '용어명', '용어번호']])) for info in legal_terms_data]
+
+# SentenceTransformer 임베딩 로드
+embedding_model = SentenceTransformerEmbeddings(model_name="sentence-transformers/all-mpnet-base-v2")
+
+# FAISS 벡터 저장소 생성
+vector_store = FAISS.from_documents(documents, embedding_model)
+
+# Ollama LLM 모델 설정
+llm = ChatOllama(model="gemma2:9b", temperature=0, base_url="http://127.0.0.1:11434/")
+
+# RAG(Retrieval-Augmented Generation) 체인 설정
+qa_chain = RetrievalQA.from_chain_type(llm, retriever=vector_store.as_retriever())
+
+# 사용자가 입력한 쿼리 처리
+if query or submit_button:  # 검색 버튼을 누르거나 엔터를 쳤을 때 실행
+    if query.strip():  # 입력된 질문이 있는지 확인
+        # 한국어로 답변을 요청하는 프롬프트 생성
+        prompt = f"너는 한국어로만 답변하는 법률 안내 챗봇이야. 최대한 성실하고 자세하게 다음 질문에 한국어로 답변해줘: {query}"
+        
+        # 법률 용어 데이터베이스에서 검색 및 답변
+        result = qa_chain({"query": prompt})
+        
+        # 결과 출력
+        if 'result' in result:
+            st.subheader("챗봇의 답변:")
+            st.write(result['result'])
+        else:
+            st.write("답변을 찾지 못했습니다. 다시 시도해 주세요.")
+
+# 빈 입력 또는 공백을 처리하지 않도록 함.
+if not query.strip() and submit_button:
+    st.write("질문을 입력해 주세요.")
+    
+# Streamlit UI 꾸미기
+st.markdown("""
+<style>
+    .css-1aumxhk {background-color: #f4f4f4;}
+    .stButton button {background-color: #4CAF50; color: white;}
+    .stTextInput > div {background-color: #f9f9f9;}
+</style>
+""", unsafe_allow_html=True)
