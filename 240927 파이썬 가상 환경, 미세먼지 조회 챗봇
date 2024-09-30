@@ -13,7 +13,7 @@ from langchain.schema.runnable import RunnableMap
 def get_air_quality_data(sido):
     url = 'http://apis.data.go.kr/B552584/ArpltnInforInqireSvc/getCtprvnRltmMesureDnsty'
     params = {
-        'serviceKey': 'Xk0NhVwFRqDVD+bfeDQ85G0/Ujr9MfixmLBirWcWybJjLNrYzlHOkvWcmgXepCPChIUvjkJ6cDja+978xPBloQ==', 
+        'serviceKey': '내 키를 입력하는 공간', 
         'returnType': 'json', 
         'numOfRows': '100', 
         'pageNo': '1', 
