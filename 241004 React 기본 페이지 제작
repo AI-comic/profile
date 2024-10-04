@@ -1,0 +1,99 @@
+----------------------------------------------------------------------
+#App.js
+----------------------------------------------------------------------
+import './App.css';
+import Image from './components/Image';
+import Content1 from './components/Content1';
+
+function App() {
+  return (
+    <div className="App">
+      <nav className="Menu">
+        <a href="http://www.naver.com">네이버</a> |
+        <a href="http://www.google.com">구글</a> |
+        <a href="http://openai.com">오픈AI</a>
+      </nav>
+      <div className="Contents">
+        <Image className="Image" />
+        <Content1 className="Content1" />
+      </div>
+    </div>
+  );
+}
+
+export default App;
+----------------------------------------------------------------------
+#Image.jsx
+----------------------------------------------------------------------
+import React from "react";
+import littlePrince from '../components/littleprince.jpg';
+
+function Image() {
+    return (
+    <div>
+        <img
+        src={littlePrince}
+        style={{ width: "300px", margin: "10px" }}
+        alt="littlePrince"
+        />
+    </div>
+    );
+}
+
+export default Image;
+
+----------------------------------------------------------------------
+#Content1.jsx
+----------------------------------------------------------------------
+import React from "react";
+
+function Content1() {
+    return (
+    <div>
+        <h1 id="title">책 리뷰: "어린 왕자" </h1>
+        <h3>(Le Petit Prince) - 생텍쥐페리</h3>
+        <p>
+            "어린 왕자"는 프랑스 작가 앙투안 드 생텍쥐페리가 1943년에 출간한 동화로,
+            전 세계적으로 사랑받는 작품입니다. 어린이와 어른 모두에게 깊은 인상을
+            남기는 이 책은 단순한 동화 이상의 의미를 지니고 있습니다.
+        </p>
+        <h2>줄거리 요약</h2>
+        <p>
+            이 책은 사하라 사막에 불시착한 비행사가 작은 행성 B-612에서 온 어린
+            왕자를 만나면서 시작됩니다. 어린 왕자는 자신의 행성에서 장미꽃과의 관계,
+            그리고 다른 여러 행성들을 여행하면서 만난 다양한 인물들에 대한 이야기를
+            들려줍니다. 그는 지구에서 만난 여러 사람들, 특히 여우와의 만남을 통해
+            삶의 본질에 대한 중요한 교훈을 얻게 됩니다.
+        </p>
+    </div>
+    );
+}
+
+export default Content1
+
+----------------------------------------------------------------------
+#App.css
+----------------------------------------------------------------------
+.Menu {
+text-align: center;
+background-color: #f4f873;
+font-size: 20px;
+text-decoration: none;
+color: inherit;
+}
+.Contents {
+display: flex;
+align-items: center;
+}
+.Image {
+width: 150px;
+float: left;
+margin-right: 20px;
+}
+.Para1 {
+margin-left: auto;
+}
+.App {
+width: 1000px;
+margin: auto;
+}
