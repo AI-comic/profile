@@ -1,0 +1,61 @@
+from azure.cognitiveservices.vision.customvision.prediction import CustomVisionPredictionClient
+from msrest.authentication import ApiKeyCredentials
+from matplotlib import pyplot as plt
+from PIL import Image, ImageDraw, ImageFont
+import numpy as np
+import os
+
+# 사용자가 만든 AI 모델의 예측 기능을 사용하기 위한 endpoint 지정
+prediction_endpoint = "?????"
+# KEY 값 지정
+prediction_key = "?????"
+# 프로젝트 ID 지정
+project_id = "?????"
+# 모델명 지정
+model_name = "Iteration1"
+
+# 앞에서 지정한 API KEY를 써서 커스텀 비전 모델을 사용할 클라이언트를 인증
+credentials = ApiKeyCredentials(in_headers={"Prediction-key": prediction_key})
+# endpoint를 써서 클라이언트 등록
+predictor = CustomVisionPredictionClient(endpoint=prediction_endpoint, credentials=credentials)
+
+# 테스트 이미지를 Codespace workspace에 추가한 후 image_file 변수로 지정
+image_file = "./data/test-1.png"
+# 이미지 파일 이름 출력
+print('Detecting objects in ', image_file)
+# Python Imaging Library의 image open함수를 써서 테스트 이미지 파일 오픈
+image = Image.open(image_file)
+# Numpy에서 이미지의 shape(높이, 폭, 채널) 읽기
+h, w, ch = np.array(image).shape
+
+ # 테스트 이미지를 열고 모델에 적용해서 결과를 저장
+with open(image_file, mode="rb") as image_data:
+    results = predictor.detect_image(project_id, model_name, image_data)
+ # 예측한 결과를 모두 출력 (텍스트로 표시됨)
+for prediction in results.predictions:
+    print("\t" + prediction.tag_name + " : {0:.2f}% bbox.left = {1:.2f}, bbox.top = {2:.2f}, bbox.width = {3:.2f}, bbox.height = {4:.2f} ".format(prediction.probability * 100, prediction.bounding_box.left, prediction.bounding_box.top, prediction.bounding_box.width, prediction.bounding_box.height))
+
+plt.figure(figsize=(8,8))
+plt.axis('off')
+ # 테스트 이미지를 그리기
+# 개체 인식 박스를 magenta로 지정
+draw = ImageDraw.Draw(image)
+lineWidth = int(w/100)
+color = 'magenta'
+
+for prediction in results.predictions:
+# 확률이 50%이 이상인 경우 bounding box 값을 읽음
+    if (prediction.probability*100) > 50:
+        left = prediction.bounding_box.left * w
+        top = prediction.bounding_box.top * h
+        width = prediction.bounding_box.width * w
+        height = prediction.bounding_box.height * h
+# bounding box 값을 magenta색으로 표시
+        points = ((left,top), (left+width,top), (left+width,top+height), (left,top+height),(left,top))
+        draw.line(points, fill=color, width=lineWidth)
+        plt.annotate(prediction.tag_name + ' {0:.2f}%'.format(prediction.probability * 100), (left, top), color=color)
+# bounding box 표시된 이미지를 output.jpg로 저장
+plt.imshow(image)
+outputfile = 'output.jpg'
+plt.savefig(outputfile)
+print('Results saved in', outputfile)
