@@ -1,0 +1,182 @@
+from flask import Flask, render_template_string, Response, request, jsonify
+from ultralytics import YOLOWorld
+import torch
+import cv2
+import time
+
+app = Flask(__name__)
+
+device = 'cuda' if torch.cuda.is_available() else 'cpu'
+print(f'Using device: {device}')
+
+model = YOLOWorld('yolov8s-worldv2.pt')
+model.to(device)
+
+# 초기 필터 설정
+desired_classes = ['']
+model.set_classes(desired_classes)
+
+# 웹캠 캡처 객체
+cap = cv2.VideoCapture(0)
+if not cap.isOpened():
+    raise Exception("웹캠을 열 수 없습니다.")
+
+def generate_frames():
+    prev_time = 0
+
+    while True:
+        ret, frame = cap.read()
+        if not ret:
+            print("프레임을 읽을 수 없습니다.")
+            break
+
+        current_time = time.time()
+        fps = 1 / (current_time - prev_time) if prev_time != 0 else 0
+        prev_time = current_time
+
+        try:
+            results = model.predict(frame, device=device)
+        except Exception as e:
+            print(f"예외 발생: {e}")
+            continue
+
+        annotated_frame = results[0].plot()
+        cv2.putText(annotated_frame, f"FPS: {fps:.2f}", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
+
+        ret, buffer = cv2.imencode('.jpg', annotated_frame)
+        frame = buffer.tobytes()
+
+        yield (b'--frame\r\n'
+               b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
+
+@app.route('/')
+def index():
+    html = '''
+    <!DOCTYPE html>
+    <html lang="ko">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Young's YOLO Open Vocabulary Object Detection</title>
+        <style>
+            body {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                height: 100vh;
+                font-family: 'Comic Sans MS', cursive, sans-serif;
+                background-color: #e0f7fa;
+                color: #00796b;
+                margin: 0;
+                padding: 20px;
+                text-align: center;
+            }
+            h1 {
+                color: #00796b;
+                margin-bottom: 20px;
+                text-shadow: 1px 1px 2px #fff;
+            }
+            img {
+                max-width: 100%;
+                height: auto;
+                border: 2px solid #00796b;
+                border-radius: 12px;
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+                margin-bottom: 20px;
+            }
+            form {
+                margin-top: 20px;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+            input[type="text"] {
+                padding: 10px;
+                width: 300px;
+                border: 2px solid #00796b;
+                border-radius: 4px;
+                margin-bottom: 10px;
+            }
+            input[type="submit"], button {
+                padding: 10px 20px;
+                border: none;
+                border-radius: 4px;
+                background-color: #009688;
+                color: white;
+                cursor: pointer;
+                margin-top: 10px;
+                transition: background-color 0.3s;
+            }
+            input[type="submit"]:hover, button:hover {
+                background-color: #00796b;
+            }
+            #status {
+                margin-top: 20px;
+                font-size: 1.2em;
+                color: #d32f2f;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Young's YOLO Open Vocabulary Object Detection</h1>
+        <div>
+            <img id="videoFeed" src="{{ url_for('video_feed') }}" alt="Video Feed">
+        </div>
+        <form id="classForm" method="post" action="/update_classes" onsubmit="updateClasses(event)">
+            <input type="text" name="desired_classes" placeholder="클래스 이름 입력 (쉼표로 구분)" required>
+            <input type="submit" value="Update Classes">
+            <button id="stopButton" type="button">Stop Video Feed</button>
+        </form>
+        <div id="status"></div>
+        <script>
+            function updateClasses(event) {
+                event.preventDefault();
+                const formData = new FormData(event.target);
+                fetch('/update_classes', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('status').innerText = 'Updated Classes: ' + data.classes.join(', ');
+                });
+            }
+
+            document.getElementById('stopButton').onclick = function() {
+                const img = document.querySelector('img');
+                img.src = 'feed.jpg';  // 이미지로 변경
+                img.style.display = 'block'; // 이미지 표시
+                document.getElementById('status').innerText = 'The video feed has been stopped.';
+                // 웹캠 종료
+                cap.release();  // 필요한 경우 웹캠 자원 해제
+            };
+        </script>
+        <footer>
+            <p>&copy; 2024 Real Time Open-Vocabulary Object Detection System by Young. All rights reserved.</p>
+        </footer>
+    </body>
+    </html>
+    '''
+    return render_template_string(html)
+
+@app.route('/video_feed')
+def video_feed():
+    return Response(generate_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
+
+@app.route('/update_classes', methods=['POST'])
+def update_classes():
+    global desired_classes
+    desired_classes_str = request.form.get('desired_classes', '')
+    desired_classes = [cls.strip() for cls in desired_classes_str.split(',') if cls.strip()]
+    model.set_classes(desired_classes)
+
+    print(f"Updated desired_classes: {desired_classes}")
+
+    return jsonify({'status': 'success', 'classes': desired_classes})
+
+if __name__ == '__main__':
+    try:
+        app.run(debug=True)
+    except KeyboardInterrupt:
+        cap.release()  # 프로그램 종료 시 웹캠 자원 해제
