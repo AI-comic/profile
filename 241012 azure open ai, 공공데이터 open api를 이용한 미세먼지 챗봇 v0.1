@@ -1,0 +1,134 @@
+import streamlit as st
+import json
+import requests
+from langchain.embeddings import SentenceTransformerEmbeddings
+from langchain.vectorstores import FAISS
+from langchain.chains import LLMChain
+from langchain.prompts import ChatPromptTemplate
+from langchain.chat_models import ChatOpenAI
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+
+def request_chatgpt(input_text, histories, system_text):
+    api_key = "키를 입력하는 공간"     
+    ENDPOINT_URL = "ENDPOINT URL을 입력하는 공간간"
+    
+    headers = {
+        "Content-type": "application/json",
+        "api-key": api_key
+    }
+    
+    messages = [{"role": "system", "content": system_text}]
+    
+    for history in histories:
+        messages.append({"role": "assistant", "content": history[0]})
+        messages.append({"role": "user", "content": history[1]})
+    
+    user_message = {"role": "user", "content": input_text}
+    messages.append(user_message)
+    
+    body = {
+        "temperature": 0.7,
+        "top_p": 0.95,
+        "max_tokens": 800,
+        "messages": messages
+    }
+    
+    response = requests.post(ENDPOINT_URL, headers=headers, json=body)
+    
+    if response.status_code == 200:
+        response_text = response.json()['choices'][0]['message']['content']
+        return response_text
+    else:
+        print(response.text)
+        return None  
+
+def get_air_quality_data(sido):
+    url = 'http://apis.data.go.kr/B552584/ArpltnInforInqireSvc/getCtprvnRltmMesureDnsty'
+    params = {
+        'serviceKey': '키를 입력하는 공간',
+        'returnType': 'json', 
+        'numOfRows': '100', 
+        'pageNo': '1', 
+        'sidoName': sido, 
+        'ver': '1.0'
+    }
+    response = requests.get(url, params=params)
+    data = response.json()
+    return data
+
+def parse_air_quality_data(data):
+    items = data['response']['body']['items']
+    air_quality_info = []
+    for item in items:
+        info = {
+            '측정소명': item.get('stationName'),
+            '날짜': item.get('dataTime'),
+            '미세먼지농도': item.get('pm10Value'),
+            '초미세먼지농도': item.get('pm25Value'),
+            '통합대기환경수치': item.get('khaiValue')
+        }
+        air_quality_info.append(info)
+    return air_quality_info
+
+def main():
+    st.set_page_config(page_title="대기질 정보 챗봇", layout="wide")
+    st.title("🌍 대기질 정보 제공 챗봇")
+    
+    sido = st.text_input("📍 도시 이름을 입력하세요:", "서울", max_chars=10)
+    query = st.text_input("❓ 궁금한 지역을 입력하세요:", "용산구", max_chars=10)
+    
+    if st.button("지역 선택"):
+        data = get_air_quality_data(sido)
+        air_quality_info = parse_air_quality_data(data)
+
+        documents = [
+            {"page_content": ", ".join([f"{key}: {info[key]}" for key in ['측정소명', '날짜', '미세먼지농도', '초미세먼지농도', '통합대기환경수치']])} 
+            for info in air_quality_info
+        ]
+
+        text_splitter = RecursiveCharacterTextSplitter(separators=",")
+        docs = text_splitter.split_documents(documents)
+
+        embedding_function = SentenceTransformerEmbeddings(model_name="jhgan/ko-sroberta-multitask")
+        db = FAISS.from_documents(docs, embedding_function)
+
+        if query:
+            retriever = db.as_retriever(search_type="similarity", search_kwargs={'k': 5})
+            query_result = retriever.get_relevant_documents(query)
+            st.write("**DB 검색 결과:**", query_result[0].page_content if query_result else "결과 없음")
+
+            # 챗봇 설정
+            llm = ChatOpenAI(model="gemma2:9b", temperature=0.3)
+
+            template = """
+            당신은 대기질을 안내하는 챗봇입니다. 
+            사용자에게 가능한 많은 정보를 친절하게 제공하십시오.            
+            다음의 기준으로, 공기가 좋음, 보통, 나쁨, 매우 나쁨을 판별해주세요. 
+            
+            PM10 (미세먼지 농도)
+                좋음: 0 ~ 30 
+                보통: 31 ~ 80
+                나쁨: 81 ~ 150 
+                매우 나쁨: 151 이상
+            PM2.5 (초미세먼지 농도)
+                좋음: 0 ~ 15 
+                보통: 16 ~ 35 
+                나쁨: 36 ~ 75 
+                매우 나쁨: 76 이상
+            
+            Answer the question based on the following context:
+            {context}
+
+            Question: {question}
+            """
+            prompt = ChatPromptTemplate.from_template(template)
+
+            chain = LLMChain(llm=llm, prompt=prompt)
+
+            if query_result:
+                response = chain.invoke({'context': query_result[0].page_content, 'question': query})
+                st.markdown("**챗봇의 답변:**")
+                st.markdown(response.content)
+
+if __name__ == "__main__":
+    main()
