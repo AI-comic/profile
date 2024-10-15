@@ -1,0 +1,28 @@
+from azure.cognitiveservices.vision.customvision.prediction import CustomVisionPredictionClient
+from msrest.authentication import ApiKeyCredentials
+import gradio as gr
+import cv2
+
+def predict(image_file):
+    prediction_endpoint = "엔드포인트 입력 공간"
+    prediction_key = "키 입력 공간"
+    project_id = "프로젝트id 입력 공간"
+    model_name = "모델 이름 입력 공간"
+
+    credentials = ApiKeyCredentials(in_headers={"Prediction-key": prediction_key})
+    predictor = CustomVisionPredictionClient(endpoint=prediction_endpoint, credentials=credentials)
+
+    _, encoded_image = cv2.imencode('.jpg', image_file)
+    image_data = encoded_image.tobytes()
+
+    output = ""
+    try:
+        results = predictor.classify_image(project_id, model_name, image_data)
+        for prediction in results.predictions:
+            output += "{} : {:.2f}%\n".format(prediction.tag_name, prediction.probability * 100)
+    except Exception as e:
+        output = f"Error occurred: {str(e)}"
+    
+    return output
+
+gr.Interface(fn=predict, inputs="image", outputs="text").launch()
