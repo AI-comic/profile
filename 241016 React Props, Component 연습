@@ -1,0 +1,90 @@
+//Comment.jsx
+
+import React from "react";
+
+function Comment(props) {
+    const styles = {
+        wrapper: {
+            margin: 8,
+            padding: 8,
+            display: "flex",
+            flexDirection: "row",
+            border: "1px solid grey",
+            borderRadius: 16,
+        },
+        imageContainer: {},
+        image: {
+            width: 50,
+            height: 50,
+            borderRadius: 25,
+        },
+        contentContainer: {
+            marginLeft: 8,
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            },
+        nameText: {
+            color: "black",
+            fontSize: 16,
+            fontWeight: "bold",
+        },
+        commentText: {
+            color: "black",
+            fontSize: 16,
+        },
+    };
+
+    return (
+        <div style={styles.wrapper}>
+            <div style={styles.imageContainer}>
+                <img
+                    src={props.image}
+                    style={styles.image}
+                    alt="Profile"
+                />
+            </div>
+            <div style={styles.contentContainer}>
+                <span style={styles.nameText}>{props.name}</span>
+                <span style={styles.commentText}>{props.comment}</span>
+            </div>
+        </div>
+    );
+}
+export default Comment;
+------------------------------------------------------------------------------------------------------------------------------------------------
+//CommentList.jsx
+
+import Comment from "./Comment";
+function CommentList(props) {
+    return (
+        <div>
+            <Comment name={"홍길동"} comment={"안녕하세요, 첫 프롭스 코드입니다"} image="https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png"/>
+            <Comment name={"황진이"} comment={"리액트 재미있어요."} image="https://i.namu.wiki/i/9gV9_sUXOYqO9PyG7q8vajr4jw86mae-_jSvuXFWBTQpO3tk2ahVwE3Hx2UaPz8Fmc831pQ7_sBZzvNcVrJzMCVB4m0-UmJ3ATbB9zrznKffYiscNO0hzebP_srEm_hCjDYcUORU3eR5Ph9nQMExIw.webp"/>
+            <Comment name={"밥로스"} comment={"참 쉽죠?"} image="https://i.namu.wiki/i/oapvQtK2GsDagLsvgDt5QZjKo4-43vsu3BAHbVnTzItcy8awwfX2C3Cy3-1-pC0rEyb2sB_XUnEGZbhusoFg425THSMrxnPFW-10phc6Icgub4WysUdIR2jYudaUljUP5jHw8w6NKQX3SrWDgaLfEQ.webp"/>
+            <Comment name={"베어그릴스"} comment={"하지만 지금은 내 점심이죠."} image="https://i.namu.wiki/i/Bq_c5xp_Pa1ZmOla2a5HSuo0hKnqQEnmumVeFm5RfP6XOIMl-q2yLC4Z2g0gGoFe456JE08dGMRnxhU3E3oYkLz3hyMIV8N7a1RXXiiurtudI_DPolH14g3JZjE7dPDJOOwe-MnTW3LB2rkcK6ZLGw.webp"/>
+            <Comment name={"카이지"} comment={"감사...압도적 감사..."} image="https://i.namu.wiki/i/999nsgfJGYPwKBbSTNVwYHuoQu4NOCb-PonVZs42RMXbYswZAdJMop3wR6PNss7YDNFgCzLXjL-bHIm5HO8MtduQsYLwXR6hM5iN4Lu3Q7WXG3R6DEXCnCOub0dyFuN_tT4d79BzE8j7wv7hzqa5wQ.webp"/>
+            <Comment name={"직쏘"} comment={"자...이제 게임을 시작하지..."} image="https://i.namu.wiki/i/PAPnWOcONurAMd6Ij9I4WD0QvvT2maW51ejkFcVyfib5op7ZCbgYTAvE9h5EbbUjnkML0dktw2XmF1e_W4KUfO_cU0KW7_XjfUzPn-I-pVzeaQYwtxkuLzU4G1Qvi_AS6X7T3Nzy_a8XedufMsSyXg.webp"/>
+            <Comment name={"로빈"} comment={"교수님 기억 안 나세요? 시험문제 쉽게 낸다고 하셨잖아요!!!"} image="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT4heIdPAqnhpethJyh9xpwzNT84xP6yK-Faw&s"/>
+        </div>
+    );
+}
+
+export default CommentList;
+------------------------------------------------------------------------------------------------------------------------------------------------
+//index.js
+
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import './index.css';
+import reportWebVitals from './reportWebVitals';
+import CommentList from "./chap05/CommentList";
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(
+    <React.StrictMode>
+        <CommentList />
+    </React.StrictMode>
+);
+
+reportWebVitals();
