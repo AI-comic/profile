@@ -1,0 +1,112 @@
+import streamlit as st
+import json
+import requests
+from langchain_community.vectorstores import FAISS
+from langchain_text_splitters import RecursiveCharacterTextSplitter
+from langchain.schema import Document
+from langchain_huggingface import HuggingFaceEmbeddings
+from langchain_ollama import ChatOllama
+from langchain.prompts import ChatPromptTemplate
+from langchain.schema.runnable import RunnableMap
+
+# 탄소배출권 데이터 조회 함수
+def get_carbon_credit_data():
+    url = 'http://apis.data.go.kr/1160100/service/GetGeneralProductInfoService/getCertifiedEmissionReductionPriceInfo'
+    params = {
+        'serviceKey': '~~~키 입력 공간~~~',
+        'resultType': 'json',
+        'numOfRows': '100',
+        'pageNo': '1',
+    }
+    try:
+        response = requests.get(url, params=params)
+        content = response.content.decode('utf-8')
+        data = json.loads(content)
+        return data
+    except Exception as e:
+        st.error(f"데이터를 가져오는 중 오류가 발생했습니다: {e}")
+        return None
+
+# 탄소배출권 데이터 파싱 함수
+def parse_carbon_credit_data(data):
+    items = data['response']['body']['items']['item']
+    carbon_credit_info = []
+    for item in items:
+        info = {
+            '기준일자': item.get('basDt'),
+            '단축코드': item.get('srtnCd'),
+            'ISIN코드': item.get('isinCd'),
+            '종목명': item.get('itmsNm'),
+            '종가': item.get('clpr'),
+            '대비': item.get('vs'),
+            '등락률': item.get('fltRt'),
+            '거래량': item.get('trqu'),
+            '거래대금': item.get('trPrc'),
+            '최고가': item.get('hipr'),
+            '최저가': item.get('lopr'),
+            '시작가': item.get('mkp'),
+        }
+        carbon_credit_info.append(info)
+    return carbon_credit_info
+
+# 메인 스트림릿 앱
+def main():
+    st.set_page_config(page_title="탄소배출권 정보 챗봇", layout="wide")
+    st.title("🌍 탄소배출권 정보 제공 챗봇")
+    st.markdown("""**안녕하세요!**
+                확인하고 싶은 탄소배출권 정보를 입력해 주세요.""")
+
+    query = st.text_input("무엇이 궁금하세요❓", max_chars=50)
+
+    if st.button("정보 조회"):
+        data = get_carbon_credit_data()
+        if data:
+            carbon_credit_info = parse_carbon_credit_data(data)
+
+            documents = [
+                Document(page_content=", ".join([f"{key}: {str(info[key])}" for key in ['단축코드', '기준일자', '종목명', '종가', '거래량', '거래대금', '등락률', '대비', '최고가', '최저가', '시작가']])) 
+                for info in carbon_credit_info
+            ]
+
+            text_splitter = RecursiveCharacterTextSplitter(separators=",")
+            docs = text_splitter.split_documents(documents)
+
+            embedding_function = HuggingFaceEmbeddings(model_name="jhgan/ko-sroberta-multitask")
+
+            db = FAISS.from_documents(docs, embedding_function)
+            retriever = db.as_retriever(search_type="similarity", search_kwargs={'k': 5, 'fetch_k': 100})
+
+            if query:
+                query_result = retriever.get_relevant_documents(query)
+                if query_result:
+                    st.write("**DB 검색 결과:**")
+                    for result in query_result:
+                        st.write(result.page_content)
+                else:
+                    st.write("검색 결과가 없습니다.")
+
+                # 챗봇 설정
+                llm = ChatOllama(model="gemma2:9b", temperature=0.3)
+
+                template = """
+                당신은 탄소배출권을 안내하는 챗봇입니다. 
+                사용자에게 가능한 많은 정보를 친절하게 제공하십시오.
+                
+                Answer the question based only on the following context:
+                {context}
+
+                Question: {question}
+                """
+                prompt = ChatPromptTemplate.from_template(template)
+
+                chain = RunnableMap({
+                    "context": lambda x: retriever.get_relevant_documents(x['question']),
+                    "question": lambda x: x['question']
+                }) | prompt | llm
+
+                response = chain.invoke({'question': query})
+                st.markdown("**챗봇의 답변:**")
+                st.markdown(response.content)
+
+if __name__ == "__main__":
+    main()
