@@ -1,0 +1,93 @@
+import streamlit as st
+import json
+import requests
+import openai
+
+# OpenAI API 설정
+openai.api_type = "azure"
+openai.api_base = "https://st008openai.openai.azure.com/"
+openai.api_version = "2023-05-15"
+openai.api_key = "키 입력 공간"  # Azure OpenAI 키
+
+# 탄소배출권 데이터 조회 함수
+def get_carbon_credit_data():
+    url = 'http://apis.data.go.kr/1160100/service/GetGeneralProductInfoService/getCertifiedEmissionReductionPriceInfo'
+    params = {
+        'serviceKey': '키 입력 공간', # 공공데이터 키
+        'resultType': 'json',
+        'numOfRows': '100',
+        'pageNo': '1',
+    }
+    try:
+        response = requests.get(url, params=params)
+        content = response.content.decode('utf-8')
+        data = json.loads(content)
+        return data
+    except Exception as e:
+        st.error(f"데이터를 가져오는 중 오류가 발생했습니다: {e}")
+        return None
+
+# 데이터 파싱 함수
+def parse_carbon_credit_data(data):
+    items = data['response']['body']['items']['item']
+    carbon_credit_info = []
+    for item in items:
+        info = {
+            '기준일자': item.get('basDt'),
+            '단축코드': item.get('srtnCd'),
+            'ISIN코드': item.get('isinCd'),
+            '종목명': item.get('itmsNm'),
+            '종가': item.get('clpr'),
+            '대비': item.get('vs'),
+            '등락률': item.get('fltRt'),
+            '거래량': item.get('trqu'),
+            '거래대금': item.get('trPrc'),
+            '최고가': item.get('hipr'),
+            '최저가': item.get('lopr'),
+            '시작가': item.get('mkp'),
+        }
+        carbon_credit_info.append(info)
+    return carbon_credit_info
+
+# 메인 앱
+def main():
+    st.set_page_config(page_title="탄소배출권 정보 챗봇", layout="wide")
+    st.title("🌍 탄소배출권 정보 제공 챗봇")
+    st.markdown("""**안녕하세요!**
+                확인하고 싶은 탄소배출권 정보를 입력해 주세요.""")
+
+    query = st.text_input("무엇이 궁금하세요❓", max_chars=50)
+
+    if st.button("정보 조회"):
+        data = get_carbon_credit_data()
+        if data:
+            carbon_credit_info = parse_carbon_credit_data(data)
+
+            documents = [
+                ", ".join([f"{key}: {str(info[key])}" for key in ['단축코드', '기준일자', '종목명', '종가', '거래량', '거래대금', '등락률', '대비', '최고가', '최저가', '시작가']])
+                for info in carbon_credit_info
+            ]
+
+            if query:
+                # 검색된 문서 내용을 포함하여 OpenAI API 호출
+                context = "\n".join(documents)
+                prompt = f"""
+                다음 정보를 기반으로 질문에 답변하세요:
+                {context}
+
+                질문: {query}
+                """
+
+                # OpenAI API 호출 (최신 방식)
+                response = openai.ChatCompletion.create(
+                    engine="gpt-4o",
+                    messages=[
+                        {"role": "user", "content": prompt}
+                    ]
+                )
+                answer = response['choices'][0]['message']['content']
+                st.markdown("**챗봇의 답변:**")
+                st.markdown(answer)
+
+if __name__ == "__main__":
+    main()
