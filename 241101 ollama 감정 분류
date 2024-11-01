@@ -1,0 +1,46 @@
+import ollama
+ 
+def generate_response(system_message, user_message, model="gemma2:9b", temperature=0, top_p=1, top_k=1):
+    client = ollama.Client()
+    response = client.chat(
+        model=model,
+        stream=True,
+        messages=[
+            {"role": "system", "content": system_message},
+            {"role": "user", "content": user_message}
+        ],
+        options={
+            "temperature": temperature,
+            "top_p": top_p,
+            "top_k": top_k,
+        }
+    )
+    full_response = ""    
+    for chunk in response:
+        content = chunk['message']['content']
+        print(content, end='', flush=True)  # 실시간 스트리밍 출력
+        full_response += content  # 전체 응답 구성      
+    return full_response
+ 
+# 예시 사용법
+system_msg = """
+### Instruction
+너는 지금부터 감정 분류 전문가야.
+너의 역할은 사용자가 입력한 문장을 파악해서 어떤 감정인지 판단하면 돼.
+JSON의 기본 구조로 답변하고 문장, 감정이 들어간다.
+감정의 종류는 긍정, 부정, 중립이 있다.
+"""
+ 
+text = """나는 이 음식이 그냥 그렇다고 생각해.
+
+나는 이 영화가 정말 재미없어.
+
+나는 우리 대학교 학식이 맛있어.
+"""
+user_msg = f"""
+### Question
+ <원문> {text}
+"""
+ 
+response = generate_response(system_msg, user_msg, model="gemma2:9b", temperature=0.5, top_p=1, top_k=1)
+# print(response)
