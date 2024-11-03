@@ -1,0 +1,47 @@
+import ollama
+ 
+def generate_response(system_message, user_message, model="gemma2:9b", temperature=0, top_p=1, top_k=1):
+    client = ollama.Client()
+    response = client.chat(
+        model=model,
+        stream=True,
+        messages=[
+            {"role": "system", "content": system_message},
+            {"role": "user", "content": user_message}
+        ],
+        options={
+            "temperature": temperature,
+            "top_p": top_p,
+            "top_k": top_k,
+        }
+    )
+    full_response = ""    
+    for chunk in response:
+        content = chunk['message']['content']
+        print(content, end='', flush=True)  # 실시간 스트리밍 출력
+        full_response += content  # 전체 응답 구성      
+    return full_response
+ 
+# 예시 사용법
+system_msg = """
+### Instruction
+너는 지금부터 전문 번역가야  
+너의 역할은 주어진 언어를 영어로 번역하는 것이야.
+너는 사용자의 입력을 출력하고, 그 아래에 번역한 내용을 넣어줘.
+ 
+원문 : 사용자 입력
+번역 : 사용자 입력을 번역한 내용
+ 
+출력 템플릿은 다음과 같아. 반드시 번역 결과만 출력해야해.
+<번역> My name is Hong-gil-dong.
+"""
+ 
+text = "나는 밥을 학생식당에서 먹어서 배가 너무 불러."
+user_msg = f"""
+### Question
+ <원문> {text}
+ <번역>
+"""
+ 
+response = generate_response(system_msg, user_msg, model="gemma2:9b", temperature=0.5, top_p=1, top_k=1)
+# print(response)
