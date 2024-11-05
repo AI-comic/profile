@@ -1,0 +1,38 @@
+from sentence_transformers import SentenceTransformer, util
+import numpy as np
+ 
+embedder = SentenceTransformer("jhgan/ko-sroberta-multitask")
+
+# Corpus with example sentences
+corpus = ['나는 매일 아침 커피를 마신다.',
+'오늘은 날씨가 아주 좋다.',
+'나는 주말에 가족과 시간을 보낸다.',
+'책을 읽는 것은 매우 재미있다.',
+'내일은 친구와 영화 관람을 계획하고 있다.',
+'나는 운동을 통해 스트레스를 해소한다.',
+'요리를 배우는 것은 좋은 취미이다.',
+'여행은 새로운 경험을 제공한다.']
+ 
+corpus_embeddings = embedder.encode(corpus, convert_to_tensor=True)
+print(corpus_embeddings)
+
+# Query sentences:
+queries = ['이번 주말에 친구들과 만나기로 했다.']
+ 
+# Find the closest 5 sentences of the corpus for each query sentence based on cosine similarity
+top_k = 8
+for query in queries:
+ query_embedding = embedder.encode(query, convert_to_tensor=True)
+ cos_scores = util.pytorch_cos_sim(query_embedding, corpus_embeddings)[0]
+ cos_scores = cos_scores.cpu()
+ 
+ #We use np.argpartition, to only partially sort the top_k results
+ top_results = np.argpartition(-cos_scores, range(top_k))[0:top_k]
+  
+ print("\n\n======================\n\n")
+ print("Query:", query)
+ print("\nTop 8 most similar sentences in corpus:")
+ 
+ for idx in top_results[0:top_k]:
+  print(corpus[idx].strip(), "(Score: %.4f)" % (cos_scores[idx]))
+ 
