@@ -1,0 +1,37 @@
+import cv2
+import time
+
+#=================================================================
+#카메라 설정
+#=================================================================
+cap = cv2.VideoCapture(0)
+
+if not cap.isOpened():
+    print("Error: 웹캠을 열 수 없습니다.")
+    exit()
+
+time.sleep(2.0)
+
+while True:
+    # 웹캠 영상 읽기
+    ret, frame = cap.read()
+    if not ret:
+        print("비디오가 끝났거나 에러가 발생했습니다.")
+        break
+
+    # 프레임 크기 조정
+    frame = cv2.resize(frame, (720, int(frame.shape[0] * 720 / frame.shape[1])))
+
+    # 입력영상 그레이스케일 처리
+    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+
+    # 그레이스케일 영상 표시
+    cv2.imshow("Frame", gray)
+    
+    # 종료 조건: 'q' 키를 누르면 종료
+    key = cv2.waitKey(1) & 0xFF
+    if key == ord("q"):
+        break
+
+cap.release()
+cv2.destroyAllWindows()
