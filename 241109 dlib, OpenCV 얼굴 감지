@@ -1,0 +1,48 @@
+import dlib
+import cv2
+import time
+
+#=================================================================
+# 얼굴 감지 설정
+#=================================================================
+detector = dlib.get_frontal_face_detector()
+
+# 웹캠 설정
+cap = cv2.VideoCapture(0)
+
+if not cap.isOpened():
+    print("Error: 웹캠을 열 수 없습니다.")
+    exit()
+
+time.sleep(2.0)
+
+while True:
+    # 웹캠 영상 읽기
+    ret, frame = cap.read()
+    if not ret:
+        print("비디오가 끝났거나 에러가 발생했습니다.")
+        break
+
+    # 입력영상 그레이스케일 처리
+    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+
+    # 얼굴 감지
+    rects = detector(gray)
+
+    for rect in rects:
+        x, y = rect.left(), rect.top()
+        w, h = rect.right() - x, rect.bottom() - y
+        
+        # 얼굴 영역에 bounding box 그리기
+        cv2.rectangle(frame, (x, y), (x + w, y + h), (255, 0, 0), 2)
+
+    # 영상 출력
+    cv2.imshow("Frame", frame)
+
+    # 'q' 키를 눌러 종료
+    key = cv2.waitKey(1) & 0xFF
+    if key == ord("q"):
+        break
+
+cap.release()
+cv2.destroyAllWindows()
