@@ -1,0 +1,90 @@
+import os
+from imutils import face_utils
+import cv2
+import dlib
+import imutils
+
+#=================================================================
+# 초기값 설정
+#=================================================================
+# 현재 프로그램 디렉토리 경로
+this_program_directory = os.path.dirname(os.path.abspath(__file__))
+
+# 얼굴 감지 및 눈동자 감지 처리
+detector = dlib.get_frontal_face_detector()
+
+# shape_predictor_68_face_landmarks.dat 경로 수정
+predictor_path = os.path.join(this_program_directory, 'shape_predictor_68_face_landmarks.dat')
+
+# 파일 경로가 정확한지 확인
+if not os.path.exists(predictor_path):
+    print(f"Error: {predictor_path} 파일을 찾을 수 없습니다.")
+    exit()
+
+# predictor 로드
+predictor = dlib.shape_predictor(predictor_path)
+
+# 얼굴의 왼쪽, 오른쪽 눈 좌표 인덱스
+(lStart, lEnd) = face_utils.FACIAL_LANDMARKS_IDXS["left_eye"]
+(rStart, rEnd) = face_utils.FACIAL_LANDMARKS_IDXS["right_eye"]
+
+# 비디오 캡처 장치 설정
+cap = cv2.VideoCapture(0)  # 웹캠을 사용하려면 0, 비디오 파일을 사용하려면 파일 경로 입력
+
+if not cap.isOpened():
+    print("Error: 비디오 파일을 열 수 없습니다.")
+    exit()
+
+while True:
+    # 웹캠 영상 읽기
+    ret, frame = cap.read()
+    if not ret:
+        print("비디오가 끝났거나 에러가 발생했습니다.")
+        break
+
+    frame = imutils.resize(frame, width=720)
+    frame = cv2.flip(frame, 1)
+
+    # 입력 영상 grayscale 처리
+    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+
+    # 얼굴 Detection
+    rects = detector(gray)  
+
+    for rect in rects:
+        x, y = rect.left(), rect.top()
+        w, h = rect.right() - x, rect.bottom() - y
+
+        # 얼굴 영역 bounding box 그리기
+        cv2.rectangle(frame, (x, y), (x + w, y + h), (255, 0, 0), 2)
+
+        # 눈동자 Detection (68 landmarks)
+        shape = predictor(gray, rect)
+        shape = face_utils.shape_to_np(shape)
+
+        # 왼쪽 및 오른쪽 눈 좌표 추출
+        leftEye = shape[lStart:lEnd]
+        rightEye = shape[rStart:rEnd]
+
+        # 양쪽 눈의 외곽선 그리기
+        leftEyeHull = cv2.convexHull(leftEye)
+        rightEyeHull = cv2.convexHull(rightEye)
+
+        # 눈동자 외곽선 그리기
+        cv2.drawContours(frame, [leftEyeHull], 0, (0, 255, 0), 1)
+        cv2.drawContours(frame, [rightEyeHull], 0, (0, 255, 0), 1)
+
+        # 눈동자 중심 좌표 표시
+        for (x, y) in leftEye:
+            cv2.circle(frame, (x, y), 2, (0, 255, 0), -1)
+        for (x, y) in rightEye:
+            cv2.circle(frame, (x, y), 2, (0, 255, 0), -1)
+
+    # 영상 출력
+    cv2.imshow("Frame", frame)
+    key = cv2.waitKey(1) & 0xFF
+    if key == ord("q"):
+        break
+
+cap.release()
+cv2.destroyAllWindows()
