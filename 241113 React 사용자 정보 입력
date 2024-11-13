@@ -1,0 +1,112 @@
+import React, { useState } from "react";
+
+function SignUp() {
+    const [name, setName] = useState("");
+    const [gender, setGender] = useState("");
+    const [age, setAge] = useState("");
+    const [fruit, setFruit] = useState("");
+    const [submitted, setSubmitted] = useState(false);
+
+    const handleChangeName = (event) => {
+        setName(event.target.value);
+    };
+
+    const handleChangeGender = (event) => {
+        setGender(event.target.value);
+    };
+
+    const handleChangeAge = (event) => {
+        setAge(event.target.value);
+    };
+
+    const handleChangeFruit = (event) => {
+        setFruit(event.target.value);
+    };
+
+    const handleSubmit = (event) => {
+        event.preventDefault();
+        setSubmitted(true);
+    };
+
+    return (
+        <div>
+            <h3>사용자 정보 입력</h3>
+            <form onSubmit={handleSubmit}>
+                <div>
+                    <label>이름:</label>
+                    <input
+                        type="text"
+                        id="name"
+                        value={name}
+                        onChange={handleChangeName}
+                        placeholder="이름을 입력하세요"
+                    />
+                </div>
+
+                <div>
+                    <label>성별:</label>
+                    <label>
+                        <input
+                            type="radio"
+                            id="gender"
+                            value="남성"
+                            checked={gender === "남성"}
+                            onChange={handleChangeGender}
+                        />
+                        남성
+                    </label>
+                    <label>
+                        <input
+                            type="radio"
+                            id="gender"
+                            value="여성"
+                            checked={gender === "여성"}
+                            onChange={handleChangeGender}
+                        />
+                        여성
+                    </label>
+                </div>
+
+                <div>
+                    <label>나이:</label>
+                    <input
+                        type="number"
+                        id="age"
+                        value={age}
+                        onChange={handleChangeAge}
+                        placeholder="나이를 입력하세요"
+                    />
+                </div>
+
+                <div>
+                    <label htmlFor="fruit">좋아하는 과일:</label>
+                    <select
+                        id="fruit"
+                        value={fruit}
+                        onChange={handleChangeFruit}
+                    >   <option value=""></option>
+                        <option value="사과">사과</option>
+                        <option value="바나나">바나나</option>
+                        <option value="키위">키위</option>
+                        <option value="망고">망고</option>
+                        <option value="파인애플">파인애플</option>
+                    </select>
+                </div>
+
+                <button type="submit">제출</button>
+            </form>
+
+            {submitted && (
+                <div>
+                    <h4>입력한 사용자 정보</h4>
+                    <p>이름: {name}</p>
+                    <p>성별: {gender}</p>
+                    <p>나이: {age}</p>
+                    <p>좋아하는 과일: {fruit}</p>
+                </div>
+            )}
+        </div>
+    );
+}
+
+export default SignUp;
