@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kopo.aisw.springboot_basic.mapper.UserMapper">
+
+    <insert id="save" parameterType="User"> <!-- 단축 경로 -->
+        INSERT INTO tb_user (user_id, user_password, user_name, user_auth)
+        values (#{userId}, #{userPassword}, #{userName}, #{userAuth})
+    </insert>
+
+    <select id="findById" parameterType="string" resultType="User"> <!-- 단축 경로 -->
+        SELECT * from tb_user WHERE user_id = #{userId}
+    </select>
+
+    <update id="update" parameterType="User"> <!-- 단축 경로 -->
+        UPDATE tb_user
+        set user_password = #{userPassword},
+            user_name = #{userName},
+            user_auth = #{userAuth}
+        WHERE user_id = #{userId}
+    </update>
+
+    <delete id="delete" parameterType="string">
+        DELETE from tb_user where user_id = #{userId}
+    </delete>
+
+</mapper>
