@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>블로그 메인</title>
+    <style>
+        .container {
+            width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        .nav-links a {
+            margin-left: 15px;
+            text-decoration: none;
+            color: #007bff;
+        }
+        .welcome-msg {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>블로그</h1>
+            <div class="nav-links">
+                <span sec:authorize="!isAuthenticated()">
+                    <a th:href="@{/user/login}">로그인</a>
+                    <a th:href="@{/user/signup}">회원가입</a>
+                </span>
+                <span sec:authorize="isAuthenticated()">
+                    <a th:href="@{/user/mypage}">마이페이지</a>
+                    <a th:href="@{/user/logout}">로그아웃</a>
+                </span>
+            </div>
+        </div>
+        <div class="welcome-msg" sec:authorize="isAuthenticated()">
+            <p><span sec:authentication="name"></span>님 환영합니다!</p>
+        </div>
+    </div>
+</body>
+</html>
