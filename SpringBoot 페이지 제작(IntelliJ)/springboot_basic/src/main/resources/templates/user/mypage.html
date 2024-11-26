@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>마이페이지</title>
+    <style>
+        .container {
+            width: 400px;
+            margin: 50px auto;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+        .btn {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: none;
+            cursor: pointer;
+        }
+        .update-btn {
+            background-color: #007bff;
+            color: white;
+        }
+        .delete-btn {
+            background-color: #dc3545;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>마이페이지</h2>
+        <form th:action="@{/user/update}" method="post" th:object="${user}">
+            <div class="form-group">
+                <label for="userId">아이디</label>
+                <input type="text" id="userId" th:field="*{userId}" readonly>
+            </div>
+            <div class="form-group">
+                <label for="userPassword">새 비밀번호</label>
+                <input type="password" id="userPassword" name="userPassword">
+            </div>
+            <div class="form-group">
+                <label for="userName">이름</label>
+                <input type="text" id="userName" th:field="*{userName}">
+            </div>
+            <button type="submit" class="btn update-btn">정보 수정</button>
+        </form>
+        <form th:action="@{/user/delete}" method="post" onsubmit="return confirm('정말 탈퇴하시겠습니까?');">
+            <button type="submit" class="btn delete-btn">회원 탈퇴</button>
+        </form>
+        <div style="margin-top: 10px; text-align: center;">
+            <a th:href="@{/}">메인으로 돌아가기</a>
+        </div>
+    </div>
+</body>
+</html>
