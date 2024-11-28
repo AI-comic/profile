@@ -59,4 +59,96 @@ BEGIN
 END;
 ```
 
+---
+3. 게시판 구현:
+- MariaDB 버전
+```
+CREATE TABLE tb_board (
+    board_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(200) NOT NULL,
+    content TEXT NOT NULL,
+    user_id VARCHAR(50) NOT NULL,
+    view_count INT DEFAULT 0,
+    reg_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+    mod_date DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES tb_user(user_id)
+);
+```
 
+- Oracle 버전
+```
+-- 시퀀스 생성
+CREATE SEQUENCE board_seq
+    START WITH 1
+    INCREMENT BY 1
+    NOCACHE
+    NOCYCLE;
+
+-- 테이블 생성
+CREATE TABLE tb_board (
+    board_id NUMBER PRIMARY KEY,
+    title VARCHAR2(200) NOT NULL,
+    content CLOB NOT NULL,
+    user_id VARCHAR2(50) NOT NULL,
+    view_count NUMBER DEFAULT 0,
+    reg_date TIMESTAMP DEFAULT SYSTIMESTAMP,
+    mod_date TIMESTAMP DEFAULT SYSTIMESTAMP,
+    CONSTRAINT fk_board_user FOREIGN KEY (user_id) REFERENCES tb_user(user_id)
+);
+
+-- Auto_Increment 트리거
+CREATE OR REPLACE TRIGGER trg_board_insert
+    BEFORE INSERT ON tb_board
+    FOR EACH ROW
+BEGIN
+    SELECT board_seq.NEXTVAL
+    INTO :NEW.board_id
+    FROM DUAL;
+END;
+
+-- 수정일자를 자동으로 업데이트하기 위한 트리거
+CREATE OR REPLACE TRIGGER trg_board_update
+    BEFORE UPDATE ON tb_board
+    FOR EACH ROW
+BEGIN
+    :NEW.mod_date := SYSTIMESTAMP;
+END;
+```
+
+---
+4. 댓글 기능 구현:
+- MariaDB 버전
+```
+CREATE TABLE IF NOT EXISTS tb_comment (
+    comment_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    board_id BIGINT NOT NULL,
+    user_id VARCHAR(50) NOT NULL,
+    content TEXT NOT NULL,
+    reg_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    mod_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (board_id) REFERENCES tb_board(board_id) ON DELETE CASCADE
+);
+```
+
+- Oracle 버전
+```
+-- 테이블 생성
+CREATE TABLE tb_comment (
+    comment_id NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    board_id NUMBER NOT NULL,
+    user_id VARCHAR2(50) NOT NULL,
+    content CLOB NOT NULL,
+    reg_date TIMESTAMP DEFAULT SYSTIMESTAMP,
+    mod_date TIMESTAMP DEFAULT SYSTIMESTAMP,
+    CONSTRAINT fk_comment_board FOREIGN KEY (board_id)
+    REFERENCES tb_board(board_id) ON DELETE CASCADE
+);
+
+-- 수정일자를 자동으로 업데이트하기 위한 트리거
+CREATE OR REPLACE TRIGGER trg_comment_update
+    BEFORE UPDATE ON tb_comment
+    FOR EACH ROW
+BEGIN
+    :NEW.mod_date := SYSTIMESTAMP;
+END;
+```
