@@ -32,4 +32,8 @@ public class UserService {
     public void deleteUser(String userId) {
         userMapper.delete(userId);
     }
+
+    public boolean isUserIdExists(String userId) {
+        return userMapper.findById(userId) != null;
+    }
 }
