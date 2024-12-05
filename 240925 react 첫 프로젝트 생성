@@ -1,7 +1,0 @@
-Node.js 설치
-
-vscode 터미널에서
-npx create-react-app project01(생성할 하위 폴더 이름)
-"Happy hacking" 출력되면 성공
-
-npm start
