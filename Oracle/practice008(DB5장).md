@@ -30,7 +30,7 @@ name: varchar2(10) 타입으로, 기본값을 'NO Name'으로 설정합니다.
 
 hiredate: date 타입으로, 기본값을 sysdate(현재 시스템 날짜)로 설정합니다.
 
-insert into tt02 (no) values(1);는 tt02 테이블에 no 컬럼만 1로 지정하여 삽입하는 쿼리입니다. 다른 두 컬럼(name과 hiredate)은 기본값이 자동으로 적용됩니다.
+**insert into tt02 (no) values(1);** 는 tt02 테이블에 no 컬럼만 1로 지정하여 삽입하는 쿼리입니다. 다른 두 컬럼(name과 hiredate)은 기본값이 자동으로 적용됩니다.
 
 ### 3. 한글테이블 생성
 ```
@@ -59,7 +59,7 @@ temp01이라는 전역 임시 테이블(Global Temporary Table)을 생성합니�
 
 이 테이블은 세션 기반의 임시 테이블로, 세션 종료 시 데이터가 사라집니다.
 
-insert into temp01 values(1, 'AAAAA');는 temp01 테이블에 값을 삽입하는 쿼리입니다.
+**insert into temp01 values(1, 'AAAAA');** 는 temp01 테이블에 값을 삽입하는 쿼리입니다.
 
 ### 5. 테이블 복사
 ```
