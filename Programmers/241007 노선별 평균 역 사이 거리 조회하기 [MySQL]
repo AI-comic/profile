@@ -1,4 +1,4 @@
---https://school.programmers.co.kr/learn/courses/30/lessons/284531
+https://school.programmers.co.kr/learn/courses/30/lessons/284531
 
 문제 설명
 SUBWAY_DISTANCE 테이블은 서울지하철 2호선의 역 간 거리 정보를 담은 테이블입니다. SUBWAY_DISTANCE 테이블의 구조는 다음과 같으며 LINE, NO, ROUTE, STATION_NAME, D_BETWEEN_DIST, D_CUMULATIVE는 각각 호선, 순번, 노선, 역 이름, 역 사이 거리, 노선별 누계 거리를 의미합니다.
