@@ -1,0 +1,32 @@
+import turtle
+
+swidth, sheight = 500, 500  # 터틀 그래픽 창의 가로와 세로 크기
+
+turtle.title('무지개색 원그리기')
+turtle.shape('turtle')  # '거북이' 모양으로 설정
+turtle.setup(width = swidth + 50, height = sheight + 50)  # 터틀 그래픽 창의 크기를 swidth와 sheight보다 약간 더 크게 설정
+turtle.screensize(swidth, sheight)  # 실제 작업 공간 크기를 swidth와 sheight로 설정
+turtle.penup()  # 터틀이 그리기를 멈추고, 움직일 때 선을 그리지 않도록 설정
+turtle.goto(0, -sheight / 2)  # 터틀을 화면의 세로 크기의 절반만큼 아래로 내려가는 위치로 이동
+turtle.pendown()  # 터틀이 다시 그리기를 시작하도록 설정
+turtle.speed(5000)  # 터틀의 그리기 속도를 매우 빠르게 설정. 5000은 최대 속도
+
+for radius in range(1, 250) :  # 반지름의 크기를 1부터 249까지 증가시키며 반복. 각 반복에서 그려지는 원의 크기가 커진.
+    if radius % 6 == 0 :
+        turtle.pencolor('red')
+    elif radius % 5 == 0 :
+        turtle.pencolor('orange')
+    elif radius % 4 == 0 :
+        turtle.pencolor('yellow')
+    elif radius % 3 == 0 :
+        turtle.pencolor('green')
+    elif radius % 2 == 0 :
+        turtle.pencolor('blue')
+    elif radius % 1 == 0 :
+        turtle.pencolor('navyblue')
+    else:
+        turtle.pencolor('purple')
+
+    turtle.circle(radius)
+
+turtle.done()
