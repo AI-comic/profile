@@ -1,0 +1,40 @@
+package ch04;
+
+import java.util.Scanner;
+
+public class lab4_3 {
+    public static void main(String[] args) {
+        Scanner stdIn = new Scanner(System.in);
+
+        System.out.print("기본 시급을 입력하세요: ");
+        int hourlyWage = stdIn.nextInt();
+
+        if (hourlyWage < 10000) {
+            System.out.println("시급이 1만 원보다 적습니다.");
+            stdIn.close();
+            return;
+        }
+
+        System.out.print("총 근무 시간을 입력하세요: ");
+        int workingHours = stdIn.nextInt();
+        
+        if (workingHours > 180) {
+            System.out.println("근무 시간이 180시간을 초과하였습니다.");
+            stdIn.close();
+            return;
+        }
+
+        double totalSalary = 0;
+
+        if (workingHours <= 160) {
+            totalSalary = workingHours * hourlyWage;
+        } else {
+            int overtimeHours = workingHours - 160;  // 초과 근무 시간
+            totalSalary = (160 * hourlyWage) + (overtimeHours * hourlyWage * 1.5);  // 초과 부분에 1.5배 시급 적용
+        }
+
+        System.out.printf("총 급여액은 %,.0f원입니다.\n", totalSalary);
+
+        stdIn.close();
+    }
+}
