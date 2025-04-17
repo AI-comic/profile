@@ -1,0 +1,22 @@
+package ch05;
+
+import java.util.Scanner;
+
+public class work05_07 {
+	public static void main(String[] args) {
+		Scanner stdIn = new Scanner(System.in);
+		int n;
+		int count = 0;
+		
+		System.out.println("양의 정수를 입력하세요.");
+		n = stdIn.nextInt();
+
+		for(int i = 1; i <= n; i++) {
+			if(n % i == 0) {
+				System.out.print(i + " ");	
+				count++;
+			}
+		}
+		System.out.println("\n약수의 개수: " + count + "개");
+	}
+}
