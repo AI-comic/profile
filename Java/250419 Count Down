@@ -1,0 +1,40 @@
+package ch05;
+ 
+import java.util.Scanner;
+ 
+public class work05_03 {
+	public static void main(String[] args) {
+		Scanner stdIn = new Scanner(System.in);
+		int x;
+		do {
+			System.out.println("카운트다운 할 양의 정수를 입력하세요.");
+			x = stdIn.nextInt();
+		} while (x <= 0);
+		
+		while(x >= 0) {
+			System.out.println(x--);
+		}
+		System.out.printf("발사");
+	}
+}
+ 
+----------------------------------------------------------------- 
+package ch05;
+ 
+import java.util.Scanner;
+ 
+public class work05_04 {
+	public static void main(String[] args) {
+		Scanner stdIn = new Scanner(System.in);
+		int x;
+		do {
+			System.out.println("카운트다운 할 양의 정수를 입력하세요.");
+			x = stdIn.nextInt();
+		} while (x <= 0);
+		
+		for(;x >= 0; x--) {
+			System.out.println(x);
+		}
+		System.out.printf("발사");
+	}
+}
