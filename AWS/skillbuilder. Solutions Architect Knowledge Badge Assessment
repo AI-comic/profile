@@ -1,0 +1,31 @@
+1. You have deployed a multi tier web application and placed it in an Amazon VPC.The web tier is in subnet A, the application tier is in subnet B, and the database tier is in subnet C. What series of steps should you take to ensure that the application tier can only receive traffic via HTTPS from the web tier and only send traffic via MySQL to the database tier? (Select TWO)
+    1) Create a database tier security group with a deny rule for application tier on all ports except TCP 3306.
+    2) Add an outbound rule to your application tier security group on TCP port 3306 with a destination of the database tier
+ (v)3) Create a database tier security group with an inbound rule on TCP port 3306 with the source of the application tier.
+ (v)4) Create an application tier security group with an inbound rule on HTTPS port 443 with the source of the web tier
+    5) Add a managed NAT gateway to connect your application tier with your database tier
+
+2. Your team is migrating an application from a cluster of Amazon EC2 instances into AWS Lambda functions. Which technical consideration will continue to be your responsibility after the transition is complete?
+    1) Storing sensitive credentials in the application code.
+ (v)2) Writing optimized application code.
+    3) Identifying the appropriate machine family and size for the application code.
+    4) Updating and applying security patches to the Operating System.
+
+3. A company is running a three-tier architecture on AWS. The web tier is in a public subnet, the application tier and the database are in private subnets across two availability zones. The company's security team noticed that specific IP addresses are attacking the Amazon EC2 instances in the web tier. A solutions architect must block traffic from those IP addresses from reaching the Amazon VPC. How can this requirement be met?
+    1) Block the IP address using Amazon Inspector.
+    2) Block the IP addresses with Security Groups.
+    3) Block the IP address using Amazon GuardDuty.
+ (v)4) Block the IP addresses with Network ACLs from reaching instances in the public subnets.
+
+4. A company wants to allow their existing Active Directory users access to AWS without having to recreate AWS IAM user accounts for every person.  Which of the following methods is the most cost effective solution to meet the requirements? (Select TWO)
+    1) Cognito Identity Pool
+    2) X.509 Certificate
+ (v)3) SAML 2.0
+    4) Amazon Directory Services
+ (v)5) OpenID Connect
+
+5. You are a cloud security engineer and have been tasked with ensuring that confidential data is not accessible publicly. To ensure compliance with this mandate, you are interested in turning on Amazon S3 Block Public Access (BPA) feature. Which of the following is not a valid option under BPA settings?
+ (v)1) Block all access point policies.
+    2) Block public and cross-account access to buckets and objects through any public bucket or access point policies.
+    3) Block Public Access granted through new ACLs.
+    4) Block all public access.
