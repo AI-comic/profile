@@ -29,3 +29,33 @@
     2) Block public and cross-account access to buckets and objects through any public bucket or access point policies.
     3) Block Public Access granted through new ACLs.
     4) Block all public access.
+
+6. As the solutions architect in an organization, you are given an assignment to build an application in AWS which is required to be deployed in an Auto Scaling group of On-Demand Amazon EC2 instances and a MongoDB database. It is expected that the database will have high-throughput workloads performing small, random I/O operations. Which of the following is the most performant Amazon EBS type to use for your database?
+    1) Cold HDD - sc1
+    2) General Purpose SSD - gp2
+    3) Throughput Optimized HDD - st1
+ (v)4) Provisioned IOPS SSD - io1
+
+7. A solutions architect must find the gateway that a database in an Amazon EC2 instance on a private subnet that can initiate a session to the internet, but must not allow a session from the internet to initiate back to the database.What gateway is it recommended to use for this private subnet directly for this behavior for the Internet connectivity?
+    1) Virtual Private Gateway
+ (v)2) NAT Gateway
+    3) Direct Connect Gateway
+    4) Transit Gateway
+
+8. An IT organization is looking for a way to migrate their container workloads to the cloud to reduce administrative and maintenance tasks. Their Windows workloads are the highest priority to migrate onto AWS, and convenience and ease is the top priority to free up administrative time. Which AWS managed service will meet your companys requirements?
+    1) Amazon ECS
+ (v)2) AWS Fargate
+    3) AWS Lambda
+    4) Amazon EKS
+
+9. The publicly accessible website hosted on Amazon EC2 instance in GovCloud region is able to communicate with Amazon S3. Amazon DynamoDB within the same region is also able to access Amazon S3 buckets. However, the Amazon RDS database instance that uses a private subnet of a Amazon VPC hosted in the same region is unable to send SNS notifications to Amazon S3. Which one of the following would you use to resolve the problem?
+ (v)1) VPC Endpoint
+    2) Virtual Private Gateway
+    3) Direct Connect Gateway
+    4) AWS Transit Gateway
+
+10. A company is developing a highly available web application using stateless web servers. Which service is most suitable for storing ephemeral session state data?
+    1) Amazon S3
+ (v)2) Amazon ElastiCache
+    3) Amazon DynamoDB
+    4) Storage Gateway
