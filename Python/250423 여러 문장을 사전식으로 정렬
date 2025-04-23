@@ -1,0 +1,18 @@
+# 정렬하고 싶은 텍스트를 """ """ 안에 모두 붙여 넣으세요.
+text = """
+
+"""
+
+# 줄별로 나누고, 빈 줄 제거
+lines = [line for line in text.splitlines() if line.strip()]
+
+# 띄어쓰기를 제거한 후 정렬하는 함수
+def remove_spaces(line):
+    return re.sub(r'\s+', '', line)
+
+# 띄어쓰기를 없앤 상태로 정렬
+sorted_lines = sorted(lines, key=lambda x: remove_spaces(x).strip())
+
+# 결과 출력 (정렬된 후 띄어쓰기를 원상복구)
+for line in sorted_lines:
+    print(line)
