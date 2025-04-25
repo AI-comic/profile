@@ -59,3 +59,36 @@
  (v)2) Amazon ElastiCache
     3) Amazon DynamoDB
     4) Storage Gateway
+
+11. A company has an On-Demand Amazon EC2 instance with an attached Amazon EBS volume. There is a scheduled job that creates a snapshot of this EBS volume at 12 AM when the instance is not used. You have a production incident where you need to perform a change on both the instance and on the EBS volume at the same time when the snapshot is currently taking place. Which of the following scenarios is valid when it comes to the usage of an EBS volume while the snapshot is in progress?
+    1) The Amazon EBS volume can't be detached or attached when a snapshot is in progress.
+ (v)2) The Amazon EBS volume can be used when the snapshot is in progress.
+    3) The Amazon EBS volume cannot be used when a snapshot is in progress.
+    4) The volume can be used in read only mode when a snapshot is in progress.
+
+12. Your company is looking to store session information from their backend Amazon EC2 instances and they want to identify the best database which can provide them durability, high availability (HA), scalability and persistence. Since they want to store session information, they want a database which can provide them microsecond latency.Which one of the following database can best satisfy the requirements?
+    1) Amazon ElastiCache with Redis cluster mode enabled
+    2) Amazon DynamoDB
+    3) Amazon DocumentDB
+ (v)4) Amazon MemoryDB for Redis
+
+13. You have created an Amazon RDS instance. How can you retrieve an endpoint of the newly created instance? (Select TWO)
+ (v)1) AWS CLI
+    2) Amazon RDS Parameter groups.
+    3) You must create a AWS Lambda function to retrieve the database instance end point.
+ (v)4) AWS Management Console
+    5) Log into Amazon RDS instance.
+
+14. Your company uses an Identity Provider (IdP) for Single-sign on (SSO) and has tasked their solutions architect with connecting their AWS Account to the IdP so their users can leverage their corporate identity to access the environment. What actions should the solutions architect take to meet these requirements? (Select TWO)
+    1) Create an AWS IAM Identity Provider by uploading the JSON metadata document from your IdP.
+    2) Create an AWS IAM User with AWS Management Console Access, attach a policy with a trust relationship with the IdP.
+ (v)3) Create an AWS IAM Role with a trust relationship with the IdP.
+ (v)4) Create an AWS IAM Identity Provider by uploading the SAML metadata document from your IdP.
+    5) Create an AWS IAM User Group, associate the User Group with the IdP and add users to the User Group.
+
+15. VPC Peering between two Amazon VPCs has just been activated and accepted. After that a solutions architect finds that they still have no communication between the workloads that are in both VPCs. What additional step can help to provide effective communication between VPCs?
+    1) A Virtual Private Gateway needs to be added between both VPCs to allow communication.
+    2) Additional configurations need to be made directly in VPC Peering.
+ (v)3) Edit both route tables on the Amazon VPCs to add routes to the other VPC to which you want to connect.
+    4) A Transit Gateway needs to be added between both VPCs to allow communication.
+
