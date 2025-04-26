@@ -92,3 +92,35 @@
  (v)3) Edit both route tables on the Amazon VPCs to add routes to the other VPC to which you want to connect.
     4) A Transit Gateway needs to be added between both VPCs to allow communication.
 
+16. The finance team in your organization needs to send data to your team's backend workflow. You want to filter inbound traffic at the subnet level while allowing returning traffic back to the finance team's service. What do you need to setup to complete this workflow?
+    1) Create a Security Group. Enable inbound connections from the other team. Since Security Group is stateful, it will automatically enable outbound returning traffic.
+    2) Create a Network Access Control List (NACL). Enable inbound traffic from the other team's service. Since NACL is stateful, it will automatically enable outbound returning traffic.
+ (v)3) Create a Network Access Control List (NACL). Enable inbound traffic from the other team's service; enable outbound traffic to return data to the other team's service
+    4) Create a Security Group. Enable inbound connections from the other team. Enable outbound returning traffic to the other team's service
+
+17. Which use cases are supported by Amazon S3 File Gateway? (Select TWO)
+ (v)1) Migrating on-premises file data to Amazon S3, while maintaining fast local access to recently accessed data.
+    2) Backing up on-premises file data as objects directly in Amazon EBS.
+ (v)3) Backing up on-premises file data as objects in Amazon S3.
+    4) Processing machine learning, big data analytics or serverless functions.
+    5) Backing up on-premises file data as objects directly in Amazon S3 Glacier.
+
+18. You are in charge of securely managing Amazon S3 buckets on AWS. One bucket currently receives requests to read or write over the public internet. A potential risk exists where person in the middle attacks or eavesdropping attempts may occur. Which of the following options below would address this risk regardless of where the request comes from?
+ (v)1) Create a bucket policy for the designated bucket and create a condition using as:SecureTransport to only allow encrypted connections over HTTPS.
+    2) Create a SCP policy for the organization with a condition using as:SecureTransport to only allow encrypted connections over HTTPS.
+    3) Create a SCP policy for the organization with a condition to only write to the bucket if the data is encrypted.
+    4) Create an IAM User policy with a condition that will only allow users to upload or read from the designated bucket if as:SecureTransport is True.
+
+19. Your company has an internal knowledge base which has large number of files. 1000s of new files are added to the knowledge base every week and once a month outdated files are removed.The total storage requirements for the knowledge base can vary greatly based on additions, removals and modifications of the files.The knowledge base is accessed via a web application which runs on multiple Amazon EC2 instances behind an application load balancer. Every EC2 instance needs to access all of the files. What is the most suitable storage solution?
+    1) Amazon FSx for Lustre
+ (v)2) Amazon EFS
+    3) Amazon EBS
+    4) Amazon S3
+
+20. Your company uses Amazon Route 53 in their networking account to manage public hosted zone records for their root domain, example.com. A developer in a different account requires the ability to create, update, or delete DNS records for their public application, app1. How should you meet this requirement without giving the developer access to the company's networking account, or control over the root domain? (Select TWO)
+    1) Create the example.com(opens in a new tab) Public Hosted Zone in the developer’s account.
+ (v)2) Create an NS record in the example.com Public Hosted Zone for the subdomain with the name servers from the app1.example.com Public Hosted Zone.
+ (v)3) Create the app1.example.com Public Hosted Zone in the developer’s account.
+    4) Create the app1.example.com Private Hosted Zone in the developer’s account.
+    5) Create an A record in the example.com Public Hosted Zone for the subdomain with the IP address from the app1.example.com Public Hosted Zone.
+
