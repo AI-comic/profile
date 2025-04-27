@@ -124,3 +124,9 @@
     4) Create the app1.example.com Private Hosted Zone in the developer’s account.
     5) Create an A record in the example.com Public Hosted Zone for the subdomain with the IP address from the app1.example.com Public Hosted Zone.
 
+21. A multi-national company has services across the globe which has a web application as its customer-facing frontend. One of the features of the app is to allow users to be able to upload huge amounts of files. As part of their architecture, they use a single bucket in the us-east-1 region and all the data from users is uploaded to this bucket. Now, as the demand for applications has grown, more and more users are using the application, which has led to an increase in file uploads. Because the users are across the globe, the upload takes time when the users are geographically far from the us-east-1region, which leads to a degraded user experience. You need to improve the upload experience without making major code level changes.Which is the best service that you could use to achieve this requirement?
+ (v)1) Amazon S3 Transfer Acceleration
+    2) Amazon Partner Network
+    3) AWS DataSync
+    4) AWS Transfer Family
+
