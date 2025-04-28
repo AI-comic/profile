@@ -130,3 +130,8 @@
     3) AWS DataSync
     4) AWS Transfer Family
 
+22. A storage specialist of a company created a bucket named 'demobucket2022' for the purpose of storing files for the creation of a proof of concept (POC). After the successful implementation of proof of concept, the team wanted to leverage the bucket for the development work because of the content which was generated during POC. However, they didn't want to name it 'demobucket2022'.What is the solution for the team to proceed with this implementation of the requirement?
+ (v)1) Amazon S3 buckets cannot be renamed once created. So, a new bucket needs to be created and copy the content using cp/sync command from the AWS CLI.
+    2) Use the AWS Management Console and rename the bucket using rename bucket option.
+    3) Raise a support ticket and work with AWS support to rename the bucket.
+    4) Use AWS CLI and update the name of the bucket using the update bucket api.
