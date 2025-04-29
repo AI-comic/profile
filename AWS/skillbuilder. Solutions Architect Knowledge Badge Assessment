@@ -135,3 +135,9 @@
     2) Use the AWS Management Console and rename the bucket using rename bucket option.
     3) Raise a support ticket and work with AWS support to rename the bucket.
     4) Use AWS CLI and update the name of the bucket using the update bucket api.
+
+23. You are a systems administrator for an e-commerce business running on AWS. Part of your duties involve deploying and managing the backups for the company's cloud workloads; including Amazon RDS, Amazon S3, and multiple Amazon EC2 instances backed by Amazon EBS. Which of the following would be the BEST option to manage backups for these services?
+ (v)1) AWS Backup
+    2) AWS Elastic Disaster Recovery (DRS)
+    3) RDS Snapshots
+    4) S3 Object Lock
