@@ -141,3 +141,9 @@
     2) AWS Elastic Disaster Recovery (DRS)
     3) RDS Snapshots
     4) S3 Object Lock
+
+24. A retailer is using Amazon RDS for an online shopping store. They recently started a new sales promotion, which requires customers to access their purchase history. The database is configured in a Multi-AZ deployment. Since the primary database is used for live purchase transactions, the influx of queries is causing contention in the database, resulting in poor performance. What is the best approach to offset the contention and improve performance with minimal effort and the least amount of downtime?
+ (v)1) Create a read replica for querying purchase history.
+    2) Since RDS is already deployed as Multi-AZ, configure the standby database for querying purchase history, freeing the primary database for live purchase transactions.
+    3) Move the database to a larger instance size to support the increased load.
+    4) Use AWS Database Migration Service (DMS) to migrate the database to DynamoDB, which provides fast, consistent performance at any scale to improve overall performance.
