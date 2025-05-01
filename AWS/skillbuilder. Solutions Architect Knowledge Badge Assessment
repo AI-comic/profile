@@ -147,3 +147,9 @@
     2) Since RDS is already deployed as Multi-AZ, configure the standby database for querying purchase history, freeing the primary database for live purchase transactions.
     3) Move the database to a larger instance size to support the increased load.
     4) Use AWS Database Migration Service (DMS) to migrate the database to DynamoDB, which provides fast, consistent performance at any scale to improve overall performance.
+
+25. You have a large customer base spread across three geographic areasthe US East Coast, India and Western Europe. The high performance web application serving customers in three regions requires data with minimum latency and no downtime. What would be the best way to fulfil this requirement?
+    1) Amazon RDS with cross region replication.
+    2) Amazon DynamoDB with provisioned capacity mode.
+    3) Aurora DB with multi AZ enabled.
+ (v)4) Use Amazon DynamoDB Global Tables.
