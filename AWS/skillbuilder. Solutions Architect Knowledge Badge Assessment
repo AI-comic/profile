@@ -159,3 +159,10 @@
     2) The event source mapping has not been configured.
     3) AWS Lambda cannot process multiple files simultaneously
  (v)4) The concurrency execution limit for the account has been exceeded.
+
+27. Which of the following is a serverless NoSQL database for applications that need high performance at any scale? (Select TWO)
+ (v)1) Amazon DynamoDB
+    2) Amazon Aurora
+ (v)3) Amazon DocumentDB
+    4) Amazon RDS
+    5) Amazon ElastiCache
