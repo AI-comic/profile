@@ -166,3 +166,9 @@
  (v)3) Amazon DocumentDB
     4) Amazon RDS
     5) Amazon ElastiCache
+
+28. The data science team wants to efficiently run distributed training jobs using the latest Amazon EC2 GPU-powered instances, and deploy training and inferences using open source distribution, such as Kubeflow.Which service is suitable for this use case?
+    1) AWS Fargate
+    2) AWS CodeBuild
+    3) AWS Elastic Beanstalk
+ (v)4) Amazon Elastic Kubernetes Service (EKS)
