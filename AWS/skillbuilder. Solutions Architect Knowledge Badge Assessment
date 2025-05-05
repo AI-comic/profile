@@ -172,3 +172,10 @@
     2) AWS CodeBuild
     3) AWS Elastic Beanstalk
  (v)4) Amazon Elastic Kubernetes Service (EKS)
+
+29. A customer wants to place a Amazon EC2 instances with IPv4 in a private subnet on an Amazon VPC. This private subnet must have direct connectivity to the internet and without traversing a Site-to-Site VPN. Which gateways are required to achieve this architecture? (Select TWO)
+ (v)1) Internet Gateway
+    2) Direct Connect Gateway
+ (v)3) NAT Gateway
+    4) Virtual Private Gateway
+    5) Transit Gateway
