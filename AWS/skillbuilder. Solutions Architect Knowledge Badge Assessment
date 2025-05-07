@@ -188,3 +188,9 @@
  (v)5) Virtual Private Gateway
     6) NAT Gateway
 
+31. The IT Director of a company wants to set automated backup of all the Amazon Elastic Block Storage (EBS) volumes for Amazon EC2 instances as soon as possible.What is the fastest and most cost-effective solution to automatically back up all of your EBS Volumes?
+    1) Create a lambda function that calls the "create-snapshot" command via the AWS SDK to take a snapshot of production EBS volumes periodically.
+    2) Set Amazon Storage Gateway with EBS volumes as the data source and store the backups in your on-premises servers through the storage gateway.
+ (v)3) Use Amazon Data Lifecycle Manager (Amazon DLM) to automate the creation of EBS snapshots.
+    4) Use Amazon S3 lifecycle policy to backup EBS volumes to S3
+
