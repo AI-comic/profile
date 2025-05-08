@@ -194,3 +194,9 @@
  (v)3) Use Amazon Data Lifecycle Manager (Amazon DLM) to automate the creation of EBS snapshots.
     4) Use Amazon S3 lifecycle policy to backup EBS volumes to S3
 
+32. A company operates in a highly regulated industry. The company stores log files in Amazon S3. Industry policy requires that the company must not delete or overwritten the log files for at least 6 months. What should a solutions architect do to meet these requirements?
+ (v)1) Create a new bucket and enable object lock.
+    2) Use presigned URL to protect the bucket from deletion.
+    3) Configure MFA (multi-factor authentication) delete.
+    4) Enable Amazon S3 Intelligent-Tiering.
+
