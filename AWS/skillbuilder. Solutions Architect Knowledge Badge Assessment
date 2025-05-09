@@ -200,3 +200,10 @@
     3) Configure MFA (multi-factor authentication) delete.
     4) Enable Amazon S3 Intelligent-Tiering.
 
+33. Your company has a private Amazon VPC in their AWS account that cannot be connected to the internet due to data sensitivity concerns. A solutions architect needs a way to interactively troubleshoot an Amazon EC2 Instance running in this VPC. What should the solutions architect do in order to gain access to the Amazon EC2 instance, without provisioning any type of internet connectivity? (Select TWO)
+ (v)1) Create Amazon VPC Interface Endpoints for SSM, SSMMessages, and EC2Messages.
+    2) Create an SSH key pair, use the SSH key pair to SSH into the AWS EC2 instance from AWS SSM Session Manager.
+ (v)3) Attach an AWS IAM Instance Profile with the necessary permissions for AWS SSM Session Manager to the Amazon EC2 instance. Use AWS SSM Session Manager to access the Amazon EC2 Instance.
+    4) Create an SSH key pair, use the key pair to SSH into the Amazon EC2 instance from their workstation.
+    5) Create Amazon VPC Interface Endpoints for EC2, EC2Messages, and a VPC Gateway Endpoint for S3.
+
