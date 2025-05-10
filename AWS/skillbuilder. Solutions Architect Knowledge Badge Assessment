@@ -207,3 +207,9 @@
     4) Create an SSH key pair, use the key pair to SSH into the Amazon EC2 instance from their workstation.
     5) Create Amazon VPC Interface Endpoints for EC2, EC2Messages, and a VPC Gateway Endpoint for S3.
 
+34. A company is currently running a SQL Server database on-premises and is interested in migrating the database to Amazon Aurora. Which of the following methods will help migrate the existing database to AWS?
+    1) Use the Schema Conversion Tool to create a new schema for this heterogenous migration. The schema will allow you to load the data directly to Amazon Aurora.
+ (v)2) Use the Schema Conversion Tool to convert the existing schema for a new database engine. Once the schema is available, use the Database Migration Service to load the data into a new Amazon Aurora Database.
+    3) Use the Schema Conversion Tool to create a new schema for this homogenous migration. A new schema will allow you to load the data directly to Amazon Aurora.
+    4) Use the Database Migration Service to directly read the data from the existing SQL Server database and load the data into a new Amazon Aurora Database.
+
