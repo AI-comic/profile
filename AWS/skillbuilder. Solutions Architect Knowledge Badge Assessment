@@ -213,3 +213,9 @@
     3) Use the Schema Conversion Tool to create a new schema for this homogenous migration. A new schema will allow you to load the data directly to Amazon Aurora.
     4) Use the Database Migration Service to directly read the data from the existing SQL Server database and load the data into a new Amazon Aurora Database.
 
+35. What native Amazon VPC security feature can be used to allow and deny network traffic with the same rule at the subnet level?
+ (v)1) Network Access Control List (NACL)
+    2) Security Groups
+    3) AWS WAF
+    4) AWS Network Firewall
+
