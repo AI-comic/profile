@@ -219,3 +219,9 @@
     3) AWS WAF
     4) AWS Network Firewall
 
+36. A company runs a batch application in the AWS Cloud hosted on 200+ Amazon EC2 instances. As a solutions architect, you are asked to push debug logs to an Amazon S3 bucket every 2:00 AM for all the EC2 instances.What is the best possible solution from an operation point of view?
+ (v)1) Create a schedule in AWS Systems Manager Maintenance window to move the logs to S3 bucket every 2:00 AM in the morning.
+    2) Use SSM Session Manager to run a shell script on all Amazon EC2 instances 2:00 AM in the morning.
+    3) Inject a user script via Ops Work to all of the Amazon EC2 instances that will push the logs to this Amazon S3 bucket.
+    4) Use Systems Manager Distributor to transfer the logs every 2:00 AM on all the AWS Systems Manager Managed instances.
+
