@@ -225,3 +225,8 @@
     3) Inject a user script via Ops Work to all of the Amazon EC2 instances that will push the logs to this Amazon S3 bucket.
     4) Use Systems Manager Distributor to transfer the logs every 2:00 AM on all the AWS Systems Manager Managed instances.
 
+37. Your company processes and stores sensitive and private data on Amazon S3. Amazon EC2 instances process the data and then the data is sent to Amazon S3. What design solution ensures the data does not traverse the public internet?
+    1) Configure an internet gateway in the public subnet to send the private data to Amazon S3.
+    2) Configure a transit gateway and add a route to send the private data to Amazon S3.
+ (v)3) Configure an Amazon VPC endpoint and add a route to send the private data to Amazon S3.
+    4) Configure a NAT Gateway in the private subnet that sends the private data to Amazon S3.
