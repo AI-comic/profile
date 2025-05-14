@@ -230,3 +230,10 @@
     2) Configure a transit gateway and add a route to send the private data to Amazon S3.
  (v)3) Configure an Amazon VPC endpoint and add a route to send the private data to Amazon S3.
     4) Configure a NAT Gateway in the private subnet that sends the private data to Amazon S3.
+
+38. Some companies design their AWS workloads to update their components regularly, in small, reversible increments.Which pillar of the AWS Well-Architected Framework does this design support?
+    1) Reliability
+    2) Resilience
+    3) Security
+ (v)4) Operational Excellence
+
