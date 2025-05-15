@@ -237,3 +237,9 @@
     3) Security
  (v)4) Operational Excellence
 
+39. Your organization's operational lead has decided to build a cost effective centralized logging solution for multiple AWS accounts. The solution includes an Amazon S3 bucket in the centralized logging account. The logs must be deleted after three months to minimize cost.What is the most operationally efficient way to accomplish this task?
+    1) Archive objects to the S3 Glacier Flexible Retrieval storage class for three months and delete manually.
+    2) Transition actions
+    3) Transition objects to the S3 Standard-IA storage class 30 days after creating them and delete manually/
+ (v)4) Expiration actions
+
