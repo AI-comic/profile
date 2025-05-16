@@ -243,3 +243,9 @@
     3) Transition objects to the S3 Standard-IA storage class 30 days after creating them and delete manually/
  (v)4) Expiration actions
 
+40. An on-premises customer uses GitHub, a code repository to store, track, and collaborate on software projects, and Jenkins, an open source automation server used to automate the building and testing of software. The customer is migrating to AWS. Which AWS service would they use instead? (Select TWO)
+    1) AWS CloudFormation
+    2) AWS CodeDeploy
+ (v)3) AWS CodeCommit
+ (v)4) AWS CodeBuild
+
