@@ -249,3 +249,10 @@
  (v)3) AWS CodeCommit
  (v)4) AWS CodeBuild
 
+41. An Amazon VPC with multiple public and private subnets requires that each subnet has communication to the Internet. How can the route tables in this VPC be distributed? (SELECT TWO)
+    1) No new route tables should be added, because Amazon VPC automatically distributes the route tables and routes for public and private subnets.
+ (v)2) Attach the same route table for all the private subnets and add a route with IP destination of 0.0.0.0/0 route to a NAT Gateway.
+    3) Attach the same route table for all the private subnets and don't add any additional routes.
+ (v)4) Attach the same route table for all the public subnets and add a route with IP destination of 0.0.0.0/0 route to a Internet Gateway.
+    5) Attach the same route table for all the public subnets and don't add any additional routes.
+
