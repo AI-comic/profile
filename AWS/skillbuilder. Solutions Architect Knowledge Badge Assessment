@@ -264,3 +264,9 @@
  (v)5) Amazon ECS provides service discovery for a microservice architecture.
     6) Amazon ECS supports multi-cloud integration.
 
+43. Your team has an application that they would like to move to the cloud. The application and its logic are complex. It processes the departments accounting information and adjusts calculations in a stateful manner. As such, it needs to run for a large amount of compute time. The application runs long during the second and fourth week of the month to process additional payments. Because it is calculating many payments and makes requests to multiple external systems, it utilizes complex networking and needs access to the underlying files in the operating system to run. Which compute option is best for this workload?
+    1) Rewrite the application to put part of the calculations into containers on an EKS cluster with AWS Fargate for the main application and scheduling.
+    2) Rewrite the application into a Lambda serverless application. Lambda will automatically scale based on need for the second and fourth week of the month.
+ (v)3) Host the application on Amazon EC2 instances. Enable autoscaling for the EC2 instances when needed for the second and fourth week of the month.
+    4) Put the application into a container. Containers are optimized for complex networking, and long compute times make sense for container workloads.
+
