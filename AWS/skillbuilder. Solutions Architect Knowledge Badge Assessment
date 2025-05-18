@@ -256,3 +256,11 @@
  (v)4) Attach the same route table for all the public subnets and add a route with IP destination of 0.0.0.0/0 route to a Internet Gateway.
     5) Attach the same route table for all the public subnets and don't add any additional routes.
 
+42. As the AWS solutions architect, you need to explore whether Amazon ECS is the right choice to build sophisticated application architectures on a microservices model. Which of the following is true for Amazon ECS? (Select THREE)
+ (v)1) A cluster may contain a mix of tasks hosted on AWS Fargate, Amazon EC2 instances, or external instances.
+    2) Amazon ECS manages your cluster resources for all launch types.
+    3) Easier to manage since your entire application need to be on a single task definition.
+ (v)4) Amazon ECS has built-in security; all of the images are stored in a container registry that is only accessible through HTTPS.
+ (v)5) Amazon ECS provides service discovery for a microservice architecture.
+    6) Amazon ECS supports multi-cloud integration.
+
