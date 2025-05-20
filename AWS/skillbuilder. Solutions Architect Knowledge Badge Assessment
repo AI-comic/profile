@@ -270,3 +270,10 @@
  (v)3) Host the application on Amazon EC2 instances. Enable autoscaling for the EC2 instances when needed for the second and fourth week of the month.
     4) Put the application into a container. Containers are optimized for complex networking, and long compute times make sense for container workloads.
 
+44. As a cloud architect, you've been tasked with finding a way to restrict access to a specific content for all users in a specific country. Which of the following services could be used? (Select TWO)
+ (v)1) Amazon CloudFront
+ (v)2) AWS WAF
+    3) Amazon Route 53
+    4) AWS Network Firewall
+    5) AWS Shield
+
