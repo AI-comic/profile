@@ -277,3 +277,9 @@
     4) AWS Network Firewall
     5) AWS Shield
 
+45. A user wants to create a distributed application with multiple lambda functions. During the design of the application, it was discovered that in the process flow, certain lambda functions need to be conditionally triggered based on results that are passed from micro service to micro service. Which of the State Machine process flow should be used to meet their concern?
+    1) Parallel
+    2) Map
+    3) Pass
+ (v)4) Choice
+
