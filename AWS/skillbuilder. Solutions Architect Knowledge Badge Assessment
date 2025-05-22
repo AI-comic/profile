@@ -283,3 +283,9 @@
     3) Pass
  (v)4) Choice
 
+46. Which of the following are benefits of integrating AWS Firewall Manager withAWS Organizations ? (Select TWO)
+ (v)1) You can enable AWS WAF rules, AWS Shield Advanced protections, Amazon VPC security groups and AWS Network Firewalls.
+ (v)2) Firewall Manager monitors for new resources created to ensure they comply with a mandatory set of security policies.
+    3) You can centrally manage Amazon S3 Lifecycle configuration on a bucket.
+    4) You can configure Amazon RDS database engines and Database parameters.
+
