@@ -289,3 +289,8 @@
     3) You can centrally manage Amazon S3 Lifecycle configuration on a bucket.
     4) You can configure Amazon RDS database engines and Database parameters.
 
+47. A customer uses Amazon API Gateway as a REST API solution for their E-commerce business application. During a go-live of a new feature, their developer mistakenly deployed the wrong API configurations to the "Production" stage. This caused an unexpected outage of their application. As a result, their customers are unable to place orders. What would be the FASTEST way to bring their application back to normal?
+    1) Make use of canary deployment feature of Amazon API Gateway to shift traffic to a working stage URL.
+    2) Change the application code to point to the stage URL of Development environment until the issue is resolved.
+ (v)3) Using the APIs or the console, roll back the "Production" stage to the most recent working deployment.
+    4) After correcting the API configurations, create a new stage with different name. Also, change the application code to point to the recently created stage URL.
