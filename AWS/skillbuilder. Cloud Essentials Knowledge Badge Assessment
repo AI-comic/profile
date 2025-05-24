@@ -3,3 +3,10 @@
     2. On demand instances
     3. Reserved instances
     4. Run VMware cloud on AWS
+
+2. You have been tasked with building out AWS solutions in your organization and need to ensure that the resources being built in your environment are following AWS best practices.Which service can provide recommendations around those best practices?
+    1. AWS Artifact
+    2. Amazon CloudFront
+ (v)3. AWS Trusted Advisor
+    4. AWS CloudTrail
+
