@@ -1,0 +1,5 @@
+1. Your company wants to migrate their workloads to the AWS Cloud. You are a solutions architect, planning to migrate two virtual machines running only one day per week for a batch job. The batch job is flexible and can be stopped, if needed. Which is the most cost-effective solution?
+ (v)1. Spot instances
+    2. On demand instances
+    3. Reserved instances
+    4. Run VMware cloud on AWS
