@@ -21,3 +21,10 @@
     2. Deploy the new application on-premises.
  (v)3. Deploy the new application in the cloud.
     4. Move all applications to the cloud.
+
+5. Your company has a predictable workload and the compute resources change very little month over month. The workload is not flexible and needs minimum disruptions. Which is the most cost-effective pricing model?
+ (v)1. Savings Plans
+    2. On Demand
+    3. Dedicated Instance
+    4. Spot Instance
+
