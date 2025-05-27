@@ -16,3 +16,8 @@
     3. Developer Support
     4. Business Support
 
+4. Your company maintains several legacy applications that are deployed in their on-premises data center. A new business process requires the development of a completely new application for data processing and visualization to leverage modern technologies. Which strategy should be used for the deployment of this new application?
+    1. Acquire the new application as service from a third-party vendor.
+    2. Deploy the new application on-premises.
+ (v)3. Deploy the new application in the cloud.
+    4. Move all applications to the cloud.
