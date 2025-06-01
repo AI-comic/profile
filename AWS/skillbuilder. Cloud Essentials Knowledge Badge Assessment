@@ -41,3 +41,9 @@
     4. Logistics
     5. IT Hardware
 
+8. You are a solutions architect designing a new application for the AWS Cloud. This application will need to be frequently changed using DevOps principles to align with customer needs.Which AWS Well-Architected Framework pillar recommends implementing frequent, small and reversible changes?
+    1. Performance excellence
+ (v)2. Operational Excellence
+    3. Reliability
+    4. Cost optimization
+
