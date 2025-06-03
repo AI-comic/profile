@@ -47,3 +47,8 @@
     3. Reliability
     4. Cost optimization
 
+9. You are working in a start-up company, which uses various AWS services. They have recently noticed a spike in the monthly AWS bill. The CTO is concerned about the cost and wants to act to reduce it. Which AWS service would be most effective on controlling AWS costs in this scenario?
+    1. Amazon EBS
+    2. Amazon EC2 reserved instances
+    3. AWS Budgets
+ (v)4. AWS Cost Explorer
