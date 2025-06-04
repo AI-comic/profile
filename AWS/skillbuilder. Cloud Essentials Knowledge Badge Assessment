@@ -52,3 +52,9 @@
     2. Amazon EC2 reserved instances
     3. AWS Budgets
  (v)4. AWS Cost Explorer
+
+10. Your company is migrating to the AWS Cloud. As the network administrator, you are responsible for managing the physical network in the datacenter. What cloud role might you transition to that would be the closest fit to your current role?
+    1. System Administrator
+ (v)2. Security Administrator
+    3. Cloud Architect
+    4. DevOps Administrator
