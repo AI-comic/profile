@@ -58,3 +58,11 @@
  (v)2. Security Administrator
     3. Cloud Architect
     4. DevOps Administrator
+
+11. Your company is migrating to the AWS Cloud. The CFO wants to analyze the cost of different cloud services, such as compute, storage, and data transfer each month.
+    1. Which AWS tool can be used to accomplish this task?
+    2. AWS Savings Plans
+    3. AWS Cost Anomaly Detection
+ (v)4. AWS Cost Explorer
+    5. AWS Budgets
+
