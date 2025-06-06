@@ -72,3 +72,10 @@
     3. Access to AWS technical resources, training, and support to more effectively use AWS services and increase revenue opportunities
     4. The opportunity to participate in AWS events and receive discounts on AWS services, allowing the organization to increase their exposure and reduce costs
 
+13. Your company is developing its first application in the cloud. You suggested that the company should leverage the AWS Well-Architected Framework during the process. The CTO is now asking you to provide more details about the framework and its benefits. Which statement would you use to describe the AWS Well-Architected Framework? (Select TWO)
+    1. It helps organizations track development process while implementing cloud applications.
+ (v)2. It provides a consistent approach to evaluate the application architecture against best practices.
+    3. It is a requirement for PCI-DSS security standard.
+    4. It is an auditing mechanism that the company must comply prior to deploying into the cloud.
+ (v)5. It increases the likelihood of business success by helping the organization having constructive conversations.
+
