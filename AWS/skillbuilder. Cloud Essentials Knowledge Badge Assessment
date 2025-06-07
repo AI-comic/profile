@@ -79,3 +79,9 @@
     4. It is an auditing mechanism that the company must comply prior to deploying into the cloud.
  (v)5. It increases the likelihood of business success by helping the organization having constructive conversations.
 
+14. A solutions architect is working on an online multiplayer game. To support a high-traffic component, they are searching for a highly scalable NoSQL database that provides single-digit millisecond performance.
+ Which AWS database service would you recommend to meet the requirements?
+    1. Amazon Redshift
+ (v)2. Amazon DynamoDB
+    3. Amazon S3
+    4. Amazon RDS
