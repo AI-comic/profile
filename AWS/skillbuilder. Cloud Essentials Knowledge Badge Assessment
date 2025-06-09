@@ -85,3 +85,10 @@
  (v)2. Amazon DynamoDB
     3. Amazon S3
     4. Amazon RDS
+
+15. AnyCompany has developed multiple workloads with unpredictable utilization in their data center and is looking to migrate to AWS.
+ Which benefit of moving to the cloud can help address this challenge?
+    1. No need to train your employees.
+    2. AWS Cloud resources will cost more than your current infrastructure.
+ (v)3. Stop guessing capacity.
+    4. You will need to buy hardware when migrating to AWS Cloud.
