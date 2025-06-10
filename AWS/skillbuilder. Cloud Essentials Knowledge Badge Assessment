@@ -92,3 +92,9 @@
     2. AWS Cloud resources will cost more than your current infrastructure.
  (v)3. Stop guessing capacity.
     4. You will need to buy hardware when migrating to AWS Cloud.
+
+16. After auditing the configurations of your Amazon EC2 instances, you figure out that one of them has been modified and its instance type doesn't match the expected one. Which AWS service will you use to identify who has performed the Amazon EC2 instance modification?
+    1. Amazon EC2
+    2. AWS IAM
+    3. AWS Trusted Advisor
+ (v)4. AWS CloudTrail
