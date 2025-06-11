@@ -98,3 +98,11 @@
     2. AWS IAM
     3. AWS Trusted Advisor
  (v)4. AWS CloudTrail
+
+17. Your company is planning to use AWS for hosting its production workloads. Your manager has tasked you with identifying the AWS service to use for configuring user access and permissions. 
+ Which AWS service BEST accomplishes this task?
+ (v)1. AWS Identity and Access Management (IAM)
+    2. AWS Access Control Lists (ACLs)
+    3. AWS Service Control Policies (SCP)
+    4. AWS Organizations
+
