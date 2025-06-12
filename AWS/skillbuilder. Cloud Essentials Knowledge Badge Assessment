@@ -106,3 +106,9 @@
     3. AWS Service Control Policies (SCP)
     4. AWS Organizations
 
+18. In order to protect your company's sensitive workloads, you were tasked to block access to the application servers from the public internet. You decide to deploy the servers in a private subnet. While you successfully blocked the servers from public access, your applications can no longer fetch critical patches and updates from the Internet. Which Amazon Virtual Private Cloud (VPC) component can help you solve this problem?
+ (v)1. NAT Gateway
+    2. Internet Gateway
+    3. Route table
+    4. Network Access Control List (ACL)
+
