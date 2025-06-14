@@ -118,3 +118,9 @@
     3. Security
     4. Pricing
 
+20. You are a security architect of a financial institution and need to deploy a secure network architecture in the AWS Cloud. Your organization has internal applications which are in a private subnet of the Amazon VPC. The instances are unable to access the public internet.Which AWS service can BEST be used to successfully install the operating system patches in the application instances?
+    1. Transit Gateway
+    2. Internet Gateway
+ (v)3. NAT Gateway
+    4. VPN Gateway
+
