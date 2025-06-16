@@ -130,3 +130,10 @@
     3. AWS Support
     4. AWS technical account managers (TAMs)
 
+22. As a solutions architect, your goal is to improve reliability of an application that runs on Amazon EC2 instances.
+ What would be your BEST recommendation?
+    1. Provision larger instance of Amazon EC2 in 2 availability zones and distribute requests across the 2 instances.
+ (v)2. Move to multiple smaller instances in 2 Availability Zones and distribute requests across the instances. Use autoscaling to increase/decrease the number of instances as needed.
+    3. Create a CloudWatch Event rule which matches a CloudWatch Alarm triggering an AWS Lambda to provision a new EC2 instance, if application is not reachable.
+    4. Rearchitect the application to use AWS Lambda to move to a managed service.
+
