@@ -137,3 +137,10 @@
     3. Create a CloudWatch Event rule which matches a CloudWatch Alarm triggering an AWS Lambda to provision a new EC2 instance, if application is not reachable.
     4. Rearchitect the application to use AWS Lambda to move to a managed service.
 
+23. You have been hired by a company to create a dashboard to visualize and monitor their AWS costs.
+ Which tools could you use to meet this request? (Select TWO)
+    1. AWS Budgets
+ (v)2. AWS Cost and Usage Reports
+ (v)3. Amazon QuickSight
+    4. AWS Cost Anomaly Detection
+    5. AWS Cost Explorer
