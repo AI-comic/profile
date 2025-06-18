@@ -144,3 +144,10 @@
  (v)3. Amazon QuickSight
     4. AWS Cost Anomaly Detection
     5. AWS Cost Explorer
+
+24. Your company is hoping to migrate their on-premises infrastructure to AWS. However, in a recent meeting, the CTO expressed concern about controlling and optimizing the cost of cloud resources. You have been tasked with finding a way to control and automate spending in the cloud.Which AWS service is the most proactive in achieving this goal?
+    1. AWS Cost and Usage Report
+ (v)2. AWS Budgets
+    3. AWS Trusted Advisor
+    4. AWS Cost Explorer
+
