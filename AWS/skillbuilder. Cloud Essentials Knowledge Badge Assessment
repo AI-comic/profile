@@ -151,3 +151,10 @@
     3. AWS Trusted Advisor
     4. AWS Cost Explorer
 
+25. Your organization is planning on using Amazon EC2 for deploying a web application.
+ What is the responsibility of the organization in this situation?
+    1. Configuration of infrastructure devices
+    2. Training of AWS employees
+    3. Security of the underlying infrastructure
+ (v)4. Patching of the guest operating system
+
