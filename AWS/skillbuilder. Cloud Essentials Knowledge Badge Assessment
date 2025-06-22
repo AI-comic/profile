@@ -158,3 +158,10 @@
     3. Security of the underlying infrastructure
  (v)4. Patching of the guest operating system
 
+26. You have proposed to your IT Director to migrate your company's on-premises services to the AWS Cloud. The IT Director has asked you to write a paper to motivate why migrating to AWS Cloud is beneficial to the company. What are some of the benefits of migrating to the AWS Cloud? (Select TWO.)
+    1. High-latency
+    2. Free use of all Amazon Cloud Services
+ (v)3. Stop guessing capacity.
+ (v)4. Increase speed and agility.
+    5. AWS is responsible for the security of everything.
+
