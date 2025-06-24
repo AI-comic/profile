@@ -178,3 +178,9 @@
  (v)3. AWS Cost Anomaly detection
     4. Cost Explorer
 
+29. You are no longer able to SSH into the Amazon EC2 instance which was working fine a few days back. After some troubleshooting, you find that someone removed the port 22 inbound rule from the instance security group. You want to know who removed the inbound rule.Which service can you use to get the details?
+    1. Amazon CloudWatch
+ (v)2. AWS CloudTrail
+    3. Amazon VPC
+    4. Amazon EC2
+
