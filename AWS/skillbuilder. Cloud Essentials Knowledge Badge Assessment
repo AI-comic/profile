@@ -172,3 +172,9 @@
  (v)4. Increase speed and agility.
  (v)5. Trade upfront expense for variable expense.
 
+28. You have just joined a company that recently migrated from on-premises to the AWS Cloud. Your team is currently focusing on building effective cost optimization and monitoring tools. Which tool can help identify irregular spend and identify root causes?
+    1. AWS Budgets
+    2. Savings Plans
+ (v)3. AWS Cost Anomaly detection
+    4. Cost Explorer
+
