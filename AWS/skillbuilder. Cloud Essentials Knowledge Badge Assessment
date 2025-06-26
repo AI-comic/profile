@@ -184,3 +184,9 @@
     3. Amazon VPC
     4. Amazon EC2
 
+30. Your company is migrating legacy Apache web applications from on-premises to the AWS cloud. Currently, there is not enough cloud expertise within the company so you are tasked with finding the easiest way to migrate and operate workloads in the cloud. Which service will BEST accomplish this task?
+    1. Amazon ECS
+    2. Amazon EC2
+ (v)3. AWS Elastic Beanstalk
+    4. AWS Lambda
+
