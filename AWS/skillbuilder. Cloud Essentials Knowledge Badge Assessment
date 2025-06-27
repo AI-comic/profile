@@ -190,3 +190,9 @@
  (v)3. AWS Elastic Beanstalk
     4. AWS Lambda
 
+31. A company wants to migrate their on-premises database to Amazon EC2. This database holds data that needs to be accessed quickly and requires high performance. Which EC2 instance type would be BEST suited for this scenario?
+    1. Compute optimized instance
+    2. Accelerated computing instance
+    3. General purpose instance
+ (v)4. Memory optimized instance
+
