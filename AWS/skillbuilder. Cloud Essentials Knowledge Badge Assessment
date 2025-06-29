@@ -196,3 +196,9 @@
     3. General purpose instance
  (v)4. Memory optimized instance
 
+32. Your company has been operating for several years on a traditional IT infrastructure, which is becoming increasingly more expensive to maintain and scale. Management has expressed interest in moving to the cloud to reduce costs and improve efficiency.Which is an advantage of moving to the AWS Cloud?
+ (v)1. Leverage massive economies of scale to achieve lower pay-as-you-go prices.
+    2. Leverage Amazon Elastic Compute Cloud (Amazon EC2) multi-tenant capabilities to pool and share software licenses with other AWS customers.
+    3. Decreased speed and agility.
+    4. Trade variable expense for fixed expense.
+
