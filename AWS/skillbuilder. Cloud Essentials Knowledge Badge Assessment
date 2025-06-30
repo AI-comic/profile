@@ -202,3 +202,8 @@
     3. Decreased speed and agility.
     4. Trade variable expense for fixed expense.
 
+33. A healthcare company is using Amazon S3 to store sensitive patient data.Which of the following AWS services can help the Chief Security Officer recognize and classify this type of data?
+    1. AWS Secrets Manager
+    2. Amazon EBS
+ (v)3. Amazon Macie
+    4. AWS IAM
