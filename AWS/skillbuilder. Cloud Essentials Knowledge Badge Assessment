@@ -207,3 +207,10 @@
     2. Amazon EBS
  (v)3. Amazon Macie
     4. AWS IAM
+
+34. Your company's Chief Information Security Officer wants to ensure that you are following the best practices of the AWS Well-Architected Framework. What is an example of a security detection best practice?
+    1. Review security events monthly.
+    2. Archive all log files immediately.
+ (v)3. Automate security responses.
+    4. Use a badge to allow access.
+
