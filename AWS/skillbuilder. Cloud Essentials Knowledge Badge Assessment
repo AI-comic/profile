@@ -214,3 +214,9 @@
  (v)3. Automate security responses.
     4. Use a badge to allow access.
 
+35. Your company has migrated multiple on-premises workloads onto AWS. You have been tasked to assess the cost and usage of AWS services for Fiscal Quarter Q1 and forecast the spend for the next Fiscal Quarter Q2. Which Business Intelligence (BI) tool would enable you to view and analyze your costs and usage in near real-time free of charge with the LEAST management overhead?
+    1. AWS Trusted Advisor
+    2. AWS Billing Dashboard
+    3. AWS Budgets
+ (v)4. AWS Cost Explorer
+
