@@ -220,3 +220,11 @@
     3. AWS Budgets
  (v)4. AWS Cost Explorer
 
+36. You are employed at a company that is highly regulated. You are tasked with monitoring operational and risk auditing as well as compliance of your AWS account.
+ Which AWS service can help you meet these audit requirements? (Select TWO)
+ (v)1. AWS CloudTrail
+    2. Amazon Trusted Advisor
+ (v)3. AWS Config
+    4. Amazon CloudWatch
+    5. Amazon Inspector
+
