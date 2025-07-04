@@ -228,3 +228,10 @@
     4. Amazon CloudWatch
     5. Amazon Inspector
 
+37. A healthcare provider plans to migrate its applications and highly sensitive patient data to the AWS Cloud. As a solutions architect, you need to make sure all the data is protected at rest and in transit. Additionally, you need to protect your workload in all layers of the cloud.
+ Which pillar of the AWS Well-Architected Framework includes the guidance to achieve this?
+ (v)1. Security
+    2. Reliability
+    3. Sustainability
+    4. Operational Excellence
+
