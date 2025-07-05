@@ -235,3 +235,10 @@
     3. Sustainability
     4. Operational Excellence
 
+38. Your company is considering adopting cloud technology, but your Chief Technology Officer has concerns about data residency and latency issues for certain applications. They would prefer to run these applications on-premises while still being able to take advantage of AWS services and tools such as Amazon EC2.
+ Which option would BEST fulfill these requirements?
+    1. AWS Direct Connect
+ (v)2. AWS Outposts
+    3. Amazon ECS Anywhere
+    4. AWS CloudFront
+
