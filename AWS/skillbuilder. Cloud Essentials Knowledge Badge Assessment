@@ -242,3 +242,9 @@
     3. Amazon ECS Anywhere
     4. AWS CloudFront
 
+39. Your company is looking to optimize its AWS costs and wants to develop a cost optimization program.Which is the most effective approach for creating a cost optimization program in AWS?
+    1. Create custom scripts and use them to automate cost optimization processes.
+    2. Regularly monitor and manually reduce usage of AWS resources that are not needed.
+    3. Implement AWS Trusted Advisor and use its recommendations to optimize costs.
+ (v)4. Implement AWS Cost Explorer and use it to analyze resource utilization and cost trends.
+
