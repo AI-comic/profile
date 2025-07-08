@@ -248,3 +248,10 @@
     3. Implement AWS Trusted Advisor and use its recommendations to optimize costs.
  (v)4. Implement AWS Cost Explorer and use it to analyze resource utilization and cost trends.
 
+40. Your company is migrating its applications from on-premises to Amazon Elastic Compute Cloud (Amazon EC2).According to the AWS Shared Responsibility Model, which option are you responsible for?
+    1. Protecting only the applications, and not the operating systems, of the Amazon EC2 instances.
+ (v)2. Protecting the applications as well as the operating systems running on the Amazon EC2 instances.
+    3. Patching the hosts that run the Amazon EC2 instances.
+    4. Securing the physical facilities that host AWS services, including Amazon EC2.
+
+
