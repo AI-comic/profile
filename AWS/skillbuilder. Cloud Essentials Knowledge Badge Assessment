@@ -254,4 +254,9 @@
     3. Patching the hosts that run the Amazon EC2 instances.
     4. Securing the physical facilities that host AWS services, including Amazon EC2.
 
+41. Your e-commerce website has been experiencing slow load times and high latency, especially for customers in regions that are far away from your server location.Which AWS service uses Edge Locations to reduce latency?
+    1. AWS Direct Connect
+    2. Amazon Elastic Load Balancing
+    3. AWS CloudTrail
+ (v)4. Amazon CloudFront
 
