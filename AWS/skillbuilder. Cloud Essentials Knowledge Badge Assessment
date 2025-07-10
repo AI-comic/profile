@@ -260,3 +260,10 @@
     3. AWS CloudTrail
  (v)4. Amazon CloudFront
 
+42. A company is planning the migration of an application to the cloud and needs to select an AWS region. The application end users are based across Europe.What key considerations should the company make when selecting the appropriate region? (Select TWO)
+    1. The number of availability zones in the region
+    2. The AWS Shared Responsibility Model
+    3. The networking bandwidth of the region
+ (v)4. The services available within the region
+ (v)5. Proximity to application end users
+
