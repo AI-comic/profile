@@ -267,3 +267,10 @@
  (v)4. The services available within the region
  (v)5. Proximity to application end users
 
+43. Your application is running on Amazon EC2 instances.
+ Which component of the AWS global infrastructure will you use to make your application resilient and highly available?
+    1. AWS Outposts
+    2. AWS Data Centers
+    3. AWS Edge Locations
+ (v)4. AWS Availability Zones
+
