@@ -280,3 +280,9 @@
     3. Reuse traditional IT contract terms to facilitate the process.
     4. Skip terms and conditions, as these are typically used minimally and are more of a legal formality.
 
+45. A company would like to monitor all of the API activity inside their AWS account.Which AWS service would track the API activity?
+    1. Amazon CloudFront
+    2. Amazon Inspector
+    3. Amazon CloudWatch
+ (v)4. AWS CloudTrail
+
