@@ -286,3 +286,11 @@
     3. Amazon CloudWatch
  (v)4. AWS CloudTrail
 
+46. Your company is designing and building its infrastructure on the AWS Cloud.
+ As a solutions architect, what areas should you focus on to ensure your company is optimizing cost according to the AWS Well-Architected Framework? (Select TWO)
+    1. Plan to manually provision resources within the environment to match the workload demand.
+ (v)2. Select cost effective resource types such as Reserved and Spot instances.
+    3. Hire additional architects to help setup the environment in the cloud.
+ (v)4. Control and understand where your money is spent with expenditure awareness.
+    5. Contract an AWS Partner to assist with your design.
+
