@@ -300,3 +300,9 @@
  (v)3. Understand the different cloud service models available.
     4. Migrate all their existing applications to the cloud.
 
+48. A customer is planning to setup a new workload in the AWS Cloud. Which of the following is a factor to consider when selecting an AWS region for the new workload?
+ (v)1. Services available within the region
+    2. Size of the region
+    3. Number of Data Centers in each region
+    4. Investment in security
+
