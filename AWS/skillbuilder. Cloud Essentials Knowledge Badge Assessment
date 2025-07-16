@@ -306,3 +306,9 @@
     3. Number of Data Centers in each region
     4. Investment in security
 
+49. Your company is deploying a web application in AWS running on several Amazon EC2 instances. What is the responsibility of AWS under the shared responsibility model?
+    1. Encrypting the storage volumes
+    2. Ensuring the necessary ports on your web server are open
+ (v)3. Securing the EC2 hypervisor
+    4. Patching the Amazon EC2 instances
+
