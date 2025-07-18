@@ -312,3 +312,8 @@
  (v)3. Securing the EC2 hypervisor
     4. Patching the Amazon EC2 instances
 
+50. You work for a large financial institution that is looking to modernize its IT infrastructure and move its workloads to the cloud. To guide the company's cloud adoption journey, you recommend using the AWS Cloud Adoption Framework (CAF). Which Perspective of the AWS CAF includes principles and patterns for implementing new solutions and migrating on-premises workloads to the cloud?
+    1. Business
+    2. Operations
+    3. Governance
+ (v)4. Platform
