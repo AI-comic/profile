@@ -1,0 +1,6 @@
+1. What is a key indicator that Cross-Zone load balancing is working effectively?
+    1. All traffic is routed to a single Availability Zone
+    2. The number of requests per second increases significantly
+ (v)3. The request count is roughly equal across all Availability Zones
+    4. The load balancer automatically adds more instances
+
