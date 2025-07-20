@@ -4,3 +4,9 @@
  (v)3. The request count is roughly equal across all Availability Zones
     4. The load balancer automatically adds more instances
 
+2. After a web server recovers, what should you check to ensure the load balancer's security settings are still effective?
+    1. Server's private IP address
+ (v)2. Load balancer's security group rules
+    3. DNS records of the load balancer
+    4. SSL certificate expiration date
+
