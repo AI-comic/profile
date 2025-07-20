@@ -10,3 +10,8 @@
     3. DNS records of the load balancer
     4. SSL certificate expiration date
 
+3. What should you configure in your load balancer to ensure it can detect a web server failure quickly?
+ (v)1. Shorter health check intervals
+    2. Longer connection timeouts
+    3. Higher unhealthy threshold count
+    4. Lower healthy threshold count
