@@ -15,3 +15,10 @@
     2. Longer connection timeouts
     3. Higher unhealthy threshold count
     4. Lower healthy threshold count
+
+4. What is the default behavior of a Network Load Balancer regarding cross-zone load balancing?
+    1. Cross-zone load balancing is enabled by default
+ (v)2. Cross-zone load balancing is disabled by default
+    3. Cross-zone load balancing is automatically configured based on instance health
+    4. Cross-zone load balancing is only available for Application Load Balancers
+
