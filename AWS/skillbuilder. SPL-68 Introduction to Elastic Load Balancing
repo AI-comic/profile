@@ -22,3 +22,8 @@
     3. Cross-zone load balancing is automatically configured based on instance health
     4. Cross-zone load balancing is only available for Application Load Balancers
 
+5. What is the significance of the DNS name provided for a Network Load Balancer?
+    1. It's used to configure health checks
+ (v)2. It's the endpoint clients use to access the load balanced service
+    3. It's used to register targets in the target group
+    4. It's only used for internal AWS routing
