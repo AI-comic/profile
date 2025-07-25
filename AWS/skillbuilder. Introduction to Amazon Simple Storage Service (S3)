@@ -4,3 +4,9 @@
     3. The existing bucket is overwritten with the new one
     4. AWS automatically suggests an alternative name for your bucket
 
+2. Which Auto Scaling plan automatically maintains the current instance levels at all times?
+    1. Manual scaling plan
+    2. Schedule-based scaling plan
+    3. Demand-based scaling plan
+ (v)4. Maintain current instance levels plan
+
