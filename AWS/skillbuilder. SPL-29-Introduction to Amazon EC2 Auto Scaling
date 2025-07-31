@@ -1,0 +1,6 @@
+1. What is the primary purpose of a Launch Template in Amazon EC2?
+    1. To automatically scale EC2 instances
+ (v)2. To store launch parameters for EC2 instances
+    3. To manage network settings for VPCs
+    4. To create backups of EC2 instances
+
