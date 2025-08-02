@@ -4,3 +4,9 @@
     3. To manage network settings for VPCs
     4. To create backups of EC2 instances
 
+2. Which Auto Scaling plan automatically maintains the current instance levels at all times?
+    1. Manual scaling plan
+    2. Schedule-based scaling plan
+    3. Demand-based scaling plan
+ (v)4. Maintain current instance levels plan
+
