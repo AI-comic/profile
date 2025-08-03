@@ -10,3 +10,9 @@
     3. Demand-based scaling plan
  (v)4. Maintain current instance levels plan
 
+3. What does the Health Status column in the Auto Scaling group interface indicate?
+    1. The current CPU utilization of the instance
+ (v)2. The result of the EC2 instance health check
+    3. The network connectivity status
+    4. The remaining capacity of the Auto Scaling group
+
