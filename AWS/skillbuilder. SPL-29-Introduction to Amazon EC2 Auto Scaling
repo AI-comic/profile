@@ -16,3 +16,9 @@
     3. The network connectivity status
     4. The remaining capacity of the Auto Scaling group
 
+4. What is the primary purpose of scaling based on a schedule in Auto Scaling?
+    1. To respond to unexpected changes in demand
+    2. To maintain a fixed number of instances at all times
+ (v)3. To scale resources based on predictable time-based needs
+    4. To manually adjust the number of instances
+
