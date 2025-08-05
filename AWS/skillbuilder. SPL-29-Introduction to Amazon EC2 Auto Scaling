@@ -22,3 +22,8 @@
  (v)3. To scale resources based on predictable time-based needs
     4. To manually adjust the number of instances
 
+5. What does Auto Scaling do when it detects an unhealthy instance in an Auto Scaling group?
+    1. It stops the instance
+ (v)2. It terminates the unhealthy instance and launches a new one
+    3. It notifies the user to manually replace the instance
+    4. It automatically repairs the unhealthy instance
