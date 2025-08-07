@@ -4,3 +4,9 @@
     3. Logarithmically
     4. It remains constant
 
+2. What must be configured in the security group associated with an EFS mount target to allow access from EC2 instances?
+    1. Outbound rule on port 22
+ (v)2. Inbound rule on port 2049
+    3. Outbound rule on port 443
+    4. Inbound rule on port 80
+
