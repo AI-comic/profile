@@ -10,3 +10,9 @@
     3. Outbound rule on port 443
     4. Inbound rule on port 80
 
+3. What is the purpose of the security group associated with an EFS mount target?
+    1. To encrypt data at rest
+ (v)2. To control network access to the file system
+    3. To manage file system permissions
+    4. To schedule automatic backups
+
