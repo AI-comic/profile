@@ -16,3 +16,9 @@
     3. To manage file system permissions
     4. To schedule automatic backups
 
+4. What is the default protocol used by Amazon EFS for file system access?
+    1. SMB
+ (v)2. NFS
+    3. FTP
+    4. SFTP
+
