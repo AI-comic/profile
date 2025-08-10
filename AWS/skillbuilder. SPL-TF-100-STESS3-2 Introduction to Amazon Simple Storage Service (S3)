@@ -1,0 +1,6 @@
+1. What is the default access setting for newly created S3 buckets?
+    1. Public read access
+ (v)2. Private
+    3. Public read and write access
+    4. Authenticated users only
+
