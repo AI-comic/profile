@@ -22,3 +22,8 @@
     3. FTP
     4. SFTP
 
+5. What is the primary purpose of mount targets in Amazon EFS?
+    1. To increase storage capacity
+ (v)2. To enable file system access from EC2 instances
+    3. To improve read performance
+    4. To enable cross-region replication
