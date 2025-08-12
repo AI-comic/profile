@@ -10,3 +10,9 @@
     3. Resource
     4. Condition
 
+3. What happens when you upload an object with the same name as an existing object in an S3 bucket?
+    1. The upload is rejected
+    2. The existing object is overwritten
+ (v)3. A new version is created if versioning is enabled
+    4. The object is automatically renamed
+
