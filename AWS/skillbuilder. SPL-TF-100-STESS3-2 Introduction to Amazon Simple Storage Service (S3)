@@ -4,3 +4,9 @@
     3. Public read and write access
     4. Authenticated users only
 
+2. In an Amazon S3 bucket policy, which element specifies the AWS accounts or users that the policy applies to?
+ (v)1. Principal
+    2. Action
+    3. Resource
+    4. Condition
+
