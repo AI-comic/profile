@@ -22,3 +22,8 @@
     3. To compress objects for storage efficiency
     4. To replicate objects across multiple regions
 
+5. What happens if you try to create an Amazon S3 bucket with a name that already exists?
+    1. The bucket is created with a numeric suffix added to the name
+ (v)2. The bucket creation fails, and you receive an error message
+    3. The existing bucket is overwritten with the new one
+    4. AWS automatically suggests an alternative name for your bucket
