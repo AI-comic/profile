@@ -16,3 +16,9 @@
  (v)3. A new version is created if versioning is enabled
     4. The object is automatically renamed
 
+4. What is the primary purpose of Amazon S3 bucket versioning?
+    1. To encrypt objects automatically
+ (v)2. To preserve, retrieve, and restore every version of every object in a bucket
+    3. To compress objects for storage efficiency
+    4. To replicate objects across multiple regions
+
