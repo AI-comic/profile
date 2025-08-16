@@ -1,0 +1,6 @@
+1. What does IAM use to define permissions for users, groups, and roles?
+    1. Scripts
+ (v)2. Policies
+    3. Templates
+    4. Certificates
+
