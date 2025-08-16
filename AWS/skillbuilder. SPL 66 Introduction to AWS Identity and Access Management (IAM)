@@ -4,3 +4,9 @@
     3. Templates
     4. Certificates
 
+2. What type of IAM policy is managed by AWS and cannot be modified by users?
+    1. Inline policy
+    2. Customer managed policy
+ (v)3. AWS managed policy
+    4. Group policy
+
