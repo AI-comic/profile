@@ -10,3 +10,9 @@
  (v)3. AWS managed policy
     4. Group policy
 
+3. Which of the following best describes the principle of least privilege in IAM?
+    1. Granting users all possible permissions
+ (v)2. Granting users only the permissions they need to perform their tasks
+    3. Denying all permissions by default
+    4. Sharing admin credentials among all users
+
