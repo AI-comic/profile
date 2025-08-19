@@ -16,3 +16,9 @@
     3. Denying all permissions by default
     4. Sharing admin credentials among all users
 
+4. A company wants to allow their employees to use their existing corporate credentials to access AWS resources. Which IAM feature should they implement?
+    1. IAM Users
+    2. IAM Groups
+    3. IAM Roles
+ (v)4. Identity Federation
+
