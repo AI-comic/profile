@@ -22,3 +22,8 @@
     3. IAM Roles
  (v)4. Identity Federation
 
+5. Which of the following is a benefit of using IAM Roles?
+    1. They provide permanent credentials
+    2. They allow you to avoid using IAM users
+ (v)3. They grant permissions without sharing long-term access keys
+    4. They automatically scale your AWS resources
