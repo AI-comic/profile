@@ -1,0 +1,44 @@
+# Chrome 버전
+version = "139.0.7258.139"
+ 
+# Chrome 브라우저 다운로드 및 설치
+!wget -q https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/{version}/linux64/chrome-linux64.zip -O chrome.zip
+!unzip -o chrome.zip
+!rm -rf /usr/bin/chrome      # 이전 버전 삭제
+!mv -f chrome-linux64 /usr/bin/chrome
+ 
+# 실행 링크 심볼릭 링크 설정
+!ln -sf /usr/bin/chrome/chrome /usr/bin/google-chrome
+!ln -sf /usr/bin/chrome/chrome /usr/bin/chromium-browser
+ 
+# 설치 확인
+!google-chrome --version
+
+# google chrome- 버전 확인하기
+!find / -type f -name "chrome" 2>/dev/null | while read chrome_path; do echo "▶ Found: $chrome_path"; "$chrome_path" --version || echo "(실행 불가)"; echo "----------------------------------------"; done
+
+# ChromeDriver 다운로드 및 설치
+!wget -q https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/{version}/linux64/chromedriver-linux64.zip -O chromedriver.zip
+!unzip -o chromedriver.zip
+!chmod +x chromedriver-linux64/chromedriver
+!mv -f chromedriver-linux64/chromedriver /usr/bin/chromedriver
+
+# 정상적인 headless Chrome 브라우저 자동화 코드 예제
+# Selenium에서 브라우저를 제어하기 위한 주요 모듈 import
+from selenium import webdriver    # 브라우저를 제어하기 위한 모듈
+from selenium.webdriver.chrome.service import Service   # Chrome 드라이버 서비스를 관리하기 위한 모듈
+from selenium.webdriver.chrome.options import Options   # Chrome 브라우저 옵션을 설정하기 위한 모듈
+ 
+options = Options()
+options.binary_location = "/usr/bin/chrome/chrome"    # 설치된 Chrome 경로
+options.add_argument('--headless')    # 창 없이 실행
+options.add_argument('--no-sandbox')  # 샌드박스 기능 비활성화(root권한실행 시 충돌 방지용)
+options.add_argument('--disable-dev-shm-usage')  # 공유 메모리공간(사용 안함)
+ 
+service = Service("/usr/bin/chromedriver")   # ChromeDriver 실행을 위한 Service 객체 설정
+ 
+driver = webdriver.Chrome(service=service, options=options)  # Chrome 브라우저 인스턴스를 생성
+driver.get("https://www.python.org")    # 지정한 URL로 이동
+print(driver.title)  # 현재 페이지의 <title> 태그의 텍스트 출력("Welcome to Python.org")
+driver.quit()  # 브라우저 세션 종료(자원 정리)
+
