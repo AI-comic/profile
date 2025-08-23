@@ -4,3 +4,9 @@
     3. To manage database backups
     4. To configure network security
 
+2. What happens to the resources when you delete a CloudFormation stack?
+ (v)1. All resources in the stack are deleted
+    2. Only EC2 instances are terminated
+    3. Resources remain but become unmanaged
+    4. Resources are archived for 30 days
+
