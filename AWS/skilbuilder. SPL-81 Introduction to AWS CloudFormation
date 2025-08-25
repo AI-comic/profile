@@ -10,3 +10,9 @@
     3. Resources remain but become unmanaged
     4. Resources are archived for 30 days
 
+3. What does the 'DependsOn' attribute in a CloudFormation resource definition indicate?
+    1. The resource type
+ (v)2. The resource that must be created first
+    3. The resource's Logical ID
+    4. The resource's Physical ID
+
