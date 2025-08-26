@@ -16,3 +16,9 @@
     3. The resource's Logical ID
     4. The resource's Physical ID
 
+4. In the CloudFormation template, what does the '!Ref' function do?
+    1. Creates a new resource
+ (v)2. References another resource or parameter
+    3. Removes a resource
+    4. Changes a resource's properties
+
