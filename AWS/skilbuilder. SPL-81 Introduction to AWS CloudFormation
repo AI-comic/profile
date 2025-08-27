@@ -22,3 +22,8 @@
     3. Removes a resource
     4. Changes a resource's properties
 
+5. What is the primary input used to create a CloudFormation stack?
+ (v)1. A JSON or YAML template
+    2. A shell script
+    3. An XML configuration file
+    4. A Python program
