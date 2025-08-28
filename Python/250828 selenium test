@@ -1,0 +1,59 @@
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.common.by import By
+import time
+
+# ChromeDriver 경로 지정
+service = Service("C:\\WebDriver\\chromedriver.exe")  # 다운 받은 본인 경로
+
+# Headless 제거 → 창이 뜨게 함
+options = webdriver.ChromeOptions()
+# options.add_argument('--headless')  # 주석 처리
+options.add_argument('--start-maximized')  # 브라우저 전체화면
+
+# 드라이버 실행
+driver = webdriver.Chrome(service=service, options=options)
+
+# 1. 웹사이트 열기
+driver.get("https://www.python.org")
+print("페이지 제목:", driver.title)
+
+# 2. 메뉴 요소 찾기
+downloads_link = driver.find_element(By.LINK_TEXT, "Downloads")
+print("Downloads 메뉴 텍스트:", downloads_link.text)
+
+# 3. 일정 시간 대기 후 브라우저 종료
+time.sleep(5)  # 눈으로 확인할 시간
+driver.quit()
+
+
+-------------------------------------------------------------------------------
+
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.common.by import By
+import time
+
+service = Service("C:\\WebDriver\\chromedriver.exe")  # 사용자 경로로 수정
+options = webdriver.ChromeOptions()
+options.add_argument('--start-maximized')
+
+driver = webdriver.Chrome(service=service, options=options)
+
+# GoGoGo 접속
+driver.get("https://duckduckgo.com")
+
+# 검색창에 검색어 입력 및 제출
+search_box= driver.find_element(By.NAME, "q")
+search_box.send_keys("후암동맛집")
+search_box.submit()
+time.sleep(2)
+
+# 검색 결과 출력
+results = driver.find_elements(By.TAG_NAME, "h2")
+print("\n🔍GoGoGo 검색결과:")
+for i, result in enumerate(results[:5], 1):
+    print(f"{i}. {result.text}")
+
+time.sleep(3)
+driver.quit()
