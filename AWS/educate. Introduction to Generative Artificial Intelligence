@@ -1,0 +1,6 @@
+1. which statement best describes how generative AI works?
+    1. Generative AI is gevorend by a set of rules defined by the user.
+    2. Generative AI is based on users labeling data, training model, and then deploying the model. This process is repeated for each specific task.
+    3. Generative AI requires less data than traditional machine learning models.
+ (v)4. Generative AI is powered by large ML models called foundation models, of FMs. With Fms, customers can use the same pre-trained model to adapt to multiple tasks.
+
