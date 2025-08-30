@@ -4,3 +4,9 @@
     3. Generative AI requires less data than traditional machine learning models.
  (v)4. Generative AI is powered by large ML models called foundation models, of FMs. With Fms, customers can use the same pre-trained model to adapt to multiple tasks.
 
+2. Which AWS service can be embedded in an integrated development environment(IDE) and generate code?
+    1. AWS Inferentia
+    2. Amazon SageMaker JumpStart
+    3. Amazon Q Developer
+ (v)4. Amazon Bedrock
+
