@@ -7,6 +7,6 @@
 2. Which AWS service can be embedded in an integrated development environment(IDE) and generate code?
     1. AWS Inferentia
     2. Amazon SageMaker JumpStart
-    3. Amazon Q Developer
- (v)4. Amazon Bedrock
+ (v)3. Amazon Q Developer
+    4. Amazon Bedrock
 
