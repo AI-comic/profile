@@ -43,6 +43,7 @@ sudo chmod a+r /etc/apt/keyrings/docker.asc
 echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo ${UBUNTU_CODENAME:-$VERSION_CODENAME}) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 
 # Docker 설치
+sudo apt-get update
 sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 ```
 
@@ -50,7 +51,7 @@ sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plug
 - Docker는 기본적으로 root 권한을 필요로 함.
 - 매번 sudo 입력하지 않도록, 현재 사용자를 docker 그룹에 추가.
 ```
-sudo usermod -a -G docker ubuntu
+sudo usermod -aG docker ubuntu
 id ubuntu
 ```
 - 로그아웃 후 다시 로그인해야 적용됨.
@@ -70,45 +71,41 @@ source ~/.bashrc
 
 ## 4. 실습
 ```
-# 컨테이너 검색
+# 1. 컨테이너 이미지 검색
 docker search nginx
-docker search --filter is-official=true  nginx
+docker search --filter is-official=true nginx
 
-# 이미지 다운로드
-docker images
+# 2. 이미지 다운로드
 docker pull nginx
 
-#컨테이너 이미지 보기
+# 3. 이미지 확인
 docker images
 docker history nginx:latest
 
-#컨테이너 실행-컨테이너 기반의 웹서버를 동작
-docker run -d --name webserver -p 80:80  nginx:latest
+# 4. 컨테이너 실행 (80 포트 매핑)
+docker run -d --name webserver -p 80:80 nginx:latest
 
-# 컨테이너 동작 상태 확인
+# 5. 컨테이너 동작 확인
 docker ps
-docker inspect webserver 
-	# <IP Address>
-curl 172.0.0.2
+docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' webserver
 
-#컨테이너 접속후 내부 콘텐츠 수정
-docker exec -it  webserver /bin/bash
-/# cd /usr/share/nginx/html/
-/# cat index.html
-/# echo "Hello Docker" > index.html 
-/# exit
+# 호스트에서 바로 확인 가능
+curl http://localhost
 
-curl 172.17.0.2
+# 6. 컨테이너 내부 접속 후 index.html 수정
+docker exec -it webserver /bin/bash
+cd /usr/share/nginx/html/
+cat index.html
+echo "Hello Docker" > index.html
+exit
 
+# 수정된 내용 확인
+curl http://localhost
 
-#컨테이너 중지
+# 7. 컨테이너 중지 및 삭제
 docker stop webserver
-docker ps
-docker ps -a
-
-#컨테이너 삭제 
 docker rm webserver
 
-# 다운로드 받은 이미지 삭제
+# 8. 이미지 삭제
 docker rmi nginx:latest
 ```
