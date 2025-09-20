@@ -28,3 +28,10 @@
  (v)2. AWS Trainium
     3. Amazon Bedrock
     4. Amazon Titan FMs
+
+6. Which AWS service offers a set of solutions for the most common machine learning use cases that can be deployed readily in just a few steps?
+ (v)1. Amazon SageMaker JumpStart
+    2. Amazon Titan FMs
+    3. AWS Trainium
+    4. Amazon Q Developer
+
