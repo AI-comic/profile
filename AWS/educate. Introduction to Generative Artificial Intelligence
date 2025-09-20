@@ -35,3 +35,9 @@
     3. AWS Trainium
     4. Amazon Q Developer
 
+7. Which type of foundation model(FM) should you choose for the application?
+    1. Image-prompt
+ (v)2. Multimodal
+    3. Text-to-embedding
+    4. Text-to-text
+
