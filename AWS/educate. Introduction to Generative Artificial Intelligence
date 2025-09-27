@@ -41,3 +41,9 @@
     3. Text-to-embedding
     4. Text-to-text
 
+8. Which option accurately describes what prompt engineering is?
+ (v)1. The process of designing and refining the instructions for a language model to generate specific types of output
+    2. The process of tuning a model with additional data to better fit your personal use case
+    3. The process of cleaning data that you train your model on
+    4. The process of selecting the right model for your personal use case
+
