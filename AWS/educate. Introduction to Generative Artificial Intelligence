@@ -54,3 +54,10 @@
  (v)4. Chatbots and virsual assistants
     5. Code generation
 
+10. You want to increase productivity at your company by using a AI service that can assist with generating code.
+ Which AWS service can be embedded in an integrated development environment(IDE) and generate code?
+    1. AWS Inferentia
+    2. Amazon SageMaker JumpStart
+ (v)3. Amazon Q Developer
+    4. Amazon Bedrock
+
