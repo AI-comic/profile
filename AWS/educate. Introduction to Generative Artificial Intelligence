@@ -61,3 +61,9 @@
  (v)3. Amazon Q Developer
     4. Amazon Bedrock
 
+11. You are building a new application, and you want to be able to generate an image from a text prompt.
+ Which type of foundation model(FM) should you choose for the application?
+    1. Image-prompt
+ (v)2. Multimodal
+    3. Text-to-embedding
+    4. Text-to-text
