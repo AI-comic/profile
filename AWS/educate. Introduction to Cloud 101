@@ -16,3 +16,9 @@
     3. 리전은 단일 가용 영역으로 구성된다.
  (v)4. 리전은 두 개 이상의 가용 영역으로 구성된다.
 
+4. 사용자에게 권한을 부여하기 위해 어떤 AWS 서비스를 사용하시겠습니까?
+    1. Amazon S3
+    2. Amazon CloudWatch
+ (v)3. AWS Identity and Access Management
+    4. Amazon SNS
+
