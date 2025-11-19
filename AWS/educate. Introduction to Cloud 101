@@ -65,3 +65,9 @@
  (v)3. 성능 효율성
     4. 보안
 
+12. 객체 스토리지 서비스에 데이터를 저장하려고 합니다. 다음 중 이러한 유형의 스토리지에 가장 적합한 AWS 서비스는 무엇입니까?
+    1. Amazon EFS
+ (v)2. Amazon S3
+    3. Amazon Managed Blockchain
+    4. Amazon EBS
+
