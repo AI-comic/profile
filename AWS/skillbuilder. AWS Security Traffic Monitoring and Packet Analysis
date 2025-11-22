@@ -1,0 +1,6 @@
+1. What is the primary purpose of configuring a traffic mirror filter in AWS?
+ (v)1. To select specific traffic for mirroring
+    2. To compress network data
+    3. To block unwanted network traffic
+    4. To encrypt network traffic
+
