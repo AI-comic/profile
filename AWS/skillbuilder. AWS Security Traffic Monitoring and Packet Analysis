@@ -4,3 +4,9 @@
     3. To block unwanted network traffic
     4. To encrypt network traffic
 
+2. What does the 'Session number' represent in a traffic mirror session configuration?
+    1. The duration of the mirroring session
+    2. The number of mirror targets
+    3. The number of packets to mirror
+ (v)4. The priority of the session
+
