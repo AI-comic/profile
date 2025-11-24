@@ -10,3 +10,9 @@
     3. The number of packets to mirror
  (v)4. The priority of the session
 
+3. What action is typically used when adding a new rule to a traffic mirror filter?
+    1. Deny
+    2. Forward
+    3. Reject
+ (v)4. Accept
+
