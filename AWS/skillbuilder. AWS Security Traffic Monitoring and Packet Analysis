@@ -16,3 +16,9 @@
     3. Reject
  (v)4. Accept
 
+4. What type of resource can be specified as a traffic mirror target?
+    1. S3 bucket
+ (v)2. Network Interface
+    3. Lambda function
+    4. DynamoDB table
+
