@@ -22,3 +22,9 @@
     3. Lambda function
     4. DynamoDB table
 
+5. What file format is commonly used to save captured network traffic for later analysis?
+ (v)1. .pcap
+    2. .log
+    3. .cap
+    4. .txt
+
