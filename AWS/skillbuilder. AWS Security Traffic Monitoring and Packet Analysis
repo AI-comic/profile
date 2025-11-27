@@ -28,3 +28,10 @@
     3. .cap
     4. .txt
 
+6. What is a key characteristic of the primary Elastic Network Interface (ENI) attached to an EC2 instance?
+ (v)1. It is created and deleted with the instance
+    2. It only supports IPv6 addressing
+    3. It can be freely detached and reattached
+    4. It can be shared between multiple instances
+
+
