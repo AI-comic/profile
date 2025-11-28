@@ -34,4 +34,8 @@
     3. It can be freely detached and reattached
     4. It can be shared between multiple instances
 
-
+7. Which command-line utility is used to capture and analyze network traffic in the VPC Traffic Mirroring lab?
+ (v)1. tcpdump
+    2. netstat
+    3. nmap
+    4. wireshark
