@@ -1,0 +1,6 @@
+Q1. What is the primary purpose of an Amazon ECS task definition when deploying an application? 
+    1. To define the network configuration 
+    2. To manage IAM roles 
+    3. To set up auto-scaling policies 
+ (v)4. To specify the container images to use
+
