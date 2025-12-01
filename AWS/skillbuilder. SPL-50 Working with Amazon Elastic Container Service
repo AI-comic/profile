@@ -4,3 +4,9 @@ Q1. What is the primary purpose of an Amazon ECS task definition when deploying 
     3. To set up auto-scaling policies 
  (v)4. To specify the container images to use
 
+Q2. Which of the following is true about Amazon ECS services? 
+ (v)1. They automatically restart failed tasks 
+    2. They can only use the Fargate launch type 
+    3. They require manual scaling 
+    4. They can only run one task at a time
+
