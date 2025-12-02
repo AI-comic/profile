@@ -10,3 +10,9 @@ Q2. Which of the following is true about Amazon ECS services?
     3. They require manual scaling 
     4. They can only run one task at a time
 
+Q3. Which ECS feature allows you to run and maintain a specified number of instances of a task definition simultaneously in an ECS cluster? 
+    1. Task 
+ (v)2. Service 
+    3. Deployment 
+    4. Container Instance
+
