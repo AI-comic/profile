@@ -16,3 +16,9 @@ Q3. Which ECS feature allows you to run and maintain a specified number of insta
     3. Deployment 
     4. Container Instance
 
+Q4. What does the 'portMappings' section in an Amazon ECS Task Definition specify? 
+ (v)1. The mapping between container ports and host ports 
+    2. The ports used for container-to-container communication 
+    3. The ports reserved for ECS service discovery 
+    4. The ports open on the EC2 instance
+
