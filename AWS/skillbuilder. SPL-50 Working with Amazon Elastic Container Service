@@ -22,3 +22,8 @@ Q4. What does the 'portMappings' section in an Amazon ECS Task Definition specif
     3. The ports reserved for ECS service discovery 
     4. The ports open on the EC2 instance
 
+Q5. After updating the task definition, what needs to be done to deploy the new version of the application in Amazon ECS? 
+    1. Manually stop and start all tasks 
+ (v)2. Update the ECS service to use the new task definition 
+    3. Create a new cluster 
+    4. Reboot all container instances
